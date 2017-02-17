@@ -10,7 +10,7 @@ char debugBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 char bluetoothBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 
 void serial_init(uint32_t baudRate) {
-	debugQueue = QueueConstructor(MAX_DBG_BUF_SIZE, "Debug Queue");
+	debugQueue = QueueConstructor(MAX_DBG_BUF_SIZE, "Debug");
 	
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
@@ -87,6 +87,7 @@ void USART2_IRQHandler(void) {
       debugBuf[jU] = iU;
       jU++; //Bump the write index for next write
 
+			//If end of packet, enqueue the buffer
       if (iU == '>') {
         isPacket = false;
         jU = 0;
@@ -96,11 +97,9 @@ void USART2_IRQHandler(void) {
     USART_ClearITPendingBit(USART2, USART_IT_RXNE);
   }
 }
- //Check if interrupt was because data is received
-   
 
 void bluetooth_init(uint32_t baudRate) {
-	bluetoothQueue = QueueConstructor(MAX_BT_BUF_SIZE, "Bluetooth Queue");
+	bluetoothQueue = QueueConstructor(MAX_BT_BUF_SIZE, "Bluetooth");
 	
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);

@@ -72,7 +72,7 @@ int main (void) {
 		double ADC1_valueScaled = read_ADC1();
 
 		#ifdef DEBUG
-			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %f\n~", ADC1_valueScaled);
+			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %f\r\n~", ADC1_valueScaled);
 			sendPacket(1, ADC1_valueScaled, 1);
 		#endif
 		
