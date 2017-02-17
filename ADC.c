@@ -33,7 +33,7 @@ void ADC1_init(void) {
 	calibrationValue = calibrate_ADC1();
 }
 	
-//Dunction to read ADC and retun value
+//Function to read ADC and retun scaled value
 double read_ADC1 (void) {
 	//Initialise ADC1 inline if not up
 	if(!isInitialised) ADC1_init();
@@ -45,6 +45,19 @@ double read_ADC1 (void) {
 	//Scale the 32 bit ADC input to between 0 and 3v
 	return map((ADC1->DR << 4) - calibrationValue, 0, UINT16_MAX, ADC_IN_MIN, ADC_IN_MAX);
 }
+
+//Function to read ADC and return raw value
+uint32_t read_ADC1_raw (void) {
+	//Initialise ADC1 inline if not up
+	if(!isInitialised) ADC1_init();
+	
+	//Begin ADC1 read
+	ADC1->CR2 |= (1UL << 30)	;		/* set SWSTART to 1 to start conversion */
+	Delay(100);
+	
+	//Return raw 32bit uint
+	return (ADC1->DR << 4);
+	}
 
 void set_cont_ADC1(void){
 	ADC1->CR2 |= (1UL << 30)	;		/* set SWSTART to 1 to start conversion */

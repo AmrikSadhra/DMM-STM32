@@ -24,7 +24,7 @@ typedef struct Queue {
 
 /* -------- Function Prototypes -------- */
 Queue *QueueConstructor(int maxLength, char* name);
-QueueNode *NodeConstructor(QueueNode *prev, char toStore[]);
+QueueNode *NodeConstructor(QueueNode *prev, char *toStore);
 void EnqueueString(Queue *targetQueue, char *toStore);
 char *DequeueString(Queue *targetQueue);
 void displayQueue(Queue *targetQueue);

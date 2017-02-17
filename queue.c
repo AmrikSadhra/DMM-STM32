@@ -5,7 +5,7 @@
 #include "queue.h"
 #define DEBUG 1
 
-QueueNode *NodeConstructor(QueueNode *prev, char toStore[]) {
+QueueNode *NodeConstructor(QueueNode *prev, char *toStore) {
     QueueNode *myNode;
 
     myNode = malloc(sizeof(QueueNode));

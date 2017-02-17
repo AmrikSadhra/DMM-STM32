@@ -16,6 +16,8 @@
 #define BUFFER_SIZE 128
 #define DEBUG 1
 
+#define SWITCHING_RANGE_TOLERANCE 100
+
 //For Header File
 void initialise_Peripherals(void);
 
@@ -71,6 +73,9 @@ int main (void) {
   while(1) {                                    /* Loop forever               */
 		double ADC1_valueScaled = read_ADC1();
 
+		if(read_ADC1_raw() > UINT16_MAX - SWITCHING_RANGE_TOLERANCE){
+			printf("Banana");
+		}
 		#ifdef DEBUG
 			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %f\r\n~", ADC1_valueScaled);
 			sendPacket(1, ADC1_valueScaled, 1);

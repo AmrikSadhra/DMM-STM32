@@ -9,13 +9,14 @@
 #define ADC_IN_MAX 3
 
 void ADC1_init(void);
-/* function to read ADC and retun value */
+/* Functions to read ADC and return value */
 double read_ADC1 (void);
+uint32_t read_ADC1_raw (void);
 
-void set_cont_ADC1(void);	
 
 /* function to set ADC to cont */
 unsigned int read_cont_ADC1 (void);
+void set_cont_ADC1(void);	
 
 double calibrate_ADC1(void);
 
