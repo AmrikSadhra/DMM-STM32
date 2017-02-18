@@ -460,6 +460,11 @@
               <FileType>1</FileType>
               <FilePath>.\packet.c</FilePath>
             </File>
+            <File>
+              <FileName>BTN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BTN.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
