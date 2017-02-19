@@ -1,7 +1,7 @@
-.\system_stm32f4xx.o: Libraries\CMSIS\STM32F4xx\Source\Templates\system_stm32f4xx.c
+.\system_stm32f4xx.o: RTE\Device\STM32F407VG\system_stm32f4xx.c
 .\system_stm32f4xx.o: .\Libraries\CMSIS\STM32F4xx\Include\stm32f4xx.h
 .\system_stm32f4xx.o: .\Libraries\CMSIS\Include\core_cm4.h
-.\system_stm32f4xx.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\system_stm32f4xx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\system_stm32f4xx.o: .\Libraries\CMSIS\Include\core_cmInstr.h
 .\system_stm32f4xx.o: .\Libraries\CMSIS\Include\core_cmFunc.h
 .\system_stm32f4xx.o: .\Libraries\CMSIS\Include\core_cmSimd.h

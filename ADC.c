@@ -48,7 +48,7 @@ double read_ADC1 (void) {
 
 double scale_ADC1(uint16_t adc1_raw){
 	//Scale the 32 bit ADC input to between 0 and 3v
-	return map((adc1_raw << 4) - calibrationValue, 0, UINT16_MAX, ADC_IN_MIN, ADC_IN_MAX);
+	return map(adc1_raw  - calibrationValue, 0, UINT16_MAX, ADC_IN_MIN, ADC_IN_MAX);
 }
 
 //Function to read ADC and return raw value
