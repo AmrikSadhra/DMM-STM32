@@ -1,6 +1,6 @@
 #include "ADC.h"
 
-double calibrationValue;
+double calibrationValue = 0.0f;
 bool isInitialised = false;
 
 void ADC1_init(void) {
@@ -46,13 +46,8 @@ double read_ADC1 (void) {
 	return map((ADC1->DR << 4) - calibrationValue, 0, UINT16_MAX, ADC_IN_MIN, ADC_IN_MAX);
 }
 
-double scale_ADC1(uint16_t adc1_raw){
-	//Scale the 32 bit ADC input to between 0 and 3v
-	return map(adc1_raw  - calibrationValue, 0, UINT16_MAX, ADC_IN_MIN, ADC_IN_MAX);
-}
-
 //Function to read ADC and return raw value
-uint32_t read_ADC1_raw (void) {
+uint16_t read_ADC1_raw (void) {
 	//Initialise ADC1 inline if not up
 	if(!isInitialised) ADC1_init();
 	
@@ -77,7 +72,7 @@ unsigned int read_cont_ADC1 (void) {
 	return ADC1->DR;
 }
 
-//Calibrate out ADC noise (NEEDS TO RUN WHILST ADC NOT CONNECTED TO ANYTHING)
+//Calibrate out ADC noise
 double calibrate_ADC1(void){
 	double sum = 0;
 	int maxLoops = MAX_CALIBRATION_LOOPS;
@@ -85,7 +80,7 @@ double calibrate_ADC1(void){
 	for(int j = 0; j < maxLoops; j++){
 			sum += (double) read_ADC1();
 	}
-	
+		
 	return sum/MAX_CALIBRATION_LOOPS;
 }
 
