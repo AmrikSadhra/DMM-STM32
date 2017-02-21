@@ -20,10 +20,12 @@
 #define BUFFER_SIZE 128
 #define DEBUG 1
 
-#define SWITCHING_RANGE_TOLERANCE 20000
+#define SWITCHING_RANGE_TOLERANCE 2000
+
+double voltageLookup[4] = {10, 1, 0.1, 0.01};
 
 //Global variables
-uint8_t ADC1_currentRange = 1;
+uint8_t ADC1_currentRange = 0;
 //For Header File
 void initialise_Peripherals(void);
 
@@ -39,20 +41,23 @@ void Autorange_init(){
   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOE, & GPIO_InitStruct);
 }
+
+
 /* Function to Automatically set the range dependent upon ADC1 value */
 void autoRange(uint16_t adc1_raw){
 		bool rangeSwitch = false;
 		static uint8_t ADC1_prevRange;
 	
 		//If RAW value greater than max value it can return - switch tolerance, probably time to change range (unless we maxed on range)
-		if((adc1_raw  > UINT16_MAX - SWITCHING_RANGE_TOLERANCE)&&(ADC1_currentRange != 4)){
-				ADC1_currentRange++;	
+		if(((adc1_raw  > UINT16_MAX - SWITCHING_RANGE_TOLERANCE)||(adc1_raw  < SWITCHING_RANGE_TOLERANCE))&&(ADC1_currentRange != 0)){
+				ADC1_currentRange--;	
 				rangeSwitch = true;
-			} else if((adc1_raw  < SWITCHING_RANGE_TOLERANCE)&&(ADC1_currentRange != 0)){//If we're close (and not at lowest range)
-			ADC1_currentRange--;
+			} else if((adc1_raw  < UINT16_MAX*0.55)&&(adc1_raw  > UINT16_MAX*0.45)&&(ADC1_currentRange != 3)){//If we're close (and not at lowest range)
+			ADC1_currentRange++;
 			rangeSwitch = true;
 		}
 			
+
 		if(rangeSwitch){
 			#ifdef DEBUG	
 				printf("[Hardware Subsystem] ADC1 Range switch requested. Switching, raw ADC read: %d. Old Range: %d New Range: %d\r\n~", adc1_raw, ADC1_prevRange, ADC1_currentRange);
@@ -62,25 +67,20 @@ void autoRange(uint16_t adc1_raw){
 			GPIOE->ODR &= ~(7UL << 3);
 			
 		switch(ADC1_currentRange){
-				case 0:
+				case 0://10v in 
 					//Do nothing for Range 0 as pins already cleared
 					break;			
-				case 1:
+				case 1://1v in 
 					//Range 1
 					GPIOE->ODR |= (1UL << 3);
 					break;
-				case 2:
+				case 2://0.1v
 					//Range 2
 					GPIOE->ODR |= (2UL << 3);
 					break;
-				case 3:
+				case 3://0.01v
 					//Range 3
 					GPIOE->ODR |= (3UL << 3);
-					break;
-				//Just to test a pretty LED, also we need EN pin so this will be used at *some* point
-				case 4:
-					//Range 4
-					GPIOE->ODR |= (4UL << 3);
 					break;
 			}
 			ADC1_prevRange = ADC1_currentRange;
@@ -112,10 +112,27 @@ int main (void) {
 	lcd_write_string("Multimeter Starting..", 0, 0);
 	
   while(1) {                                    /* Loop forever               */
-		uint16_t ADC1_valueRaw = read_ADC1_raw();
-		double ADC1_valueScaled = scale_ADC1(ADC1_valueRaw);
+		uint16_t ADC1_valueRaw_int = read_ADC1_raw();
+		double ADC1_valueRaw = (double) ADC1_valueRaw_int;
+
+		double ADC1_valueScaled = 0.0f;
 		
 		autoRange(ADC1_valueRaw);
+		
+		switch(ADC1_currentRange){
+			case 0:
+				ADC1_valueScaled = map(ADC1_valueRaw, 0, UINT16_MAX, -10, 10);
+				break;
+			case 1:
+				ADC1_valueScaled = map(ADC1_valueRaw, 0, UINT16_MAX, -1, 1);
+				break;
+			case 2:
+				ADC1_valueScaled = map(ADC1_valueRaw, 0, UINT16_MAX, -0.1, 0.1);
+				break;
+			case 3:
+				ADC1_valueScaled = map(ADC1_valueRaw, 0, UINT16_MAX, -0.01, 0.01);
+				break;
+		}
 		
 		#ifdef DEBUG
 			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %f\r\n~", ADC1_valueScaled);
