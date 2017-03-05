@@ -14,8 +14,6 @@ extern uint8_t ADC1_currentRange;
 void ADC1_init(void);
 /* Functions to read ADC and return value */
 double read_ADC1 (void);
-uint16_t read_ADC1_raw (void);
-double scale_ADC1(uint16_t adc1_raw);
 
 /* function to set ADC to cont */
 unsigned int read_cont_ADC1 (void);

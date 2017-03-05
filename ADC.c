@@ -50,6 +50,20 @@ void ADC1_init(void) {
 
 
 
+
+//Function to read ADC and return raw value
+uint16_t read_ADC1_raw (void) {
+	//Initialise ADC1 inline if not up
+	if(!isInitialised) ADC1_init();
+	
+	//Begin ADC1 read
+	ADC1->CR2 |= (1UL << 30)	;		/* set SWSTART to 1 to start conversion */
+	Delay(100);
+	
+	//Return raw 32bit uint
+	return (ADC1->DR << 4 & 0xFF00);
+}
+
 //Read ADC numSamples times to produce average
 double runningAverage(uint8_t numSamples){
 	uint16_t adc_raw = 0;
@@ -62,7 +76,7 @@ double runningAverage(uint8_t numSamples){
 		
 		return temp2;
 }
-	
+
 
 /* Function to Automatically set the range dependent upon ADC1 value */
 void autoRange(uint16_t adc1_raw){
@@ -107,14 +121,15 @@ void autoRange(uint16_t adc1_raw){
 		}
 }
 
-
 //Function to read ADC and retun scaled value
 double read_ADC1 (void) {
 	if(!isInitialised) ADC1_init();
 	
+	//Average data coming in (smooth)
 	double ADC1_valueAveraged = runningAverage(10);
 	double ADC1_valueScaled = 0.0f;
 	
+	//Adjust range
 	autoRange((uint16_t) ADC1_valueAveraged);
 	
 	switch(ADC1_currentRange){
@@ -132,25 +147,11 @@ double read_ADC1 (void) {
 				break;
 		}
 		
-		//Running Average
 		#ifdef DEBUG
 			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %f\r\n~", ADC1_valueScaled);
 		#endif
 		
 		return ADC1_valueScaled;
-}
-
-//Function to read ADC and return raw value
-uint16_t read_ADC1_raw (void) {
-	//Initialise ADC1 inline if not up
-	if(!isInitialised) ADC1_init();
-	
-	//Begin ADC1 read
-	ADC1->CR2 |= (1UL << 30)	;		/* set SWSTART to 1 to start conversion */
-	Delay(100);
-	
-	//Return raw 32bit uint
-	return (ADC1->DR << 4 & 0xFF00);
 }
 
 void set_cont_ADC1(void){
