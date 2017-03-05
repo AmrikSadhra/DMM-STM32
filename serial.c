@@ -15,7 +15,12 @@ char debugBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 char bluetoothBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 
 void serial_init(uint32_t baudRate) {
-	debugInitialised = true;
+	if(!debugInitialised){
+		debugInitialised = true;
+	} else
+	{
+		return;
+	}
 	debugQueue = QueueConstructor(MAX_DBG_BUF_SIZE, "Debug");
 	
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
@@ -106,7 +111,12 @@ void USART2_IRQHandler(void) {
 }
 
 void bluetooth_init(uint32_t baudRate) {
-	bluetoothInitialised = true;
+	if(!bluetoothInitialised){
+		bluetoothInitialised = true;
+	} else
+	{
+		return;
+	}
 	bluetoothQueue = QueueConstructor(MAX_BT_BUF_SIZE, "Bluetooth");
 	
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
