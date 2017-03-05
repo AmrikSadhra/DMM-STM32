@@ -16,11 +16,12 @@
 #define MAX_BT_BUF_SIZE 10
 #define MAX_DBG_BUF_SIZE 10
 
+#define DEFAULT_BAUD 9600
+
 void serial_init(uint32_t baudRate);
 void bluetooth_init(uint32_t baudRate);
 void bt_send_str(char *str);
 void printBus(uint32_t bus);
 
 extern Queue *bluetoothQueue, *debugQueue;
-
 #endif /*_SERIAL_H_*/

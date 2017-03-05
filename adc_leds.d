@@ -41,10 +41,12 @@
 .\adc_leds.o: ADC.h
 .\adc_leds.o: utils.h
 .\adc_leds.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\adc_leds.o: BTN.h
 .\adc_leds.o: serial.h
+.\adc_leds.o: utils.h
 .\adc_leds.o: queue.h
 .\adc_leds.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\adc_leds.o: lcd_driver.h
 .\adc_leds.o: packet.h
+.\adc_leds.o: utils.h
+.\adc_leds.o: switches.h
 .\adc_leds.o: sig_gen.h

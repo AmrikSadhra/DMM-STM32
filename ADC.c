@@ -30,7 +30,7 @@ void ADC1_init(void) {
 	ADC1->CR2 |= (1UL << 0);
 	
 	//Take 5 samples to calibrate ADC (remove base noise)
-	calibrationValue = calibrate_ADC1();
+	calibrationValue = 0;//calibrate_ADC1();
 }
 	
 //Function to read ADC and retun scaled value
@@ -56,7 +56,7 @@ uint16_t read_ADC1_raw (void) {
 	Delay(100);
 	
 	//Return raw 32bit uint
-	return (ADC1->DR << 4);
+	return (ADC1->DR << 4 & 0xFF00);
 	}
 
 void set_cont_ADC1(void){
@@ -68,7 +68,7 @@ void set_cont_ADC1(void){
 //Function to set ADC to continuous read mode
 unsigned int read_cont_ADC1 (void) {
 	//TODO: Inside spinlock, increment i to MAX_RETRY_ADC_CONT. Throw exception.
-	while(!((ADC1->CR2 & (1 << 10))>0));
+	while(!((ADC1->CR2 & (1 << 10))));
 	return ADC1->DR;
 }
 

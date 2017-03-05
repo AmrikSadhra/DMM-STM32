@@ -8,12 +8,13 @@
 #include "lcd_driver.h"
 #include "LED.h"
 #include "ADC.h"
-#include "BTN.h"
+#include "misc.h"
 //Made with Love (by us)
 #include "serial.h"
 #include "packet.h"
 #include "utils.h"
 #include "queue.h"
+#include "switches.h"
 //Stolen
 #include "sig_gen.h"
 
@@ -39,7 +40,7 @@ void Autorange_init(){
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIOE, & GPIO_InitStruct);
+  GPIO_Init(GPIOE, &GPIO_InitStruct);
 }
 
 
@@ -87,15 +88,27 @@ void autoRange(uint16_t adc1_raw){
 		}
 }
 
+
 /* Function to intiialise all used peripherals    */
-void initialise_Peripherals(void){
-  BTN_Init();  
+void initialise_Peripherals(void){ 
 	ADC1_init();
 	Autorange_init();
 	lcd_init(LCD_LINES_TWO, LCD_CURSOR_OFF, LCD_CBLINK_OFF, BUFFER_SIZE);
 	serial_init(9600);
 	bluetooth_init(9600);
+	switch_init();
 }
+
+double runningAverage(uint8_t numSamples){
+	uint16_t adc_raw = 0;
+
+		for(int i=0;i<numSamples;i++){
+			adc_raw += read_ADC1_raw();
+		}
+		double temp2 = (double)adc_raw;
+		temp2 /= numSamples;
+		return temp2;
+	}
 
 /*----------------------------------------------------------------------------
   MAIN function
@@ -112,25 +125,27 @@ int main (void) {
 	lcd_write_string("Multimeter Starting..", 0, 0);
 	
   while(1) {                                    /* Loop forever               */
-		uint16_t ADC1_valueRaw_int = read_ADC1_raw();
-		double ADC1_valueRaw = (double) ADC1_valueRaw_int;
-
+		//uint16_t ADC1_valueRaw = 0;
+		
+		//Running Average
+		double temp2 = runningAverage(10);
+		
 		double ADC1_valueScaled = 0.0f;
 		
-		autoRange(ADC1_valueRaw);
-		
+		//autoRange(ADC1_valueRaw);
+		ADC1_currentRange=0;
 		switch(ADC1_currentRange){
 			case 0:
-				ADC1_valueScaled = map(ADC1_valueRaw, 0, UINT16_MAX, -10, 10);
+				ADC1_valueScaled = map(temp2, 0, ADC_VALUE_3V, -10, 10);
 				break;
 			case 1:
-				ADC1_valueScaled = map(ADC1_valueRaw, 0, UINT16_MAX, -1, 1);
+				ADC1_valueScaled = map(temp2, 0, ADC_VALUE_3V, -1, 1);
 				break;
 			case 2:
-				ADC1_valueScaled = map(ADC1_valueRaw, 0, UINT16_MAX, -0.1, 0.1);
+				ADC1_valueScaled = map(temp2, 0, ADC_VALUE_3V, -0.1, 0.1);
 				break;
 			case 3:
-				ADC1_valueScaled = map(ADC1_valueRaw, 0, UINT16_MAX, -0.01, 0.01);
+				ADC1_valueScaled = map(temp2, 0, ADC_VALUE_3V, -0.01, 0.01);
 				break;
 		}
 		
@@ -138,13 +153,11 @@ int main (void) {
 			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %f\r\n~", ADC1_valueScaled);
 			sendPacket(1, ADC1_valueScaled, 1);
 		#endif
-		
-		lcd_clear_display();
-		lcd_write_string(DequeueString(debugQueue), 0, 0);
-		
+
 		//Blit to LED's
 		Delay(100.0);
   }
+	
 }
 
 

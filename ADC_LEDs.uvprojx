@@ -386,19 +386,9 @@
               <FilePath>.\ADC_LEDs.c</FilePath>
             </File>
             <File>
-              <FileName>SWT.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\SWT.c</FilePath>
-            </File>
-            <File>
               <FileName>serial.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\serial.c</FilePath>
-            </File>
-            <File>
-              <FileName>retarget.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\retarget.c</FilePath>
             </File>
             <File>
               <FileName>utils.c</FileName>
@@ -464,6 +454,21 @@
               <FileName>BTN.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\BTN.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_syscfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_syscfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>switches.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\switches.c</FilePath>
             </File>
           </Files>
         </Group>

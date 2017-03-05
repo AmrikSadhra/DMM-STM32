@@ -4,12 +4,18 @@
 //-------- INTERRUPT GLOBALS ----------
 Queue *bluetoothQueue, *debugQueue;
 bool isPacket = false;
+
+//Ensure initialisation runs before sending data
+bool bluetoothInitialised = false;
+bool debugInitialised = false;
+
 int iU, jU, iB, jB; //Indexes for UART and BT buffers
 
 char debugBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 char bluetoothBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 
 void serial_init(uint32_t baudRate) {
+	debugInitialised = true;
 	debugQueue = QueueConstructor(MAX_DBG_BUF_SIZE, "Debug");
 	
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
@@ -56,6 +62,7 @@ void serial_init(uint32_t baudRate) {
 }
 
 void bt_send_str(char * str) {
+	if(!bluetoothInitialised) bluetooth_init(DEFAULT_BAUD);
   int i = 0;
 
   while (str[i] != 0) {
@@ -99,6 +106,7 @@ void USART2_IRQHandler(void) {
 }
 
 void bluetooth_init(uint32_t baudRate) {
+	bluetoothInitialised = true;
 	bluetoothQueue = QueueConstructor(MAX_BT_BUF_SIZE, "Bluetooth");
 	
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
@@ -158,4 +166,38 @@ void printBus(uint32_t bus) {
   char buf[sizeof(bus) * 8];
   char * busString = int2bin(bus, buf, (sizeof(bus) * 8) - 1);
   printf("%s\n\r", busString);
+}
+
+
+/******************************************************************************/
+/* RETARGET LAYER: 'Retarget' layer for target-dependent low level functions  */
+/******************************************************************************/
+#pragma import(__use_no_semihosting_swi)
+
+/* Redirect output via USART2 - AJP 2013 */
+/* Calls block on USART2 TX buffer availability */
+int sendchar(int c) {
+	while (!(USART2->SR & USART_SR_TXE));
+	return (USART2->DR = c);
+}
+
+struct __FILE { int handle; /* Add whatever you need here */ };
+FILE __stdout;
+
+int fputc(int ch, FILE *f) {
+	if(!debugInitialised) serial_init(DEFAULT_BAUD);
+  return (sendchar(ch));
+}
+
+int ferror(FILE *f) {
+  /* Your implementation of ferror */
+  return EOF;
+}
+
+void _ttywrch(int ch) {
+  sendchar(ch);
+}
+
+void _sys_exit(int return_code) {
+label:  goto label;  /* endless loop */
 }
