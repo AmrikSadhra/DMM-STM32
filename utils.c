@@ -6,6 +6,8 @@ volatile uint32_t msTicks;                     //Counts 1ms timeTicks
 //Map number form range in_min, in_max to out_in to out_max
 double map(double x, double in_min, double in_max, double out_min, double out_max)
 {
+	//If ADC input value saturates ADC input, wrap to MAX value to prevent strange math bugs
+	// (because max ADC input is 3.3V but our DMM only has a range 0-3V so max is not uint16_t_MAX)
 	if(x>ADC_VALUE_3V){
 		x = ADC_VALUE_3V;
 	}

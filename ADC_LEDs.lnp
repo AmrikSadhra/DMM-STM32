@@ -16,6 +16,7 @@
 ".\stm32f4xx_syscfg.o"
 ".\switches.o"
 ".\dmm.o"
+".\menu.o"
 ".\startup_stm32f407xx.o"
 ".\system_stm32f4xx.o"
 --strict --scatter ".\ADC_LEDs.sct"

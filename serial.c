@@ -1,5 +1,5 @@
 #include "serial.h"
-#include "stdbool.h"
+
 
 //-------- INTERRUPT GLOBALS ----------
 Queue *bluetoothQueue, *debugQueue;
@@ -158,18 +158,30 @@ void bluetooth_init(uint32_t baudRate) {
 }
 
 void USART3_IRQHandler(void) {
-  if (USART3->SR & USART_SR_RXNE) {
-      iB = bt_rec();
+  if (USART_GetITStatus(USART3, USART_IT_RXNE)) {
+    iB = bt_rec();
 		
-      if (jB == 10) {
-        bluetoothBuf[jB] = iB;
-				bluetoothBuf[jB] = '\0';
+		//Signify start of packet
+    if (iB == '<') {
+      isPacket = true;
+    }
+
+    if (isPacket) {
+      debugBuf[jB] = iB;
+      jB++; //Bump the write index for next write
+
+			//If end of packet, enqueue the buffer
+      if (iB == '>') {
+        isPacket = false;
         jB = 0;
+				
+				//Check bluetooth is alive
+				if(strcmp(bluetoothBuf,"<Init>")) BluetoothMode = true;
 				EnqueueString(bluetoothQueue, bluetoothBuf);
-      } else {
-        bluetoothBuf[jB++] = iB;
       }
     }
+    USART_ClearITPendingBit(USART3, USART_IT_RXNE);
+  }
 }
 
 void printBus(uint32_t bus) {

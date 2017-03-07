@@ -5,10 +5,12 @@
 #include <misc.h> 
 #include "stdio.h"
 #include "utils.h"
-
+#include "DMM.h"
+#include "stdbool.h"
 #include "queue.h"
 #include "lcd_buffer.h"
 #include "lcd_driver.h"
+#include "string.h"
 
 #define MAX_SERIAL_IN_LENGTH 16
 #define SERIAL_TIMEOUT_MAX 30

@@ -39,8 +39,13 @@
 .\switches.o: serial.h
 .\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdio.h
 .\switches.o: utils.h
-.\switches.o: queue.h
+.\switches.o: DMM.h
 .\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\switches.o: ADC.h
+.\switches.o: utils.h
+.\switches.o: serial.h
+.\switches.o: queue.h
 .\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\switches.o: lcd_buffer.h
 .\switches.o: lcd_driver.h
+.\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h

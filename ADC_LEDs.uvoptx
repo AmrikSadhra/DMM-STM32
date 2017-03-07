@@ -208,32 +208,16 @@
           <Type>0</Type>
           <LineNumber>10</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134219570</Address>
+          <Address>134219334</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\utils.c</Filename>
+          <Filename>M:\w2k\Design_and_Construction\DMM-STM32\utils.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\ADC_LEDs\utils.c\10</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>9</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134219552</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\utils.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\ADC_LEDs\utils.c\9</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -499,11 +483,23 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>17</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>.\DMM.c</PathWithFileName>
       <FilenameWithoutPath>DMM.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>1</GroupNumber>
+      <FileNumber>18</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\Menu.c</PathWithFileName>
+      <FilenameWithoutPath>Menu.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

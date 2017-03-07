@@ -38,8 +38,13 @@
 .\packet.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h
 .\packet.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h
 .\packet.o: utils.h
-.\packet.o: queue.h
+.\packet.o: DMM.h
 .\packet.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\packet.o: ADC.h
+.\packet.o: utils.h
+.\packet.o: serial.h
+.\packet.o: queue.h
 .\packet.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\packet.o: lcd_buffer.h
 .\packet.o: lcd_driver.h
+.\packet.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
