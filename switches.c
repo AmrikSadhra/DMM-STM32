@@ -37,7 +37,7 @@ void switch_init(){
     /* Interrupt mode */
     EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
     /* Triggers on rising and falling edge */
-    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising;
     /* Add to EXTI */
     EXTI_Init(&EXTI_InitStruct);
 
@@ -92,6 +92,7 @@ void EXTI15_10_IRQHandler(void) {
 				menuPosition = 8;
        EXTI_ClearITPendingBit(EXTI_Line15);
    }
+	
 	 #ifdef DEBUG
 			printf("[Switch External Interrupt] Menu Position: %d\r\n~", menuPosition);
 		#endif

@@ -61,16 +61,17 @@ uint16_t read_ADC1_raw (void) {
 	Delay(100);
 	
 	//Return raw 32bit uint
-	return (ADC1->DR << 4 & 0xFF00);
+	return ((ADC1->DR << 4) & 0xFF00);
 }
 
 //Read ADC numSamples times to produce average
 double runningAverage(uint8_t numSamples){
-	uint16_t adc_raw = 0;
+		uint32_t adc_raw = 0;
 
 		for(int i=0;i<numSamples;i++){
 			adc_raw += read_ADC1_raw();
 		}
+		
 		double temp2 = (double)adc_raw;
 		temp2 /= numSamples;
 		
@@ -126,7 +127,7 @@ double read_ADC1 (void) {
 	if(!isInitialised) ADC1_init();
 	
 	//Average data coming in (smooth)
-	double ADC1_valueAveraged = runningAverage(10);
+	double ADC1_valueAveraged = runningAverage(NUM_AVG_SAMPLES);
 	double ADC1_valueScaled = 0.0f;
 	
 	//Adjust range
@@ -148,7 +149,7 @@ double read_ADC1 (void) {
 		}
 		
 		#ifdef DEBUG
-			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %f\r\n~", ADC1_valueScaled);
+		printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf RAW Averaged: %.0lf\r\n~", ADC1_valueScaled, ADC1_valueAveraged);
 		#endif
 		
 		return ADC1_valueScaled;

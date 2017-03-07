@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 #define SWITCHING_RANGE_TOLERANCE 2000
+#define NUM_AVG_SAMPLES 5
 #define DEBUG 1
 
 //Integer holding current ADC Range

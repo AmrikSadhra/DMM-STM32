@@ -1,5 +1,4 @@
 --cpu Cortex-M4.fp
-".\dmm.o"
 ".\serial.o"
 ".\utils.o"
 ".\lcd_buffer.o"
@@ -16,6 +15,7 @@
 ".\stm32f4xx_exti.o"
 ".\stm32f4xx_syscfg.o"
 ".\switches.o"
+".\dmm.o"
 ".\startup_stm32f407xx.o"
 ".\system_stm32f4xx.o"
 --strict --scatter ".\ADC_LEDs.sct"

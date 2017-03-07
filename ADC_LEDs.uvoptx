@@ -81,48 +81,48 @@
       <Books>
         <Book>
           <Number>0</Number>
-          <Title>MCBSTM32F400 Quick Start Guide (MCBSTM32F400)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\MDK\Boards\Keil\MCBSTM32F400\Documentation\MCBSTM32F400_QSG.pdf</Path>
+          <Title>STM32F4-Discovery Quick Start Guide (STM32F4-Discovery)</Title>
+          <Path>C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Documentation\32F4-DISCOVERY_QSG.pdf</Path>
         </Book>
         <Book>
           <Number>1</Number>
-          <Title>User Manual (MCBSTM32F400)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\MDK\Boards\Keil\MCBSTM32F400\Documentation\mcbstm32f200.chm</Path>
+          <Title>MCBSTM32F400 Quick Start Guide (MCBSTM32F400)</Title>
+          <Path>C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Documentation\MCBSTM32F400_QSG.pdf</Path>
         </Book>
         <Book>
           <Number>2</Number>
-          <Title>Schematics (MCBSTM32F400)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\MDK\Boards\Keil\MCBSTM32F400\Documentation\mcbstm32f400-schematics.pdf</Path>
+          <Title>User Manual (MCBSTM32F400)</Title>
+          <Path>C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\MDK\Boards\Keil\MCBSTM32F400\Documentation\mcbstm32f200.chm</Path>
         </Book>
         <Book>
           <Number>3</Number>
-          <Title>STM32F4-Discovery Quick Start Guide (STM32F4-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\32F4-DISCOVERY_QSG.pdf</Path>
+          <Title>Schematics (MCBSTM32F400)</Title>
+          <Path>C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\MDK\Boards\Keil\MCBSTM32F400\Documentation\mcbstm32f400-schematics.pdf</Path>
         </Book>
         <Book>
           <Number>4</Number>
           <Title>Getting Started (STM32F4-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\DM00037368.pdf</Path>
+          <Path>C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\DM00037368.pdf</Path>
         </Book>
         <Book>
           <Number>5</Number>
           <Title>User Manual (STM32F4-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\DM00039084.pdf</Path>
+          <Path>C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\DM00039084.pdf</Path>
         </Book>
         <Book>
           <Number>6</Number>
           <Title>Bill of Materials (STM32F4-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\stm32f4discovery_bom.zip</Path>
+          <Path>C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\stm32f4discovery_bom.zip</Path>
         </Book>
         <Book>
           <Number>7</Number>
           <Title>Gerber Files (STM32F4-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\stm32f4discovery_gerber.zip</Path>
+          <Path>C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\stm32f4discovery_gerber.zip</Path>
         </Book>
         <Book>
           <Number>8</Number>
           <Title>Schematics (STM32F4-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\stm32f4discovery_sch.zip</Path>
+          <Path>C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\MDK\Boards\ST\STM32F4-Discovery\Documentation\stm32f4discovery_sch.zip</Path>
         </Book>
         <Book>
           <Number>9</Number>
@@ -157,7 +157,7 @@
         <tRSysVw>1</tRSysVw>
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
-        <nTsel>11</nTsel>
+        <nTsel>5</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -202,7 +202,40 @@
           <Name>-O207 -S0 -C0 -FO7  -FN1 -FC1000 -FD20000000 -FF0STM32F4xx_1024 -FL0100000 -FS08000000 -FP0($$Device:STM32F407VG$CMSIS\Flash\STM32F4xx_1024.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>10</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134219570</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>.\utils.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\ADC_LEDs\utils.c\10</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>9</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134219552</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>.\utils.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\ADC_LEDs\utils.c\9</Expression>
+        </Bp>
+      </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -277,18 +310,6 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\ADC_LEDs.c</PathWithFileName>
-      <FilenameWithoutPath>ADC_LEDs.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>1</GroupNumber>
-      <FileNumber>2</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
       <PathWithFileName>.\serial.c</PathWithFileName>
       <FilenameWithoutPath>serial.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -296,7 +317,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>3</FileNumber>
+      <FileNumber>2</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -308,7 +329,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>4</FileNumber>
+      <FileNumber>3</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -320,7 +341,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>5</FileNumber>
+      <FileNumber>4</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -332,7 +353,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>6</FileNumber>
+      <FileNumber>5</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -344,7 +365,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>7</FileNumber>
+      <FileNumber>6</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -356,7 +377,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>8</FileNumber>
+      <FileNumber>7</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -368,7 +389,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>9</FileNumber>
+      <FileNumber>8</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -380,7 +401,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>10</FileNumber>
+      <FileNumber>9</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -392,7 +413,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>11</FileNumber>
+      <FileNumber>10</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -404,7 +425,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>12</FileNumber>
+      <FileNumber>11</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -416,7 +437,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>13</FileNumber>
+      <FileNumber>12</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -428,7 +449,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>14</FileNumber>
+      <FileNumber>13</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -440,19 +461,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>15</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>.\BTN.c</PathWithFileName>
-      <FilenameWithoutPath>BTN.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>1</GroupNumber>
-      <FileNumber>16</FileNumber>
+      <FileNumber>14</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -464,7 +473,7 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>17</FileNumber>
+      <FileNumber>15</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -476,13 +485,25 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>18</FileNumber>
+      <FileNumber>16</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>.\switches.c</PathWithFileName>
       <FilenameWithoutPath>switches.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>1</GroupNumber>
+      <FileNumber>17</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\DMM.c</PathWithFileName>
+      <FilenameWithoutPath>DMM.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
