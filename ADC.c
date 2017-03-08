@@ -85,10 +85,10 @@ void autoRange(uint16_t adc1_raw){
 		static uint8_t ADC1_prevRange;
 	
 		//If RAW value greater than max value it can return - switch tolerance, probably time to change range (unless we maxed on range)
-		if(((adc1_raw  > UINT16_MAX - SWITCHING_RANGE_TOLERANCE)||(adc1_raw  < SWITCHING_RANGE_TOLERANCE))&&(ADC1_currentRange != 0)){
+		if(((adc1_raw  > ADC_VALUE_3V - SWITCHING_RANGE_TOLERANCE)||(adc1_raw  < SWITCHING_RANGE_TOLERANCE))&&(ADC1_currentRange != 0)){
 				ADC1_currentRange--;	
 				rangeSwitch = true;
-			} else if((adc1_raw  < UINT16_MAX*0.55)&&(adc1_raw  > UINT16_MAX*0.45)&&(ADC1_currentRange != 3)){//If we're close (and not at lowest range)
+			} else if((adc1_raw  < ADC_VALUE_3V*0.55)&&(adc1_raw  > ADC_VALUE_3V*0.45)&&(ADC1_currentRange != 3)){//If we're close (and not at lowest range)
 			ADC1_currentRange++;
 			rangeSwitch = true;
 		}

@@ -11,6 +11,7 @@
 #include "LED.h"
 #include "ADC.h"
 #include "misc.h"
+#include "math.h"
 //Made with Love (by us)
 #include "serial.h"
 #include "packet.h"
@@ -23,7 +24,7 @@
 #define BUFFER_SIZE 128
 #define DEBUG 1
 bool BluetoothMode = false;
-void menu(uint8_t);
+void menu(uint8_t,double);
 //Global variables
 
 
@@ -55,7 +56,7 @@ int main (void) {
 		double ADC1_valueScaled = read_ADC1();
 		//Send packet to Multimeter App containing multimeter value and range
 		//sendPacket(1, ADC1_valueScaled, ADC1_currentRange);
-		menu(menuPosition);
+		menu(menuPosition,ADC1_valueScaled);
 		//Pull commands out of the App buffer
 		//lcd_write_string(DequeueString(debugQueue), 0, 0);
 
@@ -65,18 +66,20 @@ int main (void) {
 	
 }
 
-void menu(uint8_t menuPosition){
+void menu(uint8_t menuPosition,double scaledInput){
 	static uint8_t prev_menuPosition;
 	lcd_clear_display();
 	//detecting if menu selection has changed
 	if(menuPosition != prev_menuPosition){
 		prev_menuPosition = menuPosition;
 	}
-	
+	double current =0;
+	double resistance = 0;
 	char lcd_line1[16] ="ERROR";
+	char lcd_line2[16] ="ERROR";
 	switch(menuPosition){
 		case 1: //voltage
-			
+			sprintf(lcd_line2,"%lf",scaledInput);
 			switch(ADC1_currentRange){
 				case 0:
 					sprintf(lcd_line1,"Volt:0->10V");
@@ -96,6 +99,8 @@ void menu(uint8_t menuPosition){
 			}
 			break;
 		case 2://current
+			current = scaledInput/10;
+			sprintf(lcd_line2,"%lf",current);
 			switch(ADC1_currentRange){
 				case 0:
 					sprintf(lcd_line1,"Amp:-1->1A");
@@ -115,18 +120,20 @@ void menu(uint8_t menuPosition){
 			}
 			break;
 		case 3://resistance
+			resistance = fabs(scaledInput)/0.000010;
+			sprintf(lcd_line2,"%lf",resistance);
 			switch(ADC1_currentRange){
 				case 0:
-					sprintf(lcd_line1,"Amp:0->10M Ohm");
+					sprintf(lcd_line1,"Res:0->1M Ohm");
 					break;
 				case 1:
-					sprintf(lcd_line1,"Amp:0->1M Ohm");
+					sprintf(lcd_line1,"Res:0->100k Ohm");
 					break;
 				case 2:
-					sprintf(lcd_line1,"Amp:0->100k Ohm");
+					sprintf(lcd_line1,"Res:0->10k Ohm");
 					break;
 				case 3:
-					sprintf(lcd_line1,"Amp:0->10k Ohm");
+					sprintf(lcd_line1,"Res:0->1k Ohm");
 					break;
 				default://invalid range
 					ADC1_currentRange =0;
@@ -147,6 +154,7 @@ void menu(uint8_t menuPosition){
 			break;
 	}
 	lcd_write_string(lcd_line1, 0, 0);
+	lcd_write_string(lcd_line2, 1, 0);
 }
 
 
