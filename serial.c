@@ -1,5 +1,5 @@
 #include "serial.h"
-
+#include "switches.h"
 
 //-------- INTERRUPT GLOBALS ----------
 Queue *bluetoothQueue, *debugQueue;
@@ -167,16 +167,16 @@ void USART3_IRQHandler(void) {
     }
 
     if (isPacket) {
-      debugBuf[jB] = iB;
+      bluetoothBuf[jB] = iB;
       jB++; //Bump the write index for next write
 
 			//If end of packet, enqueue the buffer
       if (iB == '>') {
         isPacket = false;
         jB = 0;
-				
-				//Check bluetooth is alive
-				if(strcmp(bluetoothBuf,"<Init>")) BluetoothMode = true;
+				if(strcmp(bluetoothBuf,"<m:1>") == 0) menuPosition = 1;
+				if(strcmp(bluetoothBuf,"<m:2>") == 0) menuPosition = 2;
+				if(strcmp(bluetoothBuf,"<m:3>") == 0) menuPosition = 3;
 				EnqueueString(bluetoothQueue, bluetoothBuf);
       }
     }

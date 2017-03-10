@@ -8,6 +8,7 @@ void switch_init(){
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 	
 		GPIO_InitTypeDef GPIO_InitStruct;
+		GPIO_InitTypeDef GPIOB_InitStruct;
     EXTI_InitTypeDef EXTI_InitStruct;
     NVIC_InitTypeDef NVIC_InitStruct;
     
@@ -19,7 +20,16 @@ void switch_init(){
     GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;   	//As push / pull 
     GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_DOWN;   	//With a pulldown resistor, as detecting a high level
     GPIO_Init(GPIOE, &GPIO_InitStruct);             
-
+		
+		//initialise GPIOB, for switching between different circuits
+		GPIOB_InitStruct.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_15;
+		GPIOB_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+		GPIOB_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;	//Polled at 2Mhz (Humans aren't quite fast enough to justify more)
+    GPIOB_InitStruct.GPIO_OType = GPIO_OType_PP;   	//As push / pull 
+    GPIOB_InitStruct.GPIO_PuPd = GPIO_PuPd_DOWN;   	//With a pulldown resistor, as detecting a high level
+    GPIO_Init(GPIOB, &GPIOB_InitStruct);   
+	
+	
     /* Tell system that you will use PDE8-15 to trigger interrupts */
 		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource8);
 		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource9);

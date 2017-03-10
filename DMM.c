@@ -55,6 +55,7 @@ int main (void) {
 		//Read Averaged and ranged ADC1 value
 		double ADC1_valueScaled = read_ADC1();
 		//Send packet to Multimeter App containing multimeter value and range
+		
 		//sendPacket(1, ADC1_valueScaled, ADC1_currentRange);
 		menu(menuPosition,ADC1_valueScaled);
 		//Pull commands out of the App buffer
@@ -67,6 +68,13 @@ int main (void) {
 }
 
 void menu(uint8_t menuPosition,double scaledInput){
+	//Bluetooth Override of Buttons
+	char *bluetoothSwitchPacket = DequeueString(bluetoothQueue);
+	
+//	if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) menuPosition = 1;
+//	if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) menuPosition = 2;
+//	if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) menuPosition = 3;
+
 	static uint8_t prev_menuPosition;
 	lcd_clear_display();
 	//detecting if menu selection has changed
@@ -97,6 +105,7 @@ void menu(uint8_t menuPosition,double scaledInput){
 					ADC1_currentRange =0;
 					break;
 			}
+			sendPacket(1, scaledInput, ADC1_currentRange);
 			break;
 		case 2://current
 			current = scaledInput/10;
@@ -117,7 +126,9 @@ void menu(uint8_t menuPosition,double scaledInput){
 				default://Invalid range
 					ADC1_currentRange =0;
 					break;
+				
 			}
+			sendPacket(2, current, ADC1_currentRange);
 			break;
 		case 3://resistance
 			resistance = fabs(scaledInput)/0.000010;
@@ -139,6 +150,7 @@ void menu(uint8_t menuPosition,double scaledInput){
 					ADC1_currentRange =0;
 					break;
 			}
+			sendPacket(3, resistance, ADC1_currentRange);
 			break;
 		case 4://attempt bluetooth
 			break;

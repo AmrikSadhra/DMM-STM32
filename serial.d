@@ -47,3 +47,4 @@
 .\serial.o: lcd_buffer.h
 .\serial.o: lcd_driver.h
 .\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
+.\serial.o: switches.h
