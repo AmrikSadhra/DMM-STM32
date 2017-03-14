@@ -19,5 +19,4 @@ double read_ADC1 (void);
 /* function to set ADC to cont */
 unsigned int read_cont_ADC1 (void);
 void set_cont_ADC1(void);	
-
 #endif /*_ADC_H_*/

@@ -20,6 +20,7 @@
 #include "switches.h"
 //Stolen
 #include "sig_gen.h"
+#include "dac.h"
 
 #define BUFFER_SIZE 128
 #define DEBUG 1
@@ -30,11 +31,11 @@ void menu(uint8_t,double);
 
 /* Function to intiialise all used peripherals    */
 void initialise_Peripherals(void){ 
-	ADC1_init();
-	lcd_init(LCD_LINES_TWO, LCD_CURSOR_OFF, LCD_CBLINK_OFF, BUFFER_SIZE);
-	serial_init(9600);
-	bluetooth_init(9600);
-	switch_init();
+			ADC1_init();
+			lcd_init(LCD_LINES_TWO, LCD_CURSOR_OFF, LCD_CBLINK_OFF, BUFFER_SIZE);
+			serial_init(9600);
+			bluetooth_init(9600);
+			switch_init();
 }
 
 /*----------------------------------------------------------------------------
@@ -46,22 +47,24 @@ int main (void) {
     while (1);                                  /* Capture error              */
   }
 	
-	initialise_Peripherals();
-	
-	lcd_clear_display();
+		initialise_Peripherals();
+
+ 	lcd_clear_display();
 	lcd_write_string("Multimeter Starting..", 0, 0);
 	
-  while(1) {                                    /* Loop forever               */
-		//Read Averaged and ranged ADC1 value
+	dac_initialise();
+  
+	while(1) {                                    /* Loop forever               */
+//		//Read Averaged and ranged ADC1 value
 		double ADC1_valueScaled = read_ADC1();
-		//Send packet to Multimeter App containing multimeter value and range
-		
-		//sendPacket(1, ADC1_valueScaled, ADC1_currentRange);
+//		//Send packet to Multimeter App containing multimeter value and range
+//		
+//		//sendPacket(1, ADC1_valueScaled, ADC1_currentRange);
 		menu(menuPosition,ADC1_valueScaled);
-		//Pull commands out of the App buffer
-		//lcd_write_string(DequeueString(debugQueue), 0, 0);
+//		//Pull commands out of the App buffer
+//		//lcd_write_string(DequeueString(debugQueue), 0, 0);
 
-		//Blit to LED's
+//		//Blit to LED's
 		Delay(100.0);
   }
 	

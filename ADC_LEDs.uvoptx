@@ -202,7 +202,24 @@
           <Name>-O207 -S0 -C0 -FO7  -FN1 -FC1000 -FD20000000 -FF0STM32F4xx_1024 -FL0100000 -FS08000000 -FP0($$Device:STM32F407VG$CMSIS\Flash\STM32F4xx_1024.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>72</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134230790</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>.\DMM.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\ADC_LEDs\DMM.c\72</Expression>
+        </Bp>
+      </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -218,6 +235,16 @@
           <count>2</count>
           <WinNumber>1</WinNumber>
           <ItemText>temp2</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>bluetoothBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>bluetoothSwitchPacket</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
@@ -466,7 +493,7 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>17</FileNumber>
       <FileType>1</FileType>
-      <tvExp>1</tvExp>
+      <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>.\DMM.c</PathWithFileName>
