@@ -1,15 +1,16 @@
 #include "ADC.h"
+#include <stm32f4xx_adc.h>
 
-double calibrationValue = 0.0f;
+uint16_t calibrationValue = 0;
 bool isInitialised = false;
 uint8_t ADC1_currentRange = 0;
-
+void calibrate_ADC1(uint16_t *calibrationValue);
 void autorange_init(){
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 
   GPIO_InitTypeDef GPIO_InitStruct;
 
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
@@ -28,8 +29,8 @@ void ADC1_init(void) {
 	}
 	
 	//Set registers to bring up ADC1 in correct mode
-	RCC->APB2ENR  |= ((1UL <<  8) );         /* Enable ADC1 clock                */
-	RCC->AHB1ENR  |= ((1UL <<  2) );         /* Enable GPIOC clock                */
+	RCC->APB2ENR  |= ((1UL <<  8) );         /* Enable ADC1 clock  */
+	RCC->AHB1ENR  |= ((1UL <<  2) );         /* Enable GPIOC clock */
 	GPIOC->MODER = 0xffffffff;
 	GPIOC->PUPDR = 0;
 	ADC1->CR1 = 0x00;
@@ -45,11 +46,9 @@ void ADC1_init(void) {
 	ADC1->CR2 |= (1UL << 0);
 	
 	autorange_init();
+	
+	calibrate_ADC1(&calibrationValue);
 }
-
-
-
-
 
 //Function to read ADC and return raw value
 uint16_t read_ADC1_raw (void) {
@@ -64,12 +63,34 @@ uint16_t read_ADC1_raw (void) {
 	return ((ADC1->DR << 4) & 0xFF00);
 }
 
+void calibrate_ADC1(uint16_t *calibrationValue){
+	//Connect read stage to Ground to calibrate ADC
+	stageAlpha(0);
+	//Connect mode switching stage to Voltage
+	stageBeta(0);
+	//Set Gain to 1
+	stageGamma(0);
+	
+	uint32_t runningTotal = 0;
+	
+	for(int i = 0; i < NUM_CAL_SAMPLES; i++){
+		runningTotal = read_ADC1_raw();
+	}
+
+	*calibrationValue = (uint16_t) runningTotal/5;
+	
+	//Connect read stage to voltage input, calibration over
+	stageAlpha(1);
+}
+
+
 //Read ADC numSamples times to produce average
 double runningAverage(uint8_t numSamples){
 		uint32_t adc_raw = 0;
 
+		//TODO: Not efficient to do the subtraction here but cba with typecasting atm
 		for(int i=0;i<numSamples;i++){
-			adc_raw += read_ADC1_raw();
+			adc_raw += read_ADC1_raw() - calibrationValue;
 		}
 		
 		double temp2 = (double)adc_raw;
@@ -168,3 +189,21 @@ unsigned int read_cont_ADC1 (void) {
 	return ADC1->DR;
 }
 
+//void ADC2_init(){
+//	ADC_InitTypeDef  ADC_InitStructure;
+
+//  /* Enable ADC1 clock so that we can talk to it */
+//  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC2, ENABLE);
+//	
+//	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;             // Configures the ADC resolution to 12 bits                                 
+//  ADC_InitStructure.FunctionalState ADC_ScanConvMode = ENABLE;       /*!< Specifies whether the conversion is performed in Scan (multichannels) or Single (one channel) mode.*/ 
+//  ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; 
+//  ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;      /*!< Select the external trigger edge and enable the trigger of a regular group. */
+//  ADC_InitStructure.ADC_ExternalTrigConv = ADC_externalTrig;          /*!< Select the external event used to trigger  the start of conversion of a regular group. This parameter can be a value of 
+//                                               @ref ADC_extrenal_trigger_sources_for_regular_channels_conversion */
+//  ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Left;
+//  ADC_InitStructure.ADC_NbrOfConversion = 0x1; // This parameter must range from 1 to 16. */
+
+//  /* Now do the setup */
+//  ADC_Init(ADC1, &ADC_InitStructure);
+//}

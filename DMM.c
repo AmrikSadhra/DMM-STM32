@@ -26,8 +26,35 @@
 #define DEBUG 1
 bool BluetoothMode = false;
 void menu(uint8_t,double);
+
+//Stage Initialisation check booleans
+bool alphaInit = false;
+bool betaInit = false;
+bool gammaInit = false;
+
 //Global variables
 
+void mode_switch_init(){
+		//Initialisation of stage Alpha
+			RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+			GPIO_InitTypeDef GPIO_InitStruct2;
+			GPIO_InitStruct2.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+			GPIO_InitStruct2.GPIO_Mode = GPIO_Mode_OUT;
+			GPIO_InitStruct2.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_InitStruct2.GPIO_OType = GPIO_OType_PP;
+			GPIO_InitStruct2.GPIO_PuPd = GPIO_PuPd_UP;
+			GPIO_Init(GPIOB, &GPIO_InitStruct2);
+	
+			//Initialisation of Stage Beta
+			RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+			GPIO_InitTypeDef GPIO_InitStruct;
+			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 ;
+			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+			GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+			GPIO_Init(GPIOE, &GPIO_InitStruct);
+}
 
 /* Function to intiialise all used peripherals    */
 void initialise_Peripherals(void){ 
@@ -36,6 +63,83 @@ void initialise_Peripherals(void){
 			serial_init(9600);
 			bluetooth_init(9600);
 			switch_init();
+			mode_switch_init();
+	
+			
+			//Connect Read stage to Voltage
+			stageAlpha(1);
+}
+
+//has three stages: ground, voltage,capacitance
+void stageAlpha(int mode){	
+			if(!alphaInit){
+				mode_switch_init();
+				alphaInit = true;
+			}
+			//Clear Range switch bits
+			GPIOB->ODR &= ~(3UL << 4);
+			switch(mode){
+				case 0:
+					GPIOB->ODR &= ~(3UL << 4);
+					break;
+				case 1:
+					GPIOB->ODR |= (1UL << 4);//setting mode to voltage
+					break;
+				case 2:
+					GPIOB->ODR |= (2UL << 4);
+					break;
+				default:
+					break;
+			}
+}
+
+void stageBeta(int mode){
+	if(!betaInit){
+				mode_switch_init();
+				betaInit = true;
+			}
+	//Clear bits 
+	GPIOE->ODR &= ~(3UL << 5);
+	switch(mode){
+		case 0://Voltage
+			GPIOE->ODR &= ~(3UL << 5);
+			break;
+		case 1://Current
+			GPIOE->ODR |= (1UL << 5);
+			break;
+		case 2://RMS
+			GPIOE->ODR |= (2UL << 5);
+			break;
+		case 3://Resistance
+			GPIOE->ODR |= (3UL << 5);
+			break;
+		default:
+			break;
+	}
+}
+
+void stageGamma(int mode){
+	if(!gammaInit){
+				mode_switch_init();
+				gammaInit = true;
+			}
+	switch(mode){
+				case 0://10v in 
+					//Do nothing for Range 0 as pins already cleared
+					break;			
+				case 1://1v in 
+					//Range 1
+					GPIOE->ODR |= (1UL << 3);
+					break;
+				case 2://0.1v
+					//Range 2
+					GPIOE->ODR |= (2UL << 3);
+					break;
+				case 3://0.01v
+					//Range 3
+					GPIOE->ODR |= (3UL << 3);
+					break;
+			}
 }
 
 /*----------------------------------------------------------------------------
@@ -55,17 +159,14 @@ int main (void) {
 	dac_initialise();
   
 	while(1) {                                    /* Loop forever               */
-//		//Read Averaged and ranged ADC1 value
+		//Read Averaged and ranged ADC1 value
 		double ADC1_valueScaled = read_ADC1();
-//		//Send packet to Multimeter App containing multimeter value and range
-//		
-//		//sendPacket(1, ADC1_valueScaled, ADC1_currentRange);
-		menu(menuPosition,ADC1_valueScaled);
-//		//Pull commands out of the App buffer
-//		//lcd_write_string(DequeueString(debugQueue), 0, 0);
-
-//		//Blit to LED's
-		Delay(100.0);
+		//Send packet to Multimeter App containing multimeter value and range
+		//sendPacket(1, ADC1_valueScaled, ADC1_currentRange);
+		menu(menuPosition, ADC1_valueScaled);
+		//Pull commands out of the App buffer
+		//lcd_write_string(DequeueString(debugQueue), 0, 0);
+		
   }
 	
 }
@@ -90,19 +191,24 @@ void menu(uint8_t menuPosition,double scaledInput){
 	char lcd_line2[16] ="ERROR";
 	switch(menuPosition){
 		case 1: //voltage
-			sprintf(lcd_line2,"%lf",scaledInput);
+			stageBeta(0);
+			
 			switch(ADC1_currentRange){
 				case 0:
 					sprintf(lcd_line1,"Volt:0->10V");
+					sprintf(lcd_line2,"%lf V",scaledInput);
 					break;
 				case 1:
 					sprintf(lcd_line1,"Volt:0->1V");
+					sprintf(lcd_line2,"%lf V",scaledInput);
 					break;
 				case 2:
 					sprintf(lcd_line1,"Volt:0->100mV");
+					sprintf(lcd_line2,"%lf mV",scaledInput*10000);
 					break;
 				case 3:
 					sprintf(lcd_line1,"Volt:0->10mV");
+					sprintf(lcd_line2,"%lf mV",scaledInput*1000);
 					break;
 				default://Invalid range
 					ADC1_currentRange =0;
@@ -111,6 +217,7 @@ void menu(uint8_t menuPosition,double scaledInput){
 			sendPacket(1, scaledInput, ADC1_currentRange);
 			break;
 		case 2://current
+			stageBeta(1);
 			current = scaledInput/10;
 			sprintf(lcd_line2,"%lf",current);
 			switch(ADC1_currentRange){
@@ -134,6 +241,7 @@ void menu(uint8_t menuPosition,double scaledInput){
 			sendPacket(2, current, ADC1_currentRange);
 			break;
 		case 3://resistance
+			stageBeta(3);
 			resistance = fabs(scaledInput)/0.000010;
 			sprintf(lcd_line2,"%lf",resistance);
 			switch(ADC1_currentRange){

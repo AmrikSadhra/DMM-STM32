@@ -468,6 +468,26 @@
               <FileType>1</FileType>
               <FilePath>.\Menu.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f4xx_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>dac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\dac.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_dac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

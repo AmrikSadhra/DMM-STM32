@@ -17,6 +17,7 @@
 ".\switches.o"
 ".\dmm.o"
 ".\menu.o"
+".\stm32f4xx_adc.o"
 ".\dac.o"
 ".\stm32f4xx_dac.o"
 ".\stm32f4xx_dma.o"
