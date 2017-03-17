@@ -57,7 +57,7 @@ uint16_t read_ADC1_raw (void) {
 	
 	//Begin ADC1 read
 	ADC1->CR2 |= (1UL << 30)	;		/* set SWSTART to 1 to start conversion */
-	Delay(100);
+	Delay(10);
 	
 	//Return raw 32bit uint
 	return ((ADC1->DR << 4) & 0xFF00);
@@ -77,6 +77,7 @@ void calibrate_ADC1(uint16_t *calibrationValue){
 		runningTotal = read_ADC1_raw();
 	}
 
+	//TODO: Refactor
 	*calibrationValue = (uint16_t) runningTotal/5;
 	
 	//Connect read stage to voltage input, calibration over

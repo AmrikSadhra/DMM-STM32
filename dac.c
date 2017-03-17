@@ -1,5 +1,5 @@
 #include "dac.h"
-
+#include "utils.h"
 
 const uint16_t function[SINE_RES] = { 2048, 2145, 2242, 2339, 2435, 2530, 2624, 2717, 2808, 2897, 
                                       2984, 3069, 3151, 3230, 3307, 3381, 3451, 3518, 3581, 3640, 
@@ -15,13 +15,20 @@ const uint16_t function[SINE_RES] = { 2048, 2145, 2242, 2339, 2435, 2530, 2624, 
                                       577, 644, 714, 788, 865, 944, 1026, 1111, 1198, 1287, 
                                       1378, 1471, 1565, 1660, 1756, 1853, 1950, 2047 };           
 
+																			
+	
+																			
 static void TIM5_Config(void);
-static void DAC1_Config(void);           
-
+static void DAC1_Config(void);     
+uint32_t   OUT_FREQ = 5000;                                 // Output waveform frequency
+uint16_t   TIM_PERIOD = 0; // Autoreload reg value
+TIM_TimeBaseInitTypeDef TIM5_TimeBase;
+void frequencyResponse();
+																			
 int dac_initialise()
 {
   GPIO_InitTypeDef gpio_A;
- 
+	
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);                  
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
@@ -34,14 +41,13 @@ int dac_initialise()
   TIM5_Config();  
   DAC1_Config();
 	
+	frequencyResponse();
 }
 
 static void TIM5_Config(void)
 {
-  TIM_TimeBaseInitTypeDef TIM5_TimeBase;
-
+	TIM_PERIOD = ((CNT_FREQ)/((SINE_RES)*(OUT_FREQ)));
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
- 
   TIM_TimeBaseStructInit(&TIM5_TimeBase); 
   TIM5_TimeBase.TIM_Period        = (uint16_t)TIM_PERIOD;          
   TIM5_TimeBase.TIM_Prescaler     = 0;       
@@ -56,12 +62,13 @@ static void TIM5_Config(void)
 static void DAC1_Config(void)
 {
   DAC_InitTypeDef DAC_INIT;
-  DMA_InitTypeDef DMA_INIT;
+	DMA_InitTypeDef DMA_INIT;		
   
   DAC_INIT.DAC_Trigger        = DAC_Trigger_T5_TRGO;
   DAC_INIT.DAC_WaveGeneration = DAC_WaveGeneration_None;
   DAC_INIT.DAC_OutputBuffer   = DAC_OutputBuffer_Enable;
   DAC_Init(DAC_Channel_1, &DAC_INIT);
+
 
   DMA_DeInit(DMA1_Stream5);
   DMA_INIT.DMA_Channel            = DMA_Channel_7;  
@@ -85,4 +92,24 @@ static void DAC1_Config(void)
   DAC_Cmd(DAC_Channel_1, ENABLE);
   DAC_DMACmd(DAC_Channel_1, ENABLE);
 }
+
+void frequencyResponse(){
+		
+		for(int a= 0;a<OUT_FREQ;a++){
+			//Delay(100);
+			OUT_FREQ += 10;
+			TIM_PERIOD = ((CNT_FREQ)/((SINE_RES)*(OUT_FREQ)));
+			TIM_TimeBaseStructInit(&TIM5_TimeBase); 
+			TIM5_TimeBase.TIM_Period        = (uint16_t)TIM_PERIOD;          
+			TIM5_TimeBase.TIM_Prescaler     = 0;       
+			TIM5_TimeBase.TIM_ClockDivision = 0;    
+			TIM5_TimeBase.TIM_CounterMode   = TIM_CounterMode_Up;  
+			TIM_TimeBaseInit(TIM5, &TIM5_TimeBase);
+			TIM_SelectOutputTrigger(TIM5, TIM_TRGOSource_Update);
+			Delay(10);
+		}
+		
+		
+}
+
 

@@ -204,7 +204,7 @@ void menu(uint8_t menuPosition,double scaledInput){
 					break;
 				case 2:
 					sprintf(lcd_line1,"Volt:0->100mV");
-					sprintf(lcd_line2,"%lf mV",scaledInput*10000);
+					sprintf(lcd_line2,"%lf mV",scaledInput*1000);
 					break;
 				case 3:
 					sprintf(lcd_line1,"Volt:0->10mV");
@@ -219,19 +219,22 @@ void menu(uint8_t menuPosition,double scaledInput){
 		case 2://current
 			stageBeta(1);
 			current = scaledInput/10;
-			sprintf(lcd_line2,"%lf",current);
 			switch(ADC1_currentRange){
 				case 0:
 					sprintf(lcd_line1,"Amp:-1->1A");
+					sprintf(lcd_line2,"%lf A",current);
 					break;
 				case 1:
 					sprintf(lcd_line1,"Amp:-100m->100mA");
+					sprintf(lcd_line2,"%lf A",current);
 					break;
 				case 2:
-					sprintf(lcd_line1,"Amp:-10m->10mV");
+					sprintf(lcd_line1,"Amp:-10m->10mA");
+					sprintf(lcd_line2,"%lf mA",current*1000);
 					break;
 				case 3:
-					sprintf(lcd_line1,"Amp:-1m->1mV");
+					sprintf(lcd_line1,"Amp:-1m->1mA");
+					sprintf(lcd_line2,"%lf mA",current*1000);
 					break;
 				default://Invalid range
 					ADC1_currentRange =0;
