@@ -161,17 +161,12 @@ int main (void) {
 	while(1) {                                    /* Loop forever               */
 		//Read Averaged and ranged ADC1 value
 		double ADC1_valueScaled = read_ADC1();
-		//Send packet to Multimeter App containing multimeter value and range
-		//sendPacket(1, ADC1_valueScaled, ADC1_currentRange);
 		menu(menuPosition, ADC1_valueScaled);
-		//Pull commands out of the App buffer
-		//lcd_write_string(DequeueString(debugQueue), 0, 0);
-		
   }
 	
 }
 
-void menu(uint8_t menuPosition,double scaledInput){
+void menu(uint8_t menuPosition, double scaledInput){
 	//Bluetooth Override of Buttons
 	char *bluetoothSwitchPacket = DequeueString(bluetoothQueue);
 	
@@ -185,6 +180,7 @@ void menu(uint8_t menuPosition,double scaledInput){
 	if(menuPosition != prev_menuPosition){
 		prev_menuPosition = menuPosition;
 	}
+	
 	double current =0;
 	double resistance = 0;
 	char lcd_line1[16] ="ERROR";

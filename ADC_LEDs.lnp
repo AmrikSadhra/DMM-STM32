@@ -8,6 +8,7 @@
 ".\misc.o"
 ".\stm32f4xx_rcc.o"
 ".\stm32f4xx_usart.o"
+".\sig_gen.o"
 ".\stm32f4xx_tim.o"
 ".\queue.o"
 ".\packet.o"

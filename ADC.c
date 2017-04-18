@@ -5,6 +5,7 @@ uint16_t calibrationValue = 0;
 bool isInitialised = false;
 uint8_t ADC1_currentRange = 0;
 void calibrate_ADC1(uint16_t *calibrationValue);
+
 void autorange_init(){
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 
@@ -189,22 +190,3 @@ unsigned int read_cont_ADC1 (void) {
 	while(!((ADC1->CR2 & (1 << 10))));
 	return ADC1->DR;
 }
-
-//void ADC2_init(){
-//	ADC_InitTypeDef  ADC_InitStructure;
-
-//  /* Enable ADC1 clock so that we can talk to it */
-//  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC2, ENABLE);
-//	
-//	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;             // Configures the ADC resolution to 12 bits                                 
-//  ADC_InitStructure.FunctionalState ADC_ScanConvMode = ENABLE;       /*!< Specifies whether the conversion is performed in Scan (multichannels) or Single (one channel) mode.*/ 
-//  ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; 
-//  ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;      /*!< Select the external trigger edge and enable the trigger of a regular group. */
-//  ADC_InitStructure.ADC_ExternalTrigConv = ADC_externalTrig;          /*!< Select the external event used to trigger  the start of conversion of a regular group. This parameter can be a value of 
-//                                               @ref ADC_extrenal_trigger_sources_for_regular_channels_conversion */
-//  ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Left;
-//  ADC_InitStructure.ADC_NbrOfConversion = 0x1; // This parameter must range from 1 to 16. */
-
-//  /* Now do the setup */
-//  ADC_Init(ADC1, &ADC_InitStructure);
-//}
