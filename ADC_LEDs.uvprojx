@@ -381,31 +381,7 @@
           <GroupName>HAL</GroupName>
           <Files>
             <File>
-<<<<<<< HEAD
               <FileName>stm32f4xx_gpio.c</FileName>
-||||||| merged common ancestors
-              <FileName>serial.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\serial.c</FilePath>
-            </File>
-            <File>
-              <FileName>utils.c</FileName>
-=======
-<<<<<<< Updated upstream
-=======
-              <FileName>DMM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\DMM.c</FilePath>
-            </File>
-            <File>
->>>>>>> Stashed changes
-              <FileName>serial.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\serial.c</FilePath>
-            </File>
-            <File>
-              <FileName>utils.c</FileName>
->>>>>>> 0ab2dce786bc5d72cb23823333744bb3254ef5c4
               <FileType>1</FileType>
               <FilePath>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c</FilePath>
             </File>
