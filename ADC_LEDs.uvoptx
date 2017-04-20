@@ -287,8 +287,31 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+<<<<<<< HEAD
       <PathWithFileName>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c</PathWithFileName>
       <FilenameWithoutPath>stm32f4xx_gpio.c</FilenameWithoutPath>
+||||||| merged common ancestors
+      <PathWithFileName>.\serial.c</PathWithFileName>
+      <FilenameWithoutPath>serial.c</FilenameWithoutPath>
+=======
+<<<<<<< Updated upstream
+=======
+      <PathWithFileName>.\DMM.c</PathWithFileName>
+      <FilenameWithoutPath>DMM.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>1</GroupNumber>
+      <FileNumber>2</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+>>>>>>> Stashed changes
+      <PathWithFileName>.\serial.c</PathWithFileName>
+      <FilenameWithoutPath>serial.c</FilenameWithoutPath>
+>>>>>>> 0ab2dce786bc5d72cb23823333744bb3254ef5c4
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -395,8 +418,34 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+<<<<<<< HEAD
       <PathWithFileName>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma.c</PathWithFileName>
       <FilenameWithoutPath>stm32f4xx_dma.c</FilenameWithoutPath>
+||||||| merged common ancestors
+      <PathWithFileName>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_tim.c</PathWithFileName>
+      <FilenameWithoutPath>stm32f4xx_tim.c</FilenameWithoutPath>
+=======
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+      <PathWithFileName>.\sig_gen.c</PathWithFileName>
+      <FilenameWithoutPath>sig_gen.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>1</GroupNumber>
+      <FileNumber>11</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
+      <PathWithFileName>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_tim.c</PathWithFileName>
+      <FilenameWithoutPath>stm32f4xx_tim.c</FilenameWithoutPath>
+>>>>>>> 0ab2dce786bc5d72cb23823333744bb3254ef5c4
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -433,8 +482,19 @@
       <bShared>0</bShared>
     </File>
     <File>
+<<<<<<< HEAD
       <GroupNumber>2</GroupNumber>
+||||||| merged common ancestors
+      <GroupNumber>1</GroupNumber>
+=======
+      <GroupNumber>1</GroupNumber>
+<<<<<<< Updated upstream
+>>>>>>> 0ab2dce786bc5d72cb23823333744bb3254ef5c4
       <FileNumber>13</FileNumber>
+=======
+      <FileNumber>14</FileNumber>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -457,8 +517,20 @@
       <bShared>0</bShared>
     </File>
     <File>
+<<<<<<< HEAD
       <GroupNumber>2</GroupNumber>
+||||||| merged common ancestors
+      <GroupNumber>1</GroupNumber>
+=======
+      <GroupNumber>1</GroupNumber>
+<<<<<<< Updated upstream
+>>>>>>> 0ab2dce786bc5d72cb23823333744bb3254ef5c4
       <FileNumber>15</FileNumber>
+=======
+      <FileNumber>16</FileNumber>
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -469,8 +541,18 @@
       <bShared>0</bShared>
     </File>
     <File>
+<<<<<<< HEAD
       <GroupNumber>2</GroupNumber>
+||||||| merged common ancestors
+      <GroupNumber>1</GroupNumber>
+=======
+      <GroupNumber>1</GroupNumber>
+<<<<<<< Updated upstream
+>>>>>>> 0ab2dce786bc5d72cb23823333744bb3254ef5c4
       <FileNumber>16</FileNumber>
+=======
+      <FileNumber>15</FileNumber>
+>>>>>>> Stashed changes
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -481,8 +563,18 @@
       <bShared>0</bShared>
     </File>
     <File>
+<<<<<<< HEAD
       <GroupNumber>2</GroupNumber>
+||||||| merged common ancestors
+      <GroupNumber>1</GroupNumber>
+=======
+      <GroupNumber>1</GroupNumber>
+<<<<<<< Updated upstream
+>>>>>>> 0ab2dce786bc5d72cb23823333744bb3254ef5c4
       <FileNumber>17</FileNumber>
+=======
+      <FileNumber>16</FileNumber>
+>>>>>>> Stashed changes
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>

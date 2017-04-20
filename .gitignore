@@ -1,3 +1,16 @@
+<<<<<<< HEAD
 
 *.o
 *.crf
+||||||| merged common ancestors
+
+*.o
+*.crf
+=======
+
+*.o
+*.crf
+*.d
+
+*.__i
+>>>>>>> 0ab2dce786bc5d72cb23823333744bb3254ef5c4
