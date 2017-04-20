@@ -54,6 +54,7 @@ void mode_switch_init(){
 			GPIO_Init(GPIOE, &GPIO_InitStruct);
 }
 
+
 /* Function to intiialise all used peripherals    */
 void initialise_Peripherals(void){ 
 			ADC1_init();

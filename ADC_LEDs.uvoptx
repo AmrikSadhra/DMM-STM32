@@ -320,6 +320,21 @@
       <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+<<<<<<< Updated upstream
+=======
+      <PathWithFileName>.\DMM.c</PathWithFileName>
+      <FilenameWithoutPath>DMM.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>1</GroupNumber>
+      <FileNumber>2</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+>>>>>>> Stashed changes
       <PathWithFileName>.\serial.c</PathWithFileName>
       <FilenameWithoutPath>serial.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -428,6 +443,24 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+      <PathWithFileName>.\sig_gen.c</PathWithFileName>
+      <FilenameWithoutPath>sig_gen.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>1</GroupNumber>
+      <FileNumber>11</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       <PathWithFileName>.\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_tim.c</PathWithFileName>
       <FilenameWithoutPath>stm32f4xx_tim.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -459,7 +492,12 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
+<<<<<<< Updated upstream
       <FileNumber>13</FileNumber>
+=======
+      <FileNumber>14</FileNumber>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -483,7 +521,13 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
+<<<<<<< Updated upstream
       <FileNumber>15</FileNumber>
+=======
+      <FileNumber>16</FileNumber>
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -495,7 +539,11 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
+<<<<<<< Updated upstream
       <FileNumber>16</FileNumber>
+=======
+      <FileNumber>15</FileNumber>
+>>>>>>> Stashed changes
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -507,7 +555,11 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
+<<<<<<< Updated upstream
       <FileNumber>17</FileNumber>
+=======
+      <FileNumber>16</FileNumber>
+>>>>>>> Stashed changes
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>

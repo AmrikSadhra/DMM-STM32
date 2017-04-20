@@ -379,6 +379,14 @@
           <GroupName>Source Files</GroupName>
           <Files>
             <File>
+<<<<<<< Updated upstream
+=======
+              <FileName>DMM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DMM.c</FilePath>
+            </File>
+            <File>
+>>>>>>> Stashed changes
               <FileName>serial.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\serial.c</FilePath>
