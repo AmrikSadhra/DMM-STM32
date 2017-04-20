@@ -3,16 +3,19 @@
  *------------------------------------------------------*/
 #include "DMM.h"
 
+//Configuration file
+#include "dmm_config.h"
+
 //Provided Libraries
 #include <stdio.h>
 #include "STM32F4xx.h"
 #include "lcd_buffer.h"
 #include "lcd_driver.h"
 #include "LED.h"
-#include "ADC.h"
 #include "misc.h"
 #include "math.h"
 //Made with Love (by us)
+#include "adc.h"
 #include "serial.h"
 #include "packet.h"
 #include "utils.h"
@@ -20,9 +23,12 @@
 #include "switches.h"
 #include "dac.h"
 
+/*--------- Internal Functions (Prototypes) ----------*/
+void frequencyResponseMenu(int sweepStart, int sweepEnd, int sweepResolution);
+void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sigGenType);
+
 #define BUFFER_SIZE 128
-#define DEBUG 1
-bool BluetoothMode = false;
+
 void menu(double);
 
 //Stage Initialisation check booleans
@@ -33,7 +39,7 @@ bool gammaInit = false;
 //Global variables
 
 void mode_switch_init(){
-		//Initialisation of stage Alpha
+			//Initialisation of stage Alpha
 			RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 			GPIO_InitTypeDef GPIO_InitStruct2;
 			GPIO_InitStruct2.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
@@ -56,7 +62,6 @@ void mode_switch_init(){
 
 /* Function to intiialise all used peripherals    */
 void initialise_Peripherals(void){ 
-			ADC1_init();
 			lcd_init(LCD_LINES_TWO, LCD_CURSOR_OFF, LCD_CBLINK_OFF, BUFFER_SIZE);
 			serial_init(9600);
 			bluetooth_init(9600);
@@ -170,8 +175,8 @@ int main (void) {
 	
 		initialise_Peripherals();
 
- 	lcd_clear_display();
-	lcd_write_string("Multimeter Starting..", 0, 0);
+		lcd_clear_display();
+		lcd_write_string("Multimeter Starting..", 0, 0);
   
 	while(1) {                                    /* Loop forever               */
 		//Read Averaged and ranged ADC1 value
@@ -184,32 +189,75 @@ int main (void) {
 void menu(double scaledInput){
 	//Bluetooth Override of Buttons
 	char *bluetoothSwitchPacket = DequeueString(bluetoothQueue);
+
+	static int menuPositionBluetooth;
 	
-//				if(strcmp(bluetoothBuf,"<m:1>") == 0) menuPosition = 1;
-//				if(strcmp(bluetoothBuf,"<m:2>") == 0) menuPosition = 2;
-//				if(strcmp(bluetoothBuf,"<m:3>") == 0) menuPosition = 3;
+	static int prevMenuPosition;
 	
-	static int menuPositionLocal;
+	//Frequency Sweep Parameters
+	uint32_t sweepStart = 0, sweepEnd = 0, sweepResolution = 0;
 	
-	if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) menuPositionLocal = 1;
-	if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) menuPositionLocal = 2;
-	if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) menuPositionLocal = 3;
+	//Signal Generation Parameters
+	uint32_t genFrequency = 0;
+	float genAmplitude = 0;
+	uint8_t sigGenType;
 	
-	printf("%s\n", bluetoothSwitchPacket);
+
+	//Query the Bluetooth Data to identify mode switches
+	if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) menuPositionBluetooth = 1;
+	if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) menuPositionBluetooth = 2;
+	if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) menuPositionBluetooth = 3;
+	if(strcmp(bluetoothSwitchPacket,"<m:4") == 0){ 
+		menuPositionBluetooth = 4;
+		//Parse frequency sweep data from packet
+		int n = sscanf(bluetoothSwitchPacket, "<m:4;start:%d;end:%d;steps:%d>", &sweepStart, &sweepEnd, &sweepResolution);
+		#ifdef DMM_DEBUG
+			if(n != 3) printf("[Android Client] Failed to parse Frequency data from Client Frequency Response request!"); //If not parsed 3 items from string
+		#endif
+	}
+		if(strcmp(bluetoothSwitchPacket,"<m:5") == 0){ 
+		menuPositionBluetooth = 5;
+			
+			char *genType; //Temporary variable with which to parse signal type to int
+			//TODO: Will sscanf work with char buffer? Get Jonathan to refactor to send ints and document which int corresponds to which Wave (dac.h defines)
+			//Parse signal generation data from packet
+			int n = sscanf(bluetoothSwitchPacket, "<m:5;freq:%d;ampl:%f;type:%s>", &genFrequency, &genAmplitude, genType);
+			
+			//Convert Strings to Wave integers to reduce processing overhead for Strings
+			if(strcmp(genType,"sinusoidal") == 0){
+				sigGenType = SINE_TYPE;
+			} else if(strcmp(genType,"square") == 0){
+				sigGenType = SQUARE_TYPE;
+			} else if(strcmp(genType,"triangle") == 0){
+				sigGenType = SAW_TYPE;
+			} 
+			
+			#ifdef DMM_DEBUG
+				if(n != 3) printf("[Android Client] Failed to parse data from Client Signal generation request!"); //If not parsed 3 items from string
+			#endif
+	}
 	
-	static uint8_t prev_menuPosition;
+	
+	//Clear display in advance of menu update
 	lcd_clear_display();
 	
-	//detecting if menu selection has changed
-	if(menuPosition != prev_menuPosition){
-		prev_menuPosition = menuPosition;
+	//Update menu position to Bluetooth Value
+	if(menuPosition !=  menuPositionBluetooth){
+		menuPosition = menuPositionBluetooth;
+	}
+	
+	//Detect menu position change
+	if(prevMenuPosition !=  menuPosition){
+		if(prevMenuPosition == 4){
+			freeGeneratedSignal(true); //Clear memory used by Signal generation, Stop DMA operation
+		}
 	}
 	
 	double current =0;
 	double resistance = 0;
 	char lcd_line1[16] ="ERROR";
 	char lcd_line2[16] ="ERROR";
-	switch(menuPositionLocal){
+	switch(menuPosition){
 		case 0: //voltage
 			stageBeta(0);
 			sendPacket(1, scaledInput, ADC1_currentRange);
@@ -288,24 +336,15 @@ void menu(double scaledInput){
 			}
 			sendPacket(3, resistance, ADC1_currentRange);
 			break;
-		case 5://Frequency Response
-			//TODO: Make the screen display a pretty frequency response
-			if(!bluetoothConnected){
-				sprintf(lcd_line1, "%s", "Bluetooth");
-				sprintf(lcd_line2, "%s", "Required");
-			} else {
-			//TODO: Parse Freq response data
-			frequencyResponse(100, 2000, 50);
-			}
+		case 4://Frequency Response
+			frequencyResponseMenu(sweepStart, sweepEnd, sweepResolution);
 			break;
-		case 6:
-			//generateSignal(SINE_TYPE);
+		case 6://Signal Generation
+			signalGenerationMenu(genFrequency,  genAmplitude, sigGenType);
 			break;
 		case 7:
-			//generateSignal(SQUARE_TYPE);
 			break;
 		case 8:
-			//generateSignal(SAW_TYPE);
 			break;
 		default:
 			break;
@@ -313,4 +352,35 @@ void menu(double scaledInput){
 	//Update LCD Display with menu text
 	lcd_write_string(lcd_line1, 0, 0);
 	lcd_write_string(lcd_line2, 1, 0);
+	
+	//Update previous menu position
+	prevMenuPosition = menuPosition;
+}
+
+
+void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sigGenType){
+	//Android hasnt set any data, so use board buttons to manually set sweep parameters
+	if((genFrequency == 0)&&(genAmplitude == 0.0f)&&(sigGenType == 0)){
+		//TODO: Manual UI for Setting parameters
+		//TODO: Light LED's appropriately to show available selection
+		//Switch between generating Sine, Square, SAW. Set amplitude
+		generateSignal(sigGenType, genAmplitude);
+	} else {//Start Signal generation with Android sent data
+			//TODO: While loop to wait for menuPosition to change to indicate user input
+		
+			//Switch between generating Sine, Square, SAW. Set amplitude
+			generateSignal(sigGenType, genAmplitude);
+	}
+}
+
+void frequencyResponseMenu(int sweepStart, int sweepEnd, int sweepResolution){
+	//Android hasnt set any data, so use board buttons to manually set sweep parameters
+	if((sweepStart == 0)&&(sweepEnd == 0)&&(sweepResolution == 0)){
+		//TODO: Manual UI for Setting parameters
+		//TODO: Light LED's appropriately to show available selection
+		//TODO: Make the screen display a pretty frequency response
+		//TODO: Alter Frequency Response to return a double array of results if called from menu
+	} else {//Start frequency response with Android sent data
+		frequencyResponse(sweepStart, sweepEnd, sweepResolution);
+	}
 }

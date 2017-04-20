@@ -77,7 +77,7 @@ void EXTI9_5_IRQHandler(void) {
 				menuPosition = 2;
        EXTI_ClearITPendingBit(EXTI_Line9);
    } 
-	 		#ifdef DEBUG
+	 		#ifdef SWITCH_DEBUG
 				printf("[Switch External Interrupt] Menu Position: %d\r\n~", menuPosition);
 			#endif
  }
@@ -103,7 +103,7 @@ void EXTI15_10_IRQHandler(void) {
        EXTI_ClearITPendingBit(EXTI_Line15);
    }
 	
-	 #ifdef DEBUG
+	 #ifdef SWITCH_DEBUG
 			printf("[Switch External Interrupt] Menu Position: %d\r\n~", menuPosition);
 		#endif
  }

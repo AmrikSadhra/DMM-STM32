@@ -1,8 +1,9 @@
 #include "utils.h"
 
-//--------- INTERRUPT GLOBALS ----------
+/*--------- INTERRUPT GLOBALS ----------*/
 volatile uint32_t msTicks;                     //Counts 1ms timeTicks
- //the value the ADC will output at 3V
+ 
+ 
 //Map number form range in_min, in_max to out_in to out_max
 double map(double x, double in_min, double in_max, double out_min, double out_max)
 {

@@ -3,7 +3,6 @@
 //
 
 #include "queue.h"
-#define DEBUG 1
 
 QueueNode *NodeConstructor(QueueNode *prev, char *toStore) {
     QueueNode *myNode;
@@ -18,8 +17,12 @@ QueueNode *NodeConstructor(QueueNode *prev, char *toStore) {
 }
 
 Queue *QueueConstructor(int maxLength, char* name) {
-    Queue *myQueue;
-
+    #ifdef QUEUE_DEBUG
+			printf("[Queue Data Structure] Creating queue with name: %s and max length: %d\r\n~", name, maxLength);
+		#endif
+		
+		Queue *myQueue;
+	
     myQueue = malloc(sizeof(Queue));
     myQueue->name = name;
     myQueue->length = 0;
@@ -49,7 +52,7 @@ void EnqueueString(Queue *targetQueue, char *toStore) {
     QueueNode *toQueue = NodeConstructor(NULL, toStore);
 
     if (targetQueue->length == targetQueue->maxLength) {
-		#ifdef DEBUG
+		#ifdef QUEUE_DEBUG
         printf("[%s] Queue is full! Dequeuing tail. DROPPING: %s\r\n", targetQueue->name, DequeueString(targetQueue));
 		#endif
     }

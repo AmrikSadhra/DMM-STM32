@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "dmm_config.h"
 
 /* --------- Queue Structures -------------*/
 typedef struct QueueNode {

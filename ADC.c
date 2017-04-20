@@ -1,10 +1,14 @@
 #include "ADC.h"
 #include <stm32f4xx_adc.h>
 
+
 uint16_t calibrationValue = 0;
 bool isInitialised = false;
 uint8_t ADC1_currentRange = 0;
-void calibrate_ADC1(uint16_t *calibrationValue);
+
+/*--------- Internal Functions (Prototypes) ----------*/
+uint16_t calibrate_ADC1(void); 
+void ADC1_init(void);
 
 void autorange_init(){
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
@@ -48,7 +52,7 @@ void ADC1_init(void) {
 	
 	autorange_init();
 	
-	calibrate_ADC1(&calibrationValue);
+	calibrationValue = calibrate_ADC1();
 }
 
 //Function to read ADC and return raw value
@@ -64,26 +68,25 @@ uint16_t read_ADC1_raw (void) {
 	return ((ADC1->DR << 4) & 0xFF00) + 50;
 }
 
-void calibrate_ADC1(uint16_t *calibrationValue){
-	//Connect read stage to Ground to calibrate ADC
-	stageAlpha(0);
-	//Connect mode switching stage to Voltage
-	stageBeta(0);
-	//Set Gain to 1
-	stageGamma(0);
-	
-	uint32_t runningTotal = 0;
-	
-	for(int i = 0; i < NUM_CAL_SAMPLES; i++){
-		runningTotal = read_ADC1_raw();
-	}
+uint16_t calibrate_ADC1(){
+		if(ADC_CALIBRATION_ENABLED){
+			//Connect read stage to Ground to calibrate ADC
+			stageAlpha(0);
+			//Connect mode switching stage to Voltage
+			stageBeta(0);
+			//Set Gain to 1
+			stageGamma(0);
+			
+			uint32_t runningTotal = 0;
+			
+			for(int i = 0; i < NUM_CAL_SAMPLES; i++){
+				runningTotal = read_ADC1_raw();
+			}
 
-	//TODO: Refactor
-	*calibrationValue = (uint16_t) runningTotal/5;
-	//*calibrationValue = 0;
-	
-	//Connect read stage to voltage input, calibration over
-	stageAlpha(1);
+			//Connect read stage to voltage input, calibration over
+			stageAlpha(1);
+		return (uint16_t) runningTotal/5;
+	} else return 0;
 }
 
 
@@ -96,10 +99,8 @@ double runningAverage(uint8_t numSamples){
 			adc_raw += read_ADC1_raw() - calibrationValue;
 		}
 		
-		double temp2 = (double)adc_raw;
-		temp2 /= numSamples;
-		
-		return temp2;
+	
+		return (double)(adc_raw/numSamples);
 }
 
 
@@ -120,7 +121,7 @@ void autoRange(uint16_t adc1_raw){
 		}
 			
 		if(rangeSwitch){
-			#ifdef DEBUG	
+			#ifdef ADC_DEBUG	
 				printf("[Hardware Subsystem] ADC1 Range switch requested. Switching, raw ADC read: %d. Old Range: %d New Range: %d\r\n~", adc1_raw, ADC1_prevRange, ADC1_currentRange);
 			#endif
 			
@@ -148,7 +149,7 @@ void autoRange(uint16_t adc1_raw){
 		}
 }
 
-//Function to read ADC and retun scaled value
+//Function to read ADC and return scaled value
 double read_ADC1 (void) {
 	if(!isInitialised) ADC1_init();
 	
@@ -174,12 +175,12 @@ double read_ADC1 (void) {
 				break;
 		}
 		
-		//Apply calibration equation to output
+		//Apply 3rd order calibration equation to output
 		double offset = 0.0014*pow(ADC1_valueScaled, 3) + 0.0094*pow(ADC1_valueScaled, 2) - 0.2351*ADC1_valueScaled + 0.0073; //Third order
 		double offset1 = 9E-05*pow(ADC1_valueScaled, 4) - 0.0002*pow(ADC1_valueScaled, 3) - 0.0123*pow(ADC1_valueScaled, 2) + 0.0614*ADC1_valueScaled- 0.0008;
 		//double offset = 0.0012*pow(ADC1_valueScaled, 3) + 0.0106*pow(ADC1_valueScaled, 2) - 0.23*ADC1_valueScaled - 0.0166;
 
-		#ifdef DEBUG
+		#ifdef ADC_DEBUG
 			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf + Offset: %lf\r\n~", ADC1_valueScaled, ADC1_valueScaled + offset);
 		#endif 
 

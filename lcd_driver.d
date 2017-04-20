@@ -2,7 +2,7 @@
 .\lcd_driver.o: lcd_driver.h
 .\lcd_driver.o: .\Libraries\CMSIS\STM32F4xx\Include\stm32f4xx.h
 .\lcd_driver.o: .\Libraries\CMSIS\Include\core_cm4.h
-.\lcd_driver.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\lcd_driver.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\lcd_driver.o: .\Libraries\CMSIS\Include\core_cmInstr.h
 .\lcd_driver.o: .\Libraries\CMSIS\Include\core_cmFunc.h
 .\lcd_driver.o: .\Libraries\CMSIS\Include\core_cmSimd.h

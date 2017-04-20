@@ -5,24 +5,25 @@
 Queue *bluetoothQueue, *debugQueue;
 bool isPacket = false;
 
-//Extern, can disable certain DMM functionality on STM if no phone connected
-bool bluetoothConnected = true;
-//Ensure initialisation runs before sending data
-bool bluetoothInitialised = false;
+
+//-------- GLOBALS ----------
+bool bluetoothConnected = true; //Extern, can disable certain DMM functionality on STM if no phone connected
+
+/* Ensure initialisation runs before sending data */
+bool bluetoothInitialised = false; 
 bool debugInitialised = false;
 
-int iU, jU, iB, jB; //Indexes for UART and BT buffers
+/* Indexes for UART and BT buffers */
+int iU, jU, iB, jB; 
 
+//Buffers in which to store incoming strings
 char debugBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 char bluetoothBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 
 void serial_init(uint32_t baudRate) {
-	if(!debugInitialised){
-		debugInitialised = true;
-	} else
-	{
-		return;
-	}
+	if(!debugInitialised) debugInitialised = true;
+	else return;
+
 	debugQueue = QueueConstructor(MAX_DBG_BUF_SIZE, "Debug");
 	
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
