@@ -167,9 +167,9 @@ double peakToPeak(double timePeriod){
 			if(readVal < minVal) minVal = readVal;
 		}
 		
-			#ifdef DEBUG
-			printf("[Frequency Response] Maximum Value: %lf Minimum Value: %lf\r\n~", minVal, maxVal);
-		#endif	
+			#ifdef DAC_DEBUG
+				printf("[Frequency Response] Maximum Value: %lf Minimum Value: %lf\r\n~", minVal, maxVal);
+			#endif	
 		
 	return maxVal - minVal;
 }
@@ -181,7 +181,7 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 		dac_initialise();
 	}
 	
-		#ifdef DEBUG
+		#ifdef DAC_DEBUG
 			printf("[Hardware Subsystem] Frequency Response beginning with sweep start: %d sweep end: %d sweep resolution: %d\r\n~", sweepStart, sweepEnd, sweepResolution);
 		#endif
 
@@ -203,7 +203,7 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 			//Send output packet 
 			sendPacket(5, freqResponseRatio, OUT_FREQ);
 			
-			#ifdef DEBUG
+			#ifdef DAC_DEBUG
 				printf("[Frequency Response] Gain at frequency %d is %lf\r\n~", OUT_FREQ, freqResponseRatio);
 			#endif		
 		}

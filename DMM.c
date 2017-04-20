@@ -72,18 +72,16 @@ void initialise_Peripherals(void){
 }
 
 //has three stages: ground, voltage,capacitance
-void stageAlpha(int mode){	
-			if(!alphaInit){
-				mode_switch_init();
-				alphaInit = true;
-			}
-	
 //Stage Alpha
 //J5 4,3 (GPIOB 5 4): 
 //   0 0 Ground       &= ~(3UL << 4) Clear to 00
 //   0 1 Voltage      |=  (1UL << 4)
 //   1 0 Capacitance  |=  (2UL << 4)
-			
+void stageAlpha(int mode){	
+			if(!alphaInit){
+				mode_switch_init();
+				alphaInit = true;
+			}
 			//Clear Range switch bits
 			GPIOB->ODR &= ~(3UL << 4);
 			switch(mode){
@@ -101,19 +99,18 @@ void stageAlpha(int mode){
 			}
 }
 
-void stageBeta(int mode){
-	if(!betaInit){
-				mode_switch_init();
-				betaInit = true;
-			}
-	
 //Stage Beta
 //J7 5,4 (GPIOE 6 5): Mode Switch: Current/Resistance/Voltage Circuit
 //   0 0 Voltage      &= ~(3UL << 5) Clear to 00
 //   0 1 Current      |=  (1UL << 5)
 //   1 0 RMS          |=  (2UL << 5)
 //   1 1 Resistance   |=  (3UL << 5)
-			
+void stageBeta(int mode){
+	if(!betaInit){
+				mode_switch_init();
+				betaInit = true;
+			}
+
 	//Clear bits 
 	GPIOE->ODR &= ~(3UL << 5);
 	switch(mode){
@@ -134,16 +131,18 @@ void stageBeta(int mode){
 	}
 }
 
-void stageGamma(int mode){
-	if(!gammaInit){
-				mode_switch_init();
-				gammaInit = true;
-			}
+
 	
 //Stage Gamma
 //J7 3,2 (GPIOE 4 3): Range for V/R/I/Universe
 //   0 0 Gain 1
 //   0 1 Gain 1000   
+void stageGamma(int mode){
+	if(!gammaInit){
+				mode_switch_init();
+				gammaInit = true;
+			}
+
 		
 	switch(mode){
 				case 0://10v in 
@@ -163,6 +162,7 @@ void stageGamma(int mode){
 					break;
 			}
 }
+
 
 /*----------------------------------------------------------------------------
   MAIN function
