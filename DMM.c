@@ -23,7 +23,7 @@
 #define BUFFER_SIZE 128
 #define DEBUG 1
 bool BluetoothMode = false;
-void menu(uint8_t,double);
+void menu(double);
 
 //Stage Initialisation check booleans
 bool alphaInit = false;
@@ -139,9 +139,7 @@ void stageGamma(int mode){
 //J7 3,2 (GPIOE 4 3): Range for V/R/I/Universe
 //   0 0 Gain 1
 //   0 1 Gain 1000   
-			
-			
-			
+		
 	switch(mode){
 				case 0://10v in 
 					//Do nothing for Range 0 as pins already cleared
@@ -178,18 +176,24 @@ int main (void) {
 	while(1) {                                    /* Loop forever               */
 		//Read Averaged and ranged ADC1 value
 		double ADC1_valueScaled = read_ADC1();
-		menu(menuPosition, ADC1_valueScaled);
+		menu(ADC1_valueScaled);
   }
 	
 }
 
-void menu(uint8_t menuPosition, double scaledInput){
+void menu(double scaledInput){
 	//Bluetooth Override of Buttons
 	char *bluetoothSwitchPacket = DequeueString(bluetoothQueue);
 	
-//	if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) menuPosition = 1;
-//	if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) menuPosition = 2;
-//	if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) menuPosition = 3;
+//				if(strcmp(bluetoothBuf,"<m:1>") == 0) menuPosition = 1;
+//				if(strcmp(bluetoothBuf,"<m:2>") == 0) menuPosition = 2;
+//				if(strcmp(bluetoothBuf,"<m:3>") == 0) menuPosition = 3;
+	
+	static int menuPositionLocal;
+	
+	if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) menuPositionLocal = 1;
+	if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) menuPositionLocal = 2;
+	if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) menuPositionLocal = 3;
 	
 	printf("%s\n", bluetoothSwitchPacket);
 	
@@ -205,13 +209,17 @@ void menu(uint8_t menuPosition, double scaledInput){
 	double resistance = 0;
 	char lcd_line1[16] ="ERROR";
 	char lcd_line2[16] ="ERROR";
-	switch(menuPosition){
+	switch(menuPositionLocal){
+		case 0: //voltage
+			stageBeta(0);
+			sendPacket(1, scaledInput, ADC1_currentRange);
+			break;
 		case 1: //voltage
 			stageBeta(0);
 			switch(ADC1_currentRange){
 				case 0:
 					sprintf(lcd_line1,"Volt:0->10V");
-					sprintf(lcd_line2,"%lf V",scaledInput);
+					sprintf(lcd_line2,"%.2lf V",scaledInput);
 					break;
 				case 1:
 					sprintf(lcd_line1,"Volt:0->1V");

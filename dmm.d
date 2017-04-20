@@ -47,9 +47,9 @@
 .\dmm.o: lcd_buffer.h
 .\dmm.o: lcd_driver.h
 .\dmm.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
+.\dmm.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h
 .\dmm.o: lcd_driver.h
 .\dmm.o: LED.h
-.\dmm.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h
 .\dmm.o: packet.h
 .\dmm.o: utils.h
 .\dmm.o: switches.h

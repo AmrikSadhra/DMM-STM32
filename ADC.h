@@ -4,9 +4,10 @@
 #include "utils.h"
 #include "serial.h"
 #include <stdbool.h>
+#include "math.h"
 
 #define SWITCHING_RANGE_TOLERANCE 2000
-#define NUM_AVG_SAMPLES 10
+#define NUM_AVG_SAMPLES 50
 #define NUM_CAL_SAMPLES 5
 
 #define ADC_SAMPLE_TIME 50E-3 //Time for ADC to take a single sample (used for freq response sampling)

@@ -44,6 +44,7 @@
 .\switches.o: ADC.h
 .\switches.o: utils.h
 .\switches.o: serial.h
+.\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h
 .\switches.o: queue.h
 .\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\switches.o: lcd_buffer.h

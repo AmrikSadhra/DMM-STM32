@@ -60,8 +60,8 @@ uint16_t read_ADC1_raw (void) {
 	ADC1->CR2 |= (1UL << 30)	;		/* set SWSTART to 1 to start conversion */
 	Delay(10);
 	
-	//Return raw 32bit uint
-	return ((ADC1->DR << 4) & 0xFF00);
+	//Return raw 32bit uint (MAGIC)
+	return ((ADC1->DR << 4) & 0xFF00) + 50;
 }
 
 void calibrate_ADC1(uint16_t *calibrationValue){
@@ -80,6 +80,7 @@ void calibrate_ADC1(uint16_t *calibrationValue){
 
 	//TODO: Refactor
 	*calibrationValue = (uint16_t) runningTotal/5;
+	//*calibrationValue = 0;
 	
 	//Connect read stage to voltage input, calibration over
 	stageAlpha(1);
@@ -106,14 +107,16 @@ double runningAverage(uint8_t numSamples){
 void autoRange(uint16_t adc1_raw){
 		bool rangeSwitch = false;
 		static uint8_t ADC1_prevRange;
-	
+			
 		//If RAW value greater than max value it can return - switch tolerance, probably time to change range (unless we maxed on range)
 		if(((adc1_raw  > ADC_VALUE_3V - SWITCHING_RANGE_TOLERANCE)||(adc1_raw  < SWITCHING_RANGE_TOLERANCE))&&(ADC1_currentRange != 0)){
-				ADC1_currentRange--;	
+				//ADC1_currentRange--;	
+				ADC1_currentRange=0;	
 				rangeSwitch = true;
 			} else if((adc1_raw  < ADC_VALUE_3V*0.55)&&(adc1_raw  > ADC_VALUE_3V*0.45)&&(ADC1_currentRange != 3)){//If we're close (and not at lowest range)
-			ADC1_currentRange++;
-			rangeSwitch = true;
+				//ADC1_currentRange++;
+				ADC1_currentRange=0;	
+				rangeSwitch = true;
 		}
 			
 		if(rangeSwitch){
@@ -171,11 +174,16 @@ double read_ADC1 (void) {
 				break;
 		}
 		
+		//Apply calibration equation to output
+		double offset = 0.0014*pow(ADC1_valueScaled, 3) + 0.0094*pow(ADC1_valueScaled, 2) - 0.2351*ADC1_valueScaled + 0.0073; //Third order
+		double offset1 = 9E-05*pow(ADC1_valueScaled, 4) - 0.0002*pow(ADC1_valueScaled, 3) - 0.0123*pow(ADC1_valueScaled, 2) + 0.0614*ADC1_valueScaled- 0.0008;
+		//double offset = 0.0012*pow(ADC1_valueScaled, 3) + 0.0106*pow(ADC1_valueScaled, 2) - 0.23*ADC1_valueScaled - 0.0166;
+
 		#ifdef DEBUG
-		printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf RAW Averaged: %.0lf\r\n~", ADC1_valueScaled, ADC1_valueAveraged);
-		#endif
-		
-		return ADC1_valueScaled;
+			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf + Offset: %lf\r\n~", ADC1_valueScaled, ADC1_valueScaled + offset);
+		#endif 
+
+		return ADC1_valueScaled + offset + offset1;
 }
 
 void set_cont_ADC1(void){

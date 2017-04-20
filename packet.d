@@ -43,6 +43,7 @@
 .\packet.o: ADC.h
 .\packet.o: utils.h
 .\packet.o: serial.h
+.\packet.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h
 .\packet.o: queue.h
 .\packet.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\packet.o: lcd_buffer.h

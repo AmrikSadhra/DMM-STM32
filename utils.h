@@ -9,5 +9,7 @@ char *int2bin(int a, char *buffer, int buf_size);
 //Delays number of tick Systicks (happens every 1 ms)
 void Delay (uint32_t dlyTicks);
 #endif /*_UTILS_H_*/
-#define ADC_VALUE_3V 59577 //the value the ADC will output at 3V
+
+#define ADC_VALUE_3V 58981 //the value the ADC will output at 3V for 10v range
+
 

@@ -47,3 +47,4 @@
 .\adc.o: lcd_buffer.h
 .\adc.o: lcd_driver.h
 .\adc.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
+.\adc.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h

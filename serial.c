@@ -179,11 +179,7 @@ void USART3_IRQHandler(void) {
 				
 				//Check for connected packet
 				if(strcmp(bluetoothBuf,"<CONNECTED>") == 0) bluetoothConnected = true;
-				
-				if(strcmp(bluetoothBuf,"<m:1>") == 0) menuPosition = 1;
-				if(strcmp(bluetoothBuf,"<m:2>") == 0) menuPosition = 2;
-				if(strcmp(bluetoothBuf,"<m:3>") == 0) menuPosition = 3;
-				
+			
 				EnqueueString(bluetoothQueue, bluetoothBuf);
       }
     }

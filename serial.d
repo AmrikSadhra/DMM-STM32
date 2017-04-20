@@ -42,6 +42,7 @@
 .\serial.o: ADC.h
 .\serial.o: utils.h
 .\serial.o: serial.h
+.\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h
 .\serial.o: queue.h
 .\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\serial.o: lcd_buffer.h
