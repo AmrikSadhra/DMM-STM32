@@ -1,6 +1,8 @@
 #include "dac.h"
 #include "utils.h"
 #include "adc.h"
+#include "serial.h"
+#include "packet.h"
 
 const uint16_t sine[WAVE_RES] = { 2048, 2145, 2242, 2339, 2435, 2530, 2624, 2717, 2808, 2897, 
                                       2984, 3069, 3151, 3230, 3307, 3381, 3451, 3518, 3581, 3640, 
@@ -16,9 +18,22 @@ const uint16_t sine[WAVE_RES] = { 2048, 2145, 2242, 2339, 2435, 2530, 2624, 2717
                                       577, 644, 714, 788, 865, 944, 1026, 1111, 1198, 1287, 
                                       1378, 1471, 1565, 1660, 1756, 1853, 1950, 2047 };           
 
+const uint16_t square[WAVE_RES] = {4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,
+																	4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,
+																	4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,
+																	4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,
+																	4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,
+																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,
+																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,
+																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75};		
+
+	
+
 														
 static void TIM5_Config(void);
-static void DAC1_Config(void);     
+static void DAC1_Config(void);
+void dac_initialise(void);
+	
 uint32_t   OUT_FREQ = 5000; // Output waveform frequency
 uint16_t   TIM_PERIOD = 0; 	// Autoreload reg value
 TIM_TimeBaseInitTypeDef TIM5_TimeBase;
@@ -45,8 +60,7 @@ void dac_initialise()
 	dacInitialised = true;
 }
 
-static void TIM5_Config(void)
-{
+static void TIM5_Config(void){
 	TIM_PERIOD = ((CNT_FREQ)/((WAVE_RES)*(OUT_FREQ)));
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
   TIM_TimeBaseStructInit(&TIM5_TimeBase); 
@@ -60,8 +74,8 @@ static void TIM5_Config(void)
   TIM_Cmd(TIM5, ENABLE);
 }
 
-static void DAC1_Config(void)
-{
+
+static void DAC1_Config(void){
   DAC_InitTypeDef DAC_INIT;
 	DMA_InitTypeDef DMA_INIT;		
   
@@ -69,7 +83,6 @@ static void DAC1_Config(void)
   DAC_INIT.DAC_WaveGeneration = DAC_WaveGeneration_None;
   DAC_INIT.DAC_OutputBuffer   = DAC_OutputBuffer_Enable;
   DAC_Init(DAC_Channel_1, &DAC_INIT);
-
 
   DMA_DeInit(DMA1_Stream5);
   DMA_INIT.DMA_Channel            = DMA_Channel_7;  
@@ -95,33 +108,42 @@ static void DAC1_Config(void)
 }
 
 
-
-
-double getPeakToPeak(){
+double peakToPeak(double timePeriod){
+		double minVal = 0;
+		double maxVal = 0;
 	
-	
-	return read_ADC1();
+		//TODO: Get a nice number
+		int numSamples = (int)((double) timePeriod/ADC_SAMPLE_TIME);
+		numSamples = 100;
+
+		//Try to sample two lots of the period
+		for(int i = 0; i < numSamples; i++){
+			double readVal = read_ADC1_NOAVERAGE();
+			
+			if(readVal > maxVal) maxVal = readVal;
+			if(readVal < minVal) minVal = readVal;
+		}
+		
+			#ifdef DEBUG
+			printf("[Frequency Response] Maximum Value: %lf Minimum Value: %lf\r\n~", minVal, maxVal);
+		#endif	
+		
+	return maxVal - minVal;
 }
 
 
-double* frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepResolution){
+void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepResolution){
 	//Check DAC initialised before beginning frequency response
 	if(!dacInitialised){
 		dac_initialise();
 	}
 	
 		#ifdef DEBUG
-			printf("[Hardware Subsystem] Frequency Response beginning with sweep start: %d sweep end: %d sweep resolutionL: %d\r\n~", sweepStart, sweepEnd, sweepResolution);
+			printf("[Hardware Subsystem] Frequency Response beginning with sweep start: %d sweep end: %d sweep resolution: %d\r\n~", sweepStart, sweepEnd, sweepResolution);
 		#endif
-	
-		int numResults = (sweepEnd-sweepStart)/sweepResolution;
-		double *resultArray = malloc(numResults * sizeof(uint32_t));
-		
-		//Index into result array
-		int i = 0;
-	
+
 		//Move from sweepstart to sweep end via stepnumber
-		for(int OUT_FREQ = sweepStart; OUT_FREQ <= sweepEnd; OUT_FREQ += sweepResolution){			
+		for(int OUT_FREQ = sweepStart; OUT_FREQ <= sweepEnd; OUT_FREQ += sweepResolution){
 			//Calculate new time period
 			TIM_PERIOD = ((CNT_FREQ)/((WAVE_RES)*(OUT_FREQ)));
 		
@@ -132,12 +154,16 @@ double* frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweep
 			
 			//Wait for voltage to propagate through circuit
 			Delay(10);
+			
+			double freqResponseRatio = peakToPeak(1/OUT_FREQ)/WAVE_GEN_VOLTAGE;
 
-			//Take output reading 
-			resultArray[++i] = getPeakToPeak(TIM_PERIOD);
+			//Send output packet 
+			sendPacket(5, freqResponseRatio, OUT_FREQ);
+			
+			#ifdef DEBUG
+				printf("[Frequency Response] Gain at frequency %d is %lf\r\n~", OUT_FREQ, freqResponseRatio);
+			#endif		
 		}
-		
-		return resultArray;
 }
 
 

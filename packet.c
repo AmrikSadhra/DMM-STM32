@@ -11,6 +11,8 @@ typedef struct {
 
 void sendPacket(int mode, float voltage, int range){
 		packet toSend;
-	sprintf(toSend.packetData, "<m:%d;v:%f>",  mode, voltage);
+	
+		sprintf(toSend.packetData, "<m:%d;v:%f;r:%d>",  mode, voltage, range);
 		bt_send_str(toSend.packetData);
 }
+

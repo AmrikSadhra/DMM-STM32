@@ -49,3 +49,4 @@
 .\dac.o: lcd_buffer.h
 .\dac.o: lcd_driver.h
 .\dac.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
+.\dac.o: packet.h

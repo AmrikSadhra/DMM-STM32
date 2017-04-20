@@ -26,4 +26,5 @@ void bt_send_str(char *str);
 void printBus(uint32_t bus);
 
 extern Queue *bluetoothQueue, *debugQueue;
+extern bool bluetoothConnected;
 #endif /*_SERIAL_H_*/

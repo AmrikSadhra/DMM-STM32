@@ -184,9 +184,29 @@ void set_cont_ADC1(void){
 	ADC1->CR2 |= (1UL << 1)	;		
 }
 
-//Function to set ADC to continuous read mode
-unsigned int read_cont_ADC1 (void) {
-	//TODO: Inside spinlock, increment i to MAX_RETRY_ADC_CONT. Throw exception.
-	while(!((ADC1->CR2 & (1 << 10))));
-	return ADC1->DR;
+//Function to read ADC1 as quickly as possible
+double read_ADC1_NOAVERAGE (void) {
+	//Average data coming in (smooth)
+	double ADC1_value = read_ADC1_raw() - calibrationValue;
+	double ADC1_valueScaled = 0.0f;
+	
+	//Adjust range
+	autoRange((uint16_t) ADC1_value);
+	
+	switch(ADC1_currentRange){
+			case 0:
+				ADC1_valueScaled = map(ADC1_value, 0, ADC_VALUE_3V, -10, 10);
+				break;
+			case 1:
+				ADC1_valueScaled = map(ADC1_value, 0, ADC_VALUE_3V, -1, 1);
+				break;
+			case 2:
+				ADC1_valueScaled = map(ADC1_value, 0, ADC_VALUE_3V, -0.1, 0.1);
+				break;
+			case 3:
+				ADC1_valueScaled = map(ADC1_value, 0, ADC_VALUE_3V, -0.01, 0.01);
+				break;
+		}
+	
+		return ADC1_valueScaled;
 }

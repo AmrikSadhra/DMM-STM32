@@ -18,8 +18,6 @@
 #include "utils.h"
 #include "queue.h"
 #include "switches.h"
-//Stolen
-#include "sig_gen.h"
 #include "dac.h"
 
 #define BUFFER_SIZE 128
@@ -64,8 +62,6 @@ void initialise_Peripherals(void){
 			bluetooth_init(9600);
 			switch_init();
 			mode_switch_init();
-	
-			
 			//Connect Read stage to Voltage
 			stageAlpha(1);
 }
@@ -76,6 +72,13 @@ void stageAlpha(int mode){
 				mode_switch_init();
 				alphaInit = true;
 			}
+	
+//Stage Alpha
+//J5 4,3 (GPIOB 5 4): 
+//   0 0 Ground       &= ~(3UL << 4) Clear to 00
+//   0 1 Voltage      |=  (1UL << 4)
+//   1 0 Capacitance  |=  (2UL << 4)
+			
 			//Clear Range switch bits
 			GPIOB->ODR &= ~(3UL << 4);
 			switch(mode){
@@ -98,6 +101,14 @@ void stageBeta(int mode){
 				mode_switch_init();
 				betaInit = true;
 			}
+	
+//Stage Beta
+//J7 5,4 (GPIOE 6 5): Mode Switch: Current/Resistance/Voltage Circuit
+//   0 0 Voltage      &= ~(3UL << 5) Clear to 00
+//   0 1 Current      |=  (1UL << 5)
+//   1 0 RMS          |=  (2UL << 5)
+//   1 1 Resistance   |=  (3UL << 5)
+			
 	//Clear bits 
 	GPIOE->ODR &= ~(3UL << 5);
 	switch(mode){
@@ -123,6 +134,14 @@ void stageGamma(int mode){
 				mode_switch_init();
 				gammaInit = true;
 			}
+	
+//Stage Gamma
+//J7 3,2 (GPIOE 4 3): Range for V/R/I/Universe
+//   0 0 Gain 1
+//   0 1 Gain 1000   
+			
+			
+			
 	switch(mode){
 				case 0://10v in 
 					//Do nothing for Range 0 as pins already cleared
@@ -155,8 +174,6 @@ int main (void) {
 
  	lcd_clear_display();
 	lcd_write_string("Multimeter Starting..", 0, 0);
-	
-	dac_initialise();
   
 	while(1) {                                    /* Loop forever               */
 		//Read Averaged and ranged ADC1 value
@@ -173,9 +190,12 @@ void menu(uint8_t menuPosition, double scaledInput){
 //	if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) menuPosition = 1;
 //	if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) menuPosition = 2;
 //	if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) menuPosition = 3;
-
+	
+	printf("%s\n", bluetoothSwitchPacket);
+	
 	static uint8_t prev_menuPosition;
 	lcd_clear_display();
+	
 	//detecting if menu selection has changed
 	if(menuPosition != prev_menuPosition){
 		prev_menuPosition = menuPosition;
@@ -188,7 +208,6 @@ void menu(uint8_t menuPosition, double scaledInput){
 	switch(menuPosition){
 		case 1: //voltage
 			stageBeta(0);
-			
 			switch(ADC1_currentRange){
 				case 0:
 					sprintf(lcd_line1,"Volt:0->10V");
@@ -235,7 +254,6 @@ void menu(uint8_t menuPosition, double scaledInput){
 				default://Invalid range
 					ADC1_currentRange =0;
 					break;
-				
 			}
 			sendPacket(2, current, ADC1_currentRange);
 			break;
@@ -262,21 +280,29 @@ void menu(uint8_t menuPosition, double scaledInput){
 			}
 			sendPacket(3, resistance, ADC1_currentRange);
 			break;
-		case 4://attempt bluetooth
-			break;
-		case 5:
+		case 5://Frequency Response
+			//TODO: Make the screen display a pretty frequency response
+			if(!bluetoothConnected){
+				sprintf(lcd_line1, "%s", "Bluetooth");
+				sprintf(lcd_line2, "%s", "Required");
+			} else {
+			//TODO: Parse Freq response data
+			frequencyResponse(100, 2000, 50);
+			}
 			break;
 		case 6:
+			//generateSignal(SINE_TYPE);
 			break;
 		case 7:
+			//generateSignal(SQUARE_TYPE);
 			break;
 		case 8:
+			//generateSignal(SAW_TYPE);
 			break;
 		default:
 			break;
 	}
+	//Update LCD Display with menu text
 	lcd_write_string(lcd_line1, 0, 0);
 	lcd_write_string(lcd_line2, 1, 0);
 }
-
-

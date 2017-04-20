@@ -5,6 +5,8 @@
 Queue *bluetoothQueue, *debugQueue;
 bool isPacket = false;
 
+//Extern, can disable certain DMM functionality on STM if no phone connected
+bool bluetoothConnected = true;
 //Ensure initialisation runs before sending data
 bool bluetoothInitialised = false;
 bool debugInitialised = false;
@@ -174,9 +176,14 @@ void USART3_IRQHandler(void) {
       if (iB == '>') {
         isPacket = false;
         jB = 0;
+				
+				//Check for connected packet
+				if(strcmp(bluetoothBuf,"<CONNECTED>") == 0) bluetoothConnected = true;
+				
 				if(strcmp(bluetoothBuf,"<m:1>") == 0) menuPosition = 1;
 				if(strcmp(bluetoothBuf,"<m:2>") == 0) menuPosition = 2;
 				if(strcmp(bluetoothBuf,"<m:3>") == 0) menuPosition = 3;
+				
 				EnqueueString(bluetoothQueue, bluetoothBuf);
       }
     }

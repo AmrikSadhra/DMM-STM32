@@ -53,5 +53,4 @@
 .\dmm.o: packet.h
 .\dmm.o: utils.h
 .\dmm.o: switches.h
-.\dmm.o: sig_gen.h
 .\dmm.o: dac.h
