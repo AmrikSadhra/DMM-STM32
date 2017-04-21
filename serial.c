@@ -5,7 +5,6 @@
 Queue *bluetoothQueue, *debugQueue;
 bool isPacket = false;
 
-
 //-------- GLOBALS ----------
 bool bluetoothConnected = true; //Extern, can disable certain DMM functionality on STM if no phone connected
 
@@ -16,7 +15,7 @@ bool debugInitialised = false;
 /* Indexes for UART and BT buffers */
 int iU, jU, iB, jB; 
 
-//Buffers in which to store incoming strings
+/* Buffers in which to store incoming strings */
 char debugBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 char bluetoothBuf[MAX_SERIAL_IN_LENGTH + 1] = {'\0'};
 

@@ -2,10 +2,13 @@
 #define _DMM_CONFIG_H_
 
 /* Generic DMM Settings */
-#define DMM_DEBUG 1
+#define DMM_DEBUG 
+
+/* LCD Settings */
+#define BUFFER_SIZE 128
 
 /* Frequency Response/Sig Gen Settings */
-#define DAC_DEBUG 1
+#define DAC_DEBUG 
 
 #define   WAVE_RES          128                                  // Waveform resolution
 #define   DAC_DHR12R1_ADDR  0x40007408                           // DMA writes into this reg on every request		
@@ -14,20 +17,17 @@
 #define   WAVE_GEN_VOLTAGE          3.28                         // Arbitrary value to determine how long to sample wave for Peak to Peak
 
 /* Switch Settings */
-#define SWITCH_DEBUG 1
+#define SWITCH_DEBUG 
 
 /* Queue Settings */
-#define QUEUE_DEBUG 1
+//#define QUEUE_DEBUG 
 
 /* Serial Settings */
 #define MAX_SERIAL_IN_LENGTH 16
 #define SERIAL_TIMEOUT_MAX 30
-
 #define MAX_BT_BUF_SIZE 10
 #define MAX_DBG_BUF_SIZE 10
-
 #define DEFAULT_BAUD 9600
-#define ADC_CALIBRATION_ENABLED 1
 
 /* ADC Settings */
 #define ADC_DEBUG 1
@@ -37,7 +37,7 @@
 #define CAL_COEFF_X2
 #define CAL_COEFF_OFFSET
 
-#define ADC_CALIBRATION_ENABLED 1
+#define ADC_CALIBRATION_ENABLED 
 #define SWITCHING_RANGE_TOLERANCE 2000
 #define NUM_AVG_SAMPLES 50
 #define NUM_CAL_SAMPLES 5

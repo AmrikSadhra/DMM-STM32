@@ -18,7 +18,7 @@ QueueNode *NodeConstructor(QueueNode *prev, char *toStore) {
 
 Queue *QueueConstructor(int maxLength, char* name) {
     #ifdef QUEUE_DEBUG
-			printf("[Queue Data Structure] Creating queue with name: %s and max length: %d\r\n~", name, maxLength);
+			printf("[Queue Data Structure] Creating queue with name: %s and max length: %d\r\n", name, maxLength);
 		#endif
 		
 		Queue *myQueue;

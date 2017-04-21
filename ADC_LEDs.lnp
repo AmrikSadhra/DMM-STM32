@@ -19,6 +19,7 @@
 ".\serial.o"
 ".\switches.o"
 ".\utils.o"
+".\led.o"
 ".\startup_stm32f407xx.o"
 ".\system_stm32f4xx.o"
 --strict --scatter ".\ADC_LEDs.sct"

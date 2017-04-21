@@ -3,41 +3,17 @@
  *------------------------------------------------------*/
 #include "DMM.h"
 
-//Configuration file
-#include "dmm_config.h"
-
-//Provided Libraries
-#include <stdio.h>
-#include "STM32F4xx.h"
-#include "lcd_buffer.h"
-#include "lcd_driver.h"
-#include "LED.h"
-#include "misc.h"
-#include "math.h"
-//Made with Love (by us)
-#include "adc.h"
-#include "serial.h"
-#include "packet.h"
-#include "utils.h"
-#include "queue.h"
-#include "switches.h"
-#include "dac.h"
-
 /*--------- Internal Functions (Prototypes) ----------*/
 void frequencyResponseMenu(int sweepStart, int sweepEnd, int sweepResolution);
 void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sigGenType);
+void menu(void);
 
-#define BUFFER_SIZE 128
-
-void menu(double);
-
-//Stage Initialisation check booleans
+/* Stage Initialisation check booleans */
 bool alphaInit = false;
 bool betaInit = false;
 bool gammaInit = false;
 
-//Global variables
-
+/* Initialise Mode Switch GPIO Pins for Mux (MUX IDENTIFIER HERE) */
 void mode_switch_init(){
 			//Initialisation of stage Alpha
 			RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
@@ -66,6 +42,7 @@ void initialise_Peripherals(void){
 			serial_init(9600);
 			bluetooth_init(9600);
 			switch_init();
+			LED_Init();
 			mode_switch_init();
 			//Connect Read stage to Voltage
 			stageAlpha(1);
@@ -131,8 +108,6 @@ void stageBeta(int mode){
 	}
 }
 
-
-	
 //Stage Gamma
 //J7 3,2 (GPIOE 4 3): Range for V/R/I/Universe
 //   0 0 Gain 1
@@ -160,7 +135,7 @@ void stageGamma(int mode){
 					//Range 3
 					GPIOE->ODR |= (3UL << 3);
 					break;
-			}
+	}
 }
 
 
@@ -174,49 +149,52 @@ int main (void) {
   }
 	
 		initialise_Peripherals();
-
 		lcd_clear_display();
 		lcd_write_string("Multimeter Starting..", 0, 0);
   
 	while(1) {                                    /* Loop forever               */
-		//Read Averaged and ranged ADC1 value
-		double ADC1_valueScaled = read_ADC1();
-		menu(ADC1_valueScaled);
+		//TODO: This is ugly as fuck. Should I dequeue Serial commands here?
+		menu();
   }
-	
 }
 
-void menu(double scaledInput){
+void menu(){
 	//Bluetooth Override of Buttons
 	char *bluetoothSwitchPacket = DequeueString(bluetoothQueue);
-
-	static int menuPositionBluetooth;
 	
-	static int prevMenuPosition;
+	#ifdef DMM_DEBUG
+		printf("[Android Client] Data Received: %s\r\n", bluetoothSwitchPacket);
+	#endif	
+	
+	double ADC1_valueScaled = read_ADC1();
+	
+	//Menu Position variables
+	static int bluetoothMenuPosition;
+	static int prevBluetoothMenuPosition;
+	static int prevLocalMenuPosition;
+	static int menuPosition = 1;
 	
 	//Frequency Sweep Parameters
 	uint32_t sweepStart = 0, sweepEnd = 0, sweepResolution = 0;
-	
 	//Signal Generation Parameters
 	uint32_t genFrequency = 0;
 	float genAmplitude = 0;
 	uint8_t sigGenType;
 	
-
 	//Query the Bluetooth Data to identify mode switches
-	if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) menuPositionBluetooth = 1;
-	if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) menuPositionBluetooth = 2;
-	if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) menuPositionBluetooth = 3;
+	if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) bluetoothMenuPosition = 1;
+	if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) bluetoothMenuPosition = 2;
+	if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) bluetoothMenuPosition = 3;
 	if(strcmp(bluetoothSwitchPacket,"<m:4") == 0){ 
-		menuPositionBluetooth = 4;
+		bluetoothMenuPosition = 4;
 		//Parse frequency sweep data from packet
 		int n = sscanf(bluetoothSwitchPacket, "<m:4;start:%d;end:%d;steps:%d>", &sweepStart, &sweepEnd, &sweepResolution);
 		#ifdef DMM_DEBUG
-			if(n != 3) printf("[Android Client] Failed to parse Frequency data from Client Frequency Response request!"); //If not parsed 3 items from string
+			if(n != 3) printf("[Android Client] Failed to parse Frequency data from Client Frequency Response request!\r\n"); //If not parsed 3 items from string
 		#endif
 	}
 		if(strcmp(bluetoothSwitchPacket,"<m:5") == 0){ 
-		menuPositionBluetooth = 5;
+		bluetoothMenuPosition = 5;
 			
 			char *genType; //Temporary variable with which to parse signal type to int
 			//TODO: Will sscanf work with char buffer? Get Jonathan to refactor to send ints and document which int corresponds to which Wave (dac.h defines)
@@ -233,63 +211,74 @@ void menu(double scaledInput){
 			} 
 			
 			#ifdef DMM_DEBUG
-				if(n != 3) printf("[Android Client] Failed to parse data from Client Signal generation request!"); //If not parsed 3 items from string
+			if(n != 3) printf("[Android Client] Failed to parse data from Client Signal generation request! Parsed: %d\r\n", n); //If not parsed 3 items from string
 			#endif
 	}
-	
 	
 	//Clear display in advance of menu update
 	lcd_clear_display();
 	
-	//Update menu position to Bluetooth Value
-	if(menuPosition !=  menuPositionBluetooth){
-		menuPosition = menuPositionBluetooth;
+	
+	if(prevBluetoothMenuPosition != bluetoothMenuPosition){
+			#ifdef DMM_DEBUG
+				printf("[Android Client] Changing to menu: %d due to Android menu switch request\r\n", bluetoothMenuPosition); //If not parsed 3 items from string
+			#endif
+			
+		//Bluetooth has changed value, update menu Position so bluetooth commands menu
+			menuPosition = bluetoothMenuPosition;	
+			//Update previous menu position
+			prevBluetoothMenuPosition = bluetoothMenuPosition;
 	}
 	
-	//Detect menu position change
-	if(prevMenuPosition !=  menuPosition){
-		if(prevMenuPosition == 4){
+	//Detect menu position change and perform menu switch logic to kill old DMM function
+	if(prevLocalMenuPosition !=  localMenuPosition){
+		if(prevLocalMenuPosition == 5){ //If switching away from Signal Generation
 			freeGeneratedSignal(true); //Clear memory used by Signal generation, Stop DMA operation
 		}
+		//Local menu position has changed value, update menu Position so STM board commands menu
+		menuPosition = localMenuPosition;
+		//Update previous menu position
+		prevLocalMenuPosition = localMenuPosition;
 	}
 	
 	double current =0;
 	double resistance = 0;
+	
+	//If Menu goes outside implemented features, these strings will propagate to LCD
 	char lcd_line1[16] ="ERROR";
 	char lcd_line2[16] ="ERROR";
+	
 	switch(menuPosition){
-		case 0: //voltage
-			stageBeta(0);
-			sendPacket(1, scaledInput, ADC1_currentRange);
-			break;
+		case 0: //If menu position not initialised, go to voltage (No break statement)
 		case 1: //voltage
 			stageBeta(0);
 			switch(ADC1_currentRange){
 				case 0:
 					sprintf(lcd_line1,"Volt:0->10V");
-					sprintf(lcd_line2,"%.2lf V",scaledInput);
+					sprintf(lcd_line2,"%.2lf V",ADC1_valueScaled);
 					break;
 				case 1:
 					sprintf(lcd_line1,"Volt:0->1V");
-					sprintf(lcd_line2,"%lf V",scaledInput);
+					sprintf(lcd_line2,"%lf V",ADC1_valueScaled);
 					break;
 				case 2:
 					sprintf(lcd_line1,"Volt:0->100mV");
-					sprintf(lcd_line2,"%lf mV",scaledInput*1000);
+					sprintf(lcd_line2,"%lf mV",ADC1_valueScaled*1000);
 					break;
 				case 3:
 					sprintf(lcd_line1,"Volt:0->10mV");
-					sprintf(lcd_line2,"%lf mV",scaledInput*1000);
+					sprintf(lcd_line2,"%lf mV",ADC1_valueScaled*1000);
 					break;
 				default://Invalid range
-					ADC1_currentRange =0;
+					ADC1_currentRange = 0;
 					break;
 			}
-			sendPacket(1, scaledInput, ADC1_currentRange);
+			sendPacket(1, ADC1_valueScaled, ADC1_currentRange);
 			break;
+			
 		case 2://current
 			stageBeta(1);
-			current = scaledInput/10;
+			current = ADC1_valueScaled/10;
 			switch(ADC1_currentRange){
 				case 0:
 					sprintf(lcd_line1,"Amp:-1->1A");
@@ -308,14 +297,15 @@ void menu(double scaledInput){
 					sprintf(lcd_line2,"%lf mA",current*1000);
 					break;
 				default://Invalid range
-					ADC1_currentRange =0;
+					ADC1_currentRange = 0;
 					break;
 			}
 			sendPacket(2, current, ADC1_currentRange);
 			break;
+			
 		case 3://resistance
 			stageBeta(3);
-			resistance = fabs(scaledInput)/0.000010;
+			resistance = fabs(ADC1_valueScaled)/0.000010;
 			sprintf(lcd_line2,"%lf",resistance);
 			switch(ADC1_currentRange){
 				case 0:
@@ -339,7 +329,7 @@ void menu(double scaledInput){
 		case 4://Frequency Response
 			frequencyResponseMenu(sweepStart, sweepEnd, sweepResolution);
 			break;
-		case 6://Signal Generation
+		case 5://Signal Generation
 			signalGenerationMenu(genFrequency,  genAmplitude, sigGenType);
 			break;
 		case 7:
@@ -352,23 +342,21 @@ void menu(double scaledInput){
 	//Update LCD Display with menu text
 	lcd_write_string(lcd_line1, 0, 0);
 	lcd_write_string(lcd_line2, 1, 0);
-	
-	//Update previous menu position
-	prevMenuPosition = menuPosition;
 }
 
 
 void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sigGenType){
 	//Android hasnt set any data, so use board buttons to manually set sweep parameters
-	if((genFrequency == 0)&&(genAmplitude == 0.0f)&&(sigGenType == 0)){
+	if((genFrequency == 0)&&(compare_float(genAmplitude, 0.0f))&&(sigGenType == 0)){
 		//TODO: Manual UI for Setting parameters
 		//TODO: Light LED's appropriately to show available selection
 		//Switch between generating Sine, Square, SAW. Set amplitude
-		generateSignal(sigGenType, genAmplitude);
+		generateSignal(sigGenType, 1.0);
 	} else {//Start Signal generation with Android sent data
 			//TODO: While loop to wait for menuPosition to change to indicate user input
-		
+			
 			//Switch between generating Sine, Square, SAW. Set amplitude
+			genAmplitude = 1.0;
 			generateSignal(sigGenType, genAmplitude);
 	}
 }
@@ -380,6 +368,7 @@ void frequencyResponseMenu(int sweepStart, int sweepEnd, int sweepResolution){
 		//TODO: Light LED's appropriately to show available selection
 		//TODO: Make the screen display a pretty frequency response
 		//TODO: Alter Frequency Response to return a double array of results if called from menu
+			frequencyResponse(10, 20, 1);
 	} else {//Start frequency response with Android sent data
 		frequencyResponse(sweepStart, sweepEnd, sweepResolution);
 	}

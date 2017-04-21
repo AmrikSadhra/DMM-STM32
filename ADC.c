@@ -69,7 +69,7 @@ uint16_t read_ADC1_raw (void) {
 }
 
 uint16_t calibrate_ADC1(){
-		if(ADC_CALIBRATION_ENABLED){
+		#ifdef ADC_CALIBRATION_ENABLED
 			//Connect read stage to Ground to calibrate ADC
 			stageAlpha(0);
 			//Connect mode switching stage to Voltage
@@ -86,7 +86,9 @@ uint16_t calibrate_ADC1(){
 			//Connect read stage to voltage input, calibration over
 			stageAlpha(1);
 		return (uint16_t) runningTotal/5;
-	} else return 0;
+		#else 
+			return 0;
+		#endif
 }
 
 
@@ -94,13 +96,11 @@ uint16_t calibrate_ADC1(){
 double runningAverage(uint8_t numSamples){
 		uint32_t adc_raw = 0;
 
-		//TODO: Not efficient to do the subtraction here but cba with typecasting atm
 		for(int i=0;i<numSamples;i++){
-			adc_raw += read_ADC1_raw() - calibrationValue;
+			adc_raw += read_ADC1_raw();
 		}
 		
-	
-		return (double)(adc_raw/numSamples);
+		return (double)(adc_raw/numSamples) - calibrationValue;
 }
 
 
@@ -122,7 +122,7 @@ void autoRange(uint16_t adc1_raw){
 			
 		if(rangeSwitch){
 			#ifdef ADC_DEBUG	
-				printf("[Hardware Subsystem] ADC1 Range switch requested. Switching, raw ADC read: %d. Old Range: %d New Range: %d\r\n~", adc1_raw, ADC1_prevRange, ADC1_currentRange);
+				printf("[Hardware Subsystem] ADC1 Range switch requested. Switching, raw ADC read: %d. Old Range: %d New Range: %d\r\n", adc1_raw, ADC1_prevRange, ADC1_currentRange);
 			#endif
 			
 			//Clear Range switch bits
@@ -176,12 +176,11 @@ double read_ADC1 (void) {
 		}
 		
 		//Apply 3rd order calibration equation to output
-		double offset = 0.0014*pow(ADC1_valueScaled, 3) + 0.0094*pow(ADC1_valueScaled, 2) - 0.2351*ADC1_valueScaled + 0.0073; //Third order
+		double offset = 0.0014*pow(ADC1_valueScaled, 3) + 0.0094*pow(ADC1_valueScaled, 2) - 0.2351*ADC1_valueScaled + 0.0073; 
 		double offset1 = 9E-05*pow(ADC1_valueScaled, 4) - 0.0002*pow(ADC1_valueScaled, 3) - 0.0123*pow(ADC1_valueScaled, 2) + 0.0614*ADC1_valueScaled- 0.0008;
-		//double offset = 0.0012*pow(ADC1_valueScaled, 3) + 0.0106*pow(ADC1_valueScaled, 2) - 0.23*ADC1_valueScaled - 0.0166;
-
+	
 		#ifdef ADC_DEBUG
-			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf + Offset: %lf\r\n~", ADC1_valueScaled, ADC1_valueScaled + offset);
+			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf, Calibrated w/ Offset: %lf\r\n", ADC1_valueScaled, ADC1_valueScaled + offset + offset1);
 		#endif 
 
 		return ADC1_valueScaled + offset + offset1;

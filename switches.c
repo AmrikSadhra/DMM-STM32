@@ -1,7 +1,7 @@
 #include "switches.h"
 
 //Global for storing menu position
-uint8_t menuPosition = 1;
+uint8_t localMenuPosition = 1;
 
 void switch_init(){
 		/* Enable clock for SYSCFG */
@@ -70,40 +70,40 @@ void switch_init(){
 void EXTI9_5_IRQHandler(void) {
 	/* Make sure that interrupt flag is set */
    if (EXTI_GetITStatus(EXTI_Line8) != RESET) {
-				menuPosition = 1;
+				localMenuPosition = 1;
        /* Clear interrupt flag */
        EXTI_ClearITPendingBit(EXTI_Line8);
    } else if (EXTI_GetITStatus(EXTI_Line9) != RESET) {
-				menuPosition = 2;
+				localMenuPosition = 2;
        EXTI_ClearITPendingBit(EXTI_Line9);
    } 
 	 		#ifdef SWITCH_DEBUG
-				printf("[Switch External Interrupt] Menu Position: %d\r\n~", menuPosition);
+				printf("[Switch External Interrupt] Menu Position: %d\r\n~", localMenuPosition);
 			#endif
  }
 
 void EXTI15_10_IRQHandler(void) {
 	if (EXTI_GetITStatus(EXTI_Line10) != RESET) {
-				menuPosition = 3;
+				localMenuPosition = 3;
        EXTI_ClearITPendingBit(EXTI_Line10);
 	} else if (EXTI_GetITStatus(EXTI_Line11) != RESET) {
-				menuPosition = 4;
+				localMenuPosition = 4;
        EXTI_ClearITPendingBit(EXTI_Line11);
    }else if (EXTI_GetITStatus(EXTI_Line12) != RESET) {
-				menuPosition = 5;
+				localMenuPosition = 5;
        EXTI_ClearITPendingBit(EXTI_Line12);
    }else if (EXTI_GetITStatus(EXTI_Line13) != RESET) {
-				menuPosition = 6;
+				localMenuPosition = 6;
        EXTI_ClearITPendingBit(EXTI_Line13);
    }else if (EXTI_GetITStatus(EXTI_Line14) != RESET) {
-				menuPosition = 7;
+				localMenuPosition = 7;
        EXTI_ClearITPendingBit(EXTI_Line14);
    } else if (EXTI_GetITStatus(EXTI_Line15) != RESET) {
-				menuPosition = 8;
+				localMenuPosition = 8;
        EXTI_ClearITPendingBit(EXTI_Line15);
    }
 	
 	 #ifdef SWITCH_DEBUG
-			printf("[Switch External Interrupt] Menu Position: %d\r\n~", menuPosition);
+			printf("[Switch External Interrupt] Menu Position: %d\r\n~", localMenuPosition);
 		#endif
  }

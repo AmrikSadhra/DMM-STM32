@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include "math.h"
 
-//Globally available integer holding current ADC Range
+/* Globally available integer holding current ADC Range */
 extern uint8_t ADC1_currentRange;
 
 /* Functions to read ADC and return value */

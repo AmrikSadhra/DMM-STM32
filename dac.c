@@ -107,6 +107,10 @@ static void DAC1_Config(uint16_t *waveData){
 }
 
 void generateSignal(int signalType, float amplitude){
+	#ifdef DAC_DEBUG
+		printf("[Hardware Subsystem] Signal generation beginning with sigtype: %d Amplitude: %f\r\n", signalType, amplitude);
+	#endif
+	
 	//No error checking in amplitude magnitude as done on Android side
 	generatedSignal = malloc(WAVE_RES * sizeof(uint16_t));
 	
@@ -128,8 +132,12 @@ void generateSignal(int signalType, float amplitude){
 	//Generate wave with adjusted amplitude
 	for(int i = 0; i < WAVE_RES; i++){
 		generatedSignal[i] *= amplitude;
+		#ifdef DAC_DEBUG
+			printf("[Hardware Subsystem] GeneratedSignal[%d] = %d\r\n", i, generatedSignal[i]);
+		#endif
 	}	
 	
+	TIM5_Config(); 
 	DAC1_Config(generatedSignal);
 }
 
@@ -168,7 +176,7 @@ double peakToPeak(double timePeriod){
 		}
 		
 			#ifdef DAC_DEBUG
-				printf("[Frequency Response] Maximum Value: %lf Minimum Value: %lf\r\n~", minVal, maxVal);
+				printf("[Frequency Response] Maximum Value: %lf Minimum Value: %lf\r\n", minVal, maxVal);
 			#endif	
 		
 	return maxVal - minVal;
@@ -182,7 +190,7 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 	}
 	
 		#ifdef DAC_DEBUG
-			printf("[Hardware Subsystem] Frequency Response beginning with sweep start: %d sweep end: %d sweep resolution: %d\r\n~", sweepStart, sweepEnd, sweepResolution);
+			printf("[Hardware Subsystem] Frequency Response beginning with sweep start: %d sweep end: %d sweep resolution: %d\r\n", sweepStart, sweepEnd, sweepResolution);
 		#endif
 
 		//Move from sweepstart to sweep end via stepnumber
@@ -204,7 +212,7 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 			sendPacket(5, freqResponseRatio, OUT_FREQ);
 			
 			#ifdef DAC_DEBUG
-				printf("[Frequency Response] Gain at frequency %d is %lf\r\n~", OUT_FREQ, freqResponseRatio);
+				//printf("[Frequency Response] Gain at frequency %d is %lf\r\n", OUT_FREQ, freqResponseRatio);
 			#endif		
 		}
 		
