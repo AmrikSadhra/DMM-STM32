@@ -39,9 +39,9 @@
 .\adc.o: serial.h
 .\adc.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdio.h
 .\adc.o: utils.h
+.\adc.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\adc.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\adc.o: queue.h
-.\adc.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\adc.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
 .\adc.o: dmm.h
 .\adc.o: lcd_buffer.h

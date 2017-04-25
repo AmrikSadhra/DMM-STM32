@@ -39,7 +39,7 @@
 .\packet.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h
 .\packet.o: dmm_config.h
 .\packet.o: utils.h
+.\packet.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\packet.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\packet.o: queue.h
-.\packet.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\packet.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h

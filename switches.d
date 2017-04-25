@@ -40,7 +40,7 @@
 .\switches.o: dmm_config.h
 .\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdio.h
 .\switches.o: utils.h
+.\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\switches.o: queue.h
-.\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h

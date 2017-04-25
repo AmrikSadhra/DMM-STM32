@@ -38,8 +38,8 @@
 .\serial.o: dmm_config.h
 .\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdio.h
 .\serial.o: utils.h
+.\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\serial.o: queue.h
-.\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
 .\serial.o: switches.h

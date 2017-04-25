@@ -45,8 +45,8 @@
 .\dmm.o: adc.h
 .\dmm.o: serial.h
 .\dmm.o: utils.h
-.\dmm.o: queue.h
 .\dmm.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\dmm.o: queue.h
 .\dmm.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
 .\dmm.o: dmm.h
 .\dmm.o: utils.h

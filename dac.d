@@ -37,13 +37,13 @@
 .\dac.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h
 .\dac.o: dmm_config.h
 .\dac.o: utils.h
+.\dac.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\dac.o: adc.h
 .\dac.o: serial.h
 .\dac.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdio.h
 .\dac.o: utils.h
 .\dac.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\dac.o: queue.h
-.\dac.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\dac.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
 .\dac.o: dmm.h
 .\dac.o: lcd_buffer.h

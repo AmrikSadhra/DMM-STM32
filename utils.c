@@ -56,3 +56,10 @@ int compare_float(float f1, float f2)
     return 0;
    }
  }
+
+double rand_between(double min, double max) {
+       double scaled = (double)rand()/RAND_MAX;
+	
+       return (double)((max - min)*scaled + min);
+}
+ 

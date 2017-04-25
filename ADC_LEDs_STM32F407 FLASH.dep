@@ -385,13 +385,13 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x58FF1AD1)
-I (dmm_config.h)(0x58FF64B7)
+I (dmm_config.h)(0x58FF67F9)
 I (serial.h)(0x58FF1AD3)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdio.h)(0x56FEA54E)
-I (utils.h)(0x58FF1AD3)
+I (utils.h)(0x58FF74EB)
+I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdbool.h)(0x56FEA54C)
 I (queue.h)(0x58FF1AD3)
-I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\string.h)(0x56FEA54E)
 I (dmm.h)(0x58FF50D6)
 I (lcd_buffer.h)(0x58FF1AD2)
@@ -401,9 +401,9 @@ I (C:\KEIL_V5\ARM\ARMCC\include\math.h)(0x56FEA546)
 I (capacitance.h)(0x58FF4A48)
 I (packet.h)(0x58FF1AD3)
 I (switches.h)(0x58FF1AD3)
-I (dac.h)(0x58FF6099)
-F (.\dac.c)(0x58FF6521)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\dac.o --omf_browse .\dac.crf --depend .\dac.d)
-I (dac.h)(0x58FF6099)
+I (dac.h)(0x58FF775C)
+F (.\dac.c)(0x58FF7897)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\dac.o --omf_browse .\dac.crf --depend .\dac.d)
+I (dac.h)(0x58FF775C)
 I (.\Libraries\CMSIS\STM32F4xx\Include\stm32f4xx.h)(0x58FF1AD1)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x58FF1AD1)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdint.h)(0x56FEA54E)
@@ -438,14 +438,14 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x58FF1AD1)
-I (dmm_config.h)(0x58FF64B7)
-I (utils.h)(0x58FF1AD3)
+I (dmm_config.h)(0x58FF67F9)
+I (utils.h)(0x58FF74EB)
+I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (adc.h)(0x58FF1AD0)
 I (serial.h)(0x58FF1AD3)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdio.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdbool.h)(0x56FEA54C)
 I (queue.h)(0x58FF1AD3)
-I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\string.h)(0x56FEA54E)
 I (dmm.h)(0x58FF50D6)
 I (lcd_buffer.h)(0x58FF1AD2)
@@ -455,9 +455,9 @@ I (C:\KEIL_V5\ARM\ARMCC\include\math.h)(0x56FEA546)
 I (capacitance.h)(0x58FF4A48)
 I (packet.h)(0x58FF1AD3)
 I (switches.h)(0x58FF1AD3)
-F (.\dmm.c)(0x58FF647C)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\dmm.o --omf_browse .\dmm.crf --depend .\dmm.d)
+F (.\dmm.c)(0x58FF7849)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\dmm.o --omf_browse .\dmm.crf --depend .\dmm.d)
 I (DMM.h)(0x58FF50D6)
-I (dmm_config.h)(0x58FF64B7)
+I (dmm_config.h)(0x58FF67F9)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdio.h)(0x56FEA54E)
 I (.\Libraries\CMSIS\STM32F4xx\Include\STM32F4xx.h)(0x58FF1AD1)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x58FF1AD1)
@@ -500,14 +500,14 @@ I (C:\KEIL_V5\ARM\ARMCC\include\math.h)(0x56FEA546)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdbool.h)(0x56FEA54C)
 I (adc.h)(0x58FF1AD0)
 I (serial.h)(0x58FF1AD3)
-I (utils.h)(0x58FF1AD3)
-I (queue.h)(0x58FF1AD3)
+I (utils.h)(0x58FF74EB)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
+I (queue.h)(0x58FF1AD3)
 I (C:\KEIL_V5\ARM\ARMCC\include\string.h)(0x56FEA54E)
 I (capacitance.h)(0x58FF4A48)
 I (packet.h)(0x58FF1AD3)
 I (switches.h)(0x58FF1AD3)
-I (dac.h)(0x58FF6099)
+I (dac.h)(0x58FF775C)
 F (.\lcd_buffer.c)(0x58FF1AD2)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\lcd_buffer.o --omf_browse .\lcd_buffer.crf --depend .\lcd_buffer.d)
 I (lcd_buffer.h)(0x58FF1AD2)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdint.h)(0x56FEA54E)
@@ -587,18 +587,18 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x58FF1AD1)
-I (dmm_config.h)(0x58FF64B7)
-I (utils.h)(0x58FF1AD3)
+I (dmm_config.h)(0x58FF67F9)
+I (utils.h)(0x58FF74EB)
+I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdbool.h)(0x56FEA54C)
 I (queue.h)(0x58FF1AD3)
-I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\string.h)(0x56FEA54E)
 F (.\queue.c)(0x58FF1AD3)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\queue.o --omf_browse .\queue.crf --depend .\queue.d)
 I (queue.h)(0x58FF1AD3)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdbool.h)(0x56FEA54C)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdio.h)(0x56FEA54E)
-I (dmm_config.h)(0x58FF64B7)
+I (dmm_config.h)(0x58FF67F9)
 F (.\serial.c)(0x58FF2767)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\serial.o --omf_browse .\serial.crf --depend .\serial.d)
 I (serial.h)(0x58FF1AD3)
 I (.\Libraries\CMSIS\STM32F4xx\Include\stm32f4xx.h)(0x58FF1AD1)
@@ -635,12 +635,12 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x58FF1AD1)
-I (dmm_config.h)(0x58FF64B7)
+I (dmm_config.h)(0x58FF67F9)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdio.h)(0x56FEA54E)
-I (utils.h)(0x58FF1AD3)
+I (utils.h)(0x58FF74EB)
+I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdbool.h)(0x56FEA54C)
 I (queue.h)(0x58FF1AD3)
-I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\string.h)(0x56FEA54E)
 I (switches.h)(0x58FF1AD3)
 F (.\switches.c)(0x58FF27AA)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\switches.o --omf_browse .\switches.crf --depend .\switches.d)
@@ -680,15 +680,15 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x58FF1AD1)
 I (serial.h)(0x58FF1AD3)
-I (dmm_config.h)(0x58FF64B7)
+I (dmm_config.h)(0x58FF67F9)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdio.h)(0x56FEA54E)
-I (utils.h)(0x58FF1AD3)
+I (utils.h)(0x58FF74EB)
+I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdbool.h)(0x56FEA54C)
 I (queue.h)(0x58FF1AD3)
-I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 I (C:\KEIL_V5\ARM\ARMCC\include\string.h)(0x56FEA54E)
-F (.\utils.c)(0x58FF1AD3)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\utils.o --omf_browse .\utils.crf --depend .\utils.d)
-I (utils.h)(0x58FF1AD3)
+F (.\utils.c)(0x58FF75DD)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\utils.o --omf_browse .\utils.crf --depend .\utils.d)
+I (utils.h)(0x58FF74EB)
 I (.\Libraries\CMSIS\STM32F4xx\Include\STM32F4xx.h)(0x58FF1AD1)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x58FF1AD1)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdint.h)(0x56FEA54E)
@@ -723,6 +723,7 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x58FF1AD1)
+I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
 F (.\led.c)(0x58FF1AD3)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\led.o --omf_browse .\led.crf --depend .\led.d)
 I (.\Libraries\CMSIS\STM32F4xx\Include\STM32F4xx.h)(0x58FF1AD1)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x58FF1AD1)
@@ -759,7 +760,7 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x58FF1AD1)
 I (LED.h)(0x58FF1AD1)
-F (.\capacitance.c)(0x58FF4BA7)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\capacitance.o --omf_browse .\capacitance.crf --depend .\capacitance.d)
+F (.\capacitance.c)(0x58FF7B53)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\capacitance.o --omf_browse .\capacitance.crf --depend .\capacitance.d)
 I (capacitance.h)(0x58FF4A48)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x58FF1AD1)
 I (.\Libraries\CMSIS\STM32F4xx\Include\stm32f4xx.h)(0x58FF1AD1)
@@ -795,13 +796,13 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x58FF1AD1)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x58FF1AD1)
-I (dmm_config.h)(0x58FF64B7)
+I (dmm_config.h)(0x58FF67F9)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdbool.h)(0x56FEA54C)
 I (serial.h)(0x58FF1AD3)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdio.h)(0x56FEA54E)
-I (utils.h)(0x58FF1AD3)
-I (queue.h)(0x58FF1AD3)
+I (utils.h)(0x58FF74EB)
 I (C:\KEIL_V5\ARM\ARMCC\include\stdlib.h)(0x56FEA54E)
+I (queue.h)(0x58FF1AD3)
 I (C:\KEIL_V5\ARM\ARMCC\include\string.h)(0x56FEA54E)
 F (RTE\Device\STM32F407VG\startup_stm32f407xx.s)(0x58FF1AD2)(--cpu Cortex-M4.fp -g --apcs=interwork -I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include--pd "__UVISION_VERSION SETA 520" --pd "_RTE_ SETA 1" --pd "STM32F407xx SETA 1"--list .\startup_stm32f407xx.lst --xref -o .\startup_stm32f407xx.o --depend .\startup_stm32f407xx.d)
 F (RTE\Device\STM32F407VG\system_stm32f4xx.c)(0x58FF1AD2)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I .\DMM -I .\Libraries\CMSIS\Include -I .\Libraries\CMSIS\STM32F4xx\Include -I .\Libraries\STM32F4xx_StdPeriph_Driver\inc -I .\Utilities\STM32F407-Discovery-I H:\DMM-STM32\RTE-I C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include-I C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="520" -D_RTE_ -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DKEIL_IDE -DHSE_VALUE="8000000" -DPLL_M="8" -DPLL_N="336" -DPLL_P="2" -DPLL_Q="7"-o .\system_stm32f4xx.o --omf_browse .\system_stm32f4xx.crf --depend .\system_stm32f4xx.d)

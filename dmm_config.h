@@ -8,7 +8,7 @@
 #define BUFFER_SIZE 128
 
 /* Frequency Response/Sig Gen Settings */
-//#define DAC_DEBUG 
+#define DAC_DEBUG 
 
 #define   WAVE_RES          128                                  // Waveform resolution
 #define   DAC_DHR12R1_ADDR  0x40007408                           // DMA writes into this reg on every request		

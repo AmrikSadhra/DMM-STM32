@@ -99,13 +99,27 @@ static void DAC1_Config(const uint16_t *waveData){
   DAC_DMACmd(DAC_Channel_1, ENABLE);
 }
 
-void generateSignal(uint8_t signalType, float amplitude){
+void generateSignal(uint32_t genFrequency, uint8_t signalType, float amplitude){
 	static float prevAmplitude;
+	
 	#ifdef DAC_DEBUG
-		printf("[Hardware Subsystem] Signal generation beginning with sigtype: %d Amplitude: %f\r\n", signalType, amplitude);
+		printf("[Hardware Subsystem] Signal generation beginning with sigtype: %d Amplitude: %f Frequency: %d\r\n", signalType, amplitude, genFrequency);
 	#endif
 	
-	if(compare_float(prevAmplitude,amplitude)) return;
+	//Calculate new time period for genFrequency
+	TIM_PERIOD = ((CNT_FREQ)/((WAVE_RES)*(genFrequency)));
+	//Update timer with new period
+	TIM_TimeBaseStructInit(&TIM5_TimeBase); 
+	TIM5_TimeBase.TIM_Period = (uint16_t)TIM_PERIOD;           
+	TIM_TimeBaseInit(TIM5, &TIM5_TimeBase);
+	TIM_SelectOutputTrigger(TIM5, TIM_TRGOSource_Update);
+	
+	//Work out whether there is a need to adjust the current signal, if not, return. If there is, free old pointer.
+	if(compare_float(prevAmplitude,amplitude)){
+		return;
+	}else{
+		free(generatedSignal);
+	}
 	
 	//No error checking in amplitude magnitude as done on Android side
 	generatedSignal =  calloc(WAVE_RES, sizeof(uint16_t));
@@ -128,14 +142,9 @@ void generateSignal(uint8_t signalType, float amplitude){
 	//Generate wave with adjusted amplitude
 	for(int i = 0; i < WAVE_RES; i++){
 		generatedSignal[i] *= amplitude;
-		#ifdef DAC_DEBUG
-			printf("[Hardware Subsystem] GeneratedSignal[%d] = %d\r\n", i, generatedSignal[i]);
-		#endif
 	}
 
-		dac_initialise(generatedSignal);
-		free(generatedSignal);
-	
+	dac_initialise(generatedSignal);
 	prevAmplitude = amplitude;
 }
 

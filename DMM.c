@@ -354,13 +354,13 @@ void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sig
 		//TODO: Manual UI for Setting parameters
 		//TODO: Light LED's appropriately to show available selection
 		//Switch between generating Sine, Square, SAW. Set amplitude
-		generateSignal(SINE_TYPE, 1.0);
+		generateSignal(rand_between(100,1000), SQUARE_TYPE, 1.0);
 	} else {//Start Signal generation with Android sent data
 			//TODO: While loop to wait for menuPosition to change to indicate user input
 		
 			//Switch between generating Sine, Square, SAW. Set amplitude
 			genAmplitude = 1.0;
-			generateSignal(SQUARE_TYPE, genAmplitude);
+			generateSignal(genFrequency, SQUARE_TYPE, genAmplitude);
 	}
 }
 
