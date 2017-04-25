@@ -2,6 +2,6 @@
 *.crf
 *.d
 *.htm
-*.uvgui.*
+*.uvgui*
 *.dep
 *.__i
