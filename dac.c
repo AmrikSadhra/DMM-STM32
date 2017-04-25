@@ -1,5 +1,6 @@
 #include "dac.h"
 
+/* ----------------------- WAVE DATA ------------------------- */
 uint16_t sine[WAVE_RES] = { 2048, 2145, 2242, 2339, 2435, 2530, 2624, 2717, 2808, 2897, 
                                       2984, 3069, 3151, 3230, 3307, 3381, 3451, 3518, 3581, 3640, 
                                       3696, 3748, 3795, 3838, 3877, 3911, 3941, 3966, 3986, 4002, 
@@ -22,7 +23,9 @@ uint16_t square[WAVE_RES] = {4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4
 																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,
 																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,
 																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75};		
-	
+
+char *waveTypes[] = {"SINE", "SQUARE", "SAW"};
+
 /*--------- Internal Functions (Prototypes) ----------*/
 static void TIM5_Config(void);
 static void DAC1_Config(const uint16_t *waveData);
@@ -31,6 +34,7 @@ void dac_initialise(const uint16_t *waveData);
 //Array to store modified signal for generation
 uint16_t *generatedSignal;
 	
+//Default values for initialising timer
 uint32_t   OUT_FREQ = 5000; // Output waveform frequency
 uint16_t   TIM_PERIOD = 0; 	// Autoreload reg value
 TIM_TimeBaseInitTypeDef TIM5_TimeBase;

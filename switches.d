@@ -3,7 +3,7 @@
 .\switches.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h
 .\switches.o: .\Libraries\CMSIS\STM32F4xx\Include\stm32f4xx.h
 .\switches.o: .\Libraries\CMSIS\Include\core_cm4.h
-.\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\switches.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\switches.o: .\Libraries\CMSIS\Include\core_cmInstr.h
 .\switches.o: .\Libraries\CMSIS\Include\core_cmFunc.h
 .\switches.o: .\Libraries\CMSIS\Include\core_cmSimd.h
@@ -38,9 +38,9 @@
 .\switches.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h
 .\switches.o: serial.h
 .\switches.o: dmm_config.h
-.\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdio.h
+.\switches.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\switches.o: utils.h
-.\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\switches.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\switches.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\switches.o: queue.h
-.\switches.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
+.\switches.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

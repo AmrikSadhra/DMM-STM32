@@ -2,7 +2,7 @@
 .\serial.o: serial.h
 .\serial.o: .\Libraries\CMSIS\STM32F4xx\Include\stm32f4xx.h
 .\serial.o: .\Libraries\CMSIS\Include\core_cm4.h
-.\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\serial.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\serial.o: .\Libraries\CMSIS\Include\core_cmInstr.h
 .\serial.o: .\Libraries\CMSIS\Include\core_cmFunc.h
 .\serial.o: .\Libraries\CMSIS\Include\core_cmSimd.h
@@ -36,10 +36,10 @@
 .\serial.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h
 .\serial.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h
 .\serial.o: dmm_config.h
-.\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdio.h
+.\serial.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\serial.o: utils.h
-.\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\serial.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\serial.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\serial.o: queue.h
-.\serial.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
+.\serial.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\serial.o: switches.h

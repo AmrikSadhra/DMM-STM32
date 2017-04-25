@@ -2,7 +2,7 @@
 .\utils.o: utils.h
 .\utils.o: .\Libraries\CMSIS\STM32F4xx\Include\STM32F4xx.h
 .\utils.o: .\Libraries\CMSIS\Include\core_cm4.h
-.\utils.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\utils.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\utils.o: .\Libraries\CMSIS\Include\core_cmInstr.h
 .\utils.o: .\Libraries\CMSIS\Include\core_cmFunc.h
 .\utils.o: .\Libraries\CMSIS\Include\core_cmSimd.h
@@ -35,4 +35,4 @@
 .\utils.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h
 .\utils.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h
 .\utils.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h
-.\utils.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\utils.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h

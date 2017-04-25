@@ -94,8 +94,7 @@ void LED_Init (void) {
  *----------------------------------------------------------------------------*/
 void LED_On (unsigned int num) {
   if (num < LED_NUM) {
-		//TODO: May be BSRRL and not H
-    GPIOD->BSRRH = led_mask[num];
+    GPIOD->BSRRL = led_mask[num];
   }
 }
 

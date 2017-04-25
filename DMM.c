@@ -351,16 +351,147 @@ void menu(){
 void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sigGenType){
 	//Android hasnt set any data, so use board buttons to manually set sweep parameters
 	if((genFrequency == 0)&&(compare_float(genAmplitude, 0.0f))&&(sigGenType == 0)){
-		//TODO: Manual UI for Setting parameters
-		//TODO: Light LED's appropriately to show available selection
-		//Switch between generating Sine, Square, SAW. Set amplitude
-		generateSignal(rand_between(100,1000), SQUARE_TYPE, 1.0);
-	} else {//Start Signal generation with Android sent data
-			//TODO: While loop to wait for menuPosition to change to indicate user input
 		
-			//Switch between generating Sine, Square, SAW. Set amplitude
-			genAmplitude = 1.0;
-			generateSignal(genFrequency, SQUARE_TYPE, genAmplitude);
+		//Buffers holding Text for LCD
+		char line1Buf[16];
+		char line2Buf[16];
+		
+		//Set Defaults
+		uint32_t stepSize = MANUAL_DEFAULT_STEP;
+		genFrequency = MANUAL_FREQ_START;
+		int entriesDone = 0;
+		localMenuPosition = UPDATE_DISPLAY; //Update display immediately
+			
+		while((entriesDone != 3)&&(entriesDone != -1)){ //Whilst Still data to collect (3 values needed), and not cancelled (Entries done = -1)
+			switch(localMenuPosition){
+				case MANUAL_VALDOWN_BUTTON:
+					switch(entriesDone){
+						case 0: //Wave Type Data collection
+							//Drop to lower wave type if not wave type 0 
+							if(sigGenType != 0) sigGenType--; 
+						break;
+						
+						case 1: //Frequency Data collection
+						//If freqDown is valid 
+						if((genFrequency - stepSize) >= MANUAL_MIN_FREQ){
+							genFrequency -= stepSize;
+						}
+						break;
+						
+						case 2: //Amplitude Data Collection
+						if((genAmplitude - MANUAL_AMP_STEPSIZE) >= MANUAL_MIN_AMP){
+							genAmplitude -= MANUAL_AMP_STEPSIZE;
+						}
+						break;
+					}
+				localMenuPosition = UPDATE_DISPLAY; //Update Display next time through switch statement
+				break;
+					
+				case MANUAL_VALUP_BUTTON:
+					switch(entriesDone){
+						case 0: //Wave Type Data collection
+							 //Bump up to higher wave type if not max wave type
+							if(sigGenType != 2) sigGenType++;
+						break;
+						
+						case 1: //Frequency Data collection
+							//If freqUp is valid 
+							if((genFrequency + stepSize) <= MANUAL_MAX_FREQ){
+								genFrequency += stepSize;
+							}
+						break;
+						
+						case 2: //Amplitude Data Collection
+							if((genAmplitude + MANUAL_AMP_STEPSIZE) <= MANUAL_MAX_AMP){
+								genAmplitude += MANUAL_AMP_STEPSIZE;
+							}
+						break;
+					}
+				localMenuPosition = UPDATE_DISPLAY;
+				break;
+					
+				case MANUAL_STEPDOWN_BUTTON:
+						switch(entriesDone){
+							case 1: //Frequency Step Data collection
+								//If stepDown is valid 
+								if((stepSize / MANUAL_STEP_MULTIPLIER) >= MANUAL_MIN_STEPSIZE){
+									stepSize /= MANUAL_STEP_MULTIPLIER;
+								}
+								break;
+						}
+				localMenuPosition = UPDATE_DISPLAY;
+				break;
+				
+				case MANUAL_STEPUP_BUTTON:
+					switch(entriesDone){
+							case 1: //Frequency Step Data collection
+								//If stepUp is valid 
+								if((stepSize * MANUAL_STEP_MULTIPLIER) <= MANUAL_MAX_STEPSIZE){
+									stepSize *= MANUAL_STEP_MULTIPLIER;
+								}
+							break;
+						}
+				localMenuPosition = UPDATE_DISPLAY; 
+				break;
+					
+				case UPDATE_DISPLAY:
+					lcd_clear_display(); //Clear display so ready for new data
+					switch(entriesDone){
+						case 0: //Update LCD and serial with wave type data
+							#ifdef DMM_DEBUG
+								printf("[Signal Generation] Wave type changing. WaveType: %s\r\n", waveTypes[sigGenType]); 
+							#endif
+							sprintf(line1Buf, "%s", "Signal Type"); //Shared LCD line
+							sprintf(line2Buf, "%s", waveTypes[sigGenType]);
+						break;
+						
+						case 1: //Update LCD and serial with frequency data
+							#ifdef DMM_DEBUG
+								printf("[Signal Generation] Frequency Vars changing. StepSize: %d GenFrequency: %d\r\n", stepSize, genFrequency); 
+							#endif	
+							sprintf(line1Buf, "Freq:%d", genFrequency);
+							sprintf(line2Buf, "Step:%d", stepSize);
+						break;
+						
+						case 2: //Update LCD and serial with amplitude data
+							#ifdef DMM_DEBUG
+								printf("[Signal Generation] Amplitude changing. Amplitude: %f\r\n", genAmplitude); 
+							#endif	
+							sprintf(line1Buf, "%s", "Amplitude");
+							sprintf(line2Buf, "%.1f", genAmplitude);
+						break;
+					}
+					//Update display with new data
+					lcd_write_string(line1Buf, 0, 0);
+					lcd_write_string(line2Buf, 1, 0);
+					localMenuPosition =  NO_ACTION;  //Reset MenuPosition var to avoid infinite repeat
+					break;
+				
+				case NO_ACTION:
+					//Wait, no action to perform 
+					break;
+				
+				case MANUAL_DONE_BUTTON:
+					entriesDone++; //We're done with current variable, move to next
+					localMenuPosition = UPDATE_DISPLAY;
+					break;
+				
+				case MANUAL_CANCEL_BUTTON:
+					if(entriesDone != -1) entriesDone--; //We're done with current variable, move to next
+					break;
+			}
+		}
+
+		if(entriesDone != -1){ //Switch between generating Sine, Square, SAW, If user not cancelled 
+			generateSignal(genFrequency, sigGenType, genAmplitude);
+		} 
+		#ifdef DMM_DEBUG
+			else {
+				printf("[Signal Generation] User cancelled signal generation\r\n"); 
+			}		
+		#endif	
+	} else {//Start Signal generation with Android sent data
+			generateSignal(genFrequency, sigGenType, genAmplitude);
 	}
 }
 
