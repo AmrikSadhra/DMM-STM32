@@ -14,8 +14,8 @@
 
 /*--------- Functions ----------*/
 void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepResolution);
-void generateSignal(int signalType, float amplitude);
-void freeGeneratedSignal(bool isSigGen);
+void generateSignal(uint8_t signalType, float amplitude);
+void stopGenerating(void);
 
 #endif /*_DAC_H_*/
 

@@ -50,6 +50,7 @@
 .\dmm.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
 .\dmm.o: dmm.h
 .\dmm.o: utils.h
+.\dmm.o: capacitance.h
 .\dmm.o: packet.h
 .\dmm.o: utils.h
 .\dmm.o: switches.h

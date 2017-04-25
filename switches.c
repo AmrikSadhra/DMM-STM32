@@ -6,7 +6,7 @@ uint8_t localMenuPosition = 1;
 void switch_init(){
 		/* Enable clock for SYSCFG */
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-	
+
 		GPIO_InitTypeDef GPIO_InitStruct;
 		GPIO_InitTypeDef GPIOB_InitStruct;
     EXTI_InitTypeDef EXTI_InitStruct;
@@ -55,9 +55,9 @@ void switch_init(){
     /* PE8-15 are connected to EXTI_Line8-15, which have EXTI9_5_IRQn and EXTI15_10_IRQn */
     NVIC_InitStruct.NVIC_IRQChannel = EXTI15_10_IRQn;
     /* Set priority */
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0x00;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = SWITCH_IQ_PRIORITY;
     /* Set sub priority */
-    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 2;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = SWITCH_IQ_SUBPRIORITY;
     /* Enable interrupt */
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     /* Add to NVIC */

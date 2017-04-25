@@ -22,12 +22,11 @@ uint16_t square[WAVE_RES] = {4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4
 																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,
 																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,
 																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75};		
-
 	
 /*--------- Internal Functions (Prototypes) ----------*/
 static void TIM5_Config(void);
-static void DAC1_Config(uint16_t *waveData);
-void dac_initialise(void);
+static void DAC1_Config(const uint16_t *waveData);
+void dac_initialise(const uint16_t *waveData);
 	
 //Array to store modified signal for generation
 uint16_t *generatedSignal;
@@ -35,12 +34,8 @@ uint16_t *generatedSignal;
 uint32_t   OUT_FREQ = 5000; // Output waveform frequency
 uint16_t   TIM_PERIOD = 0; 	// Autoreload reg value
 TIM_TimeBaseInitTypeDef TIM5_TimeBase;
-																			
-/* Ensure initialisation runs before attempting wave generation */
-bool dacInitialised = false;
-
-																												
-void dac_initialise()
+																																							
+void dac_initialise(const uint16_t *waveData)
 {
   GPIO_InitTypeDef gpio_A;
 	
@@ -54,9 +49,7 @@ void dac_initialise()
   GPIO_Init(GPIOA, &gpio_A);
 
   TIM5_Config();  
-  DAC1_Config(sine);
-	
-	dacInitialised = true;
+  DAC1_Config(waveData);
 }
 
 static void TIM5_Config(void){
@@ -74,7 +67,7 @@ static void TIM5_Config(void){
 }
 
 
-static void DAC1_Config(uint16_t *waveData){
+static void DAC1_Config(const uint16_t *waveData){
   DAC_InitTypeDef DAC_INIT;
 	DMA_InitTypeDef DMA_INIT;		
   
@@ -86,7 +79,7 @@ static void DAC1_Config(uint16_t *waveData){
   DMA_DeInit(DMA1_Stream5);
   DMA_INIT.DMA_Channel            = DMA_Channel_7;  
   DMA_INIT.DMA_PeripheralBaseAddr = (uint32_t)DAC_DHR12R1_ADDR;
-  DMA_INIT.DMA_Memory0BaseAddr    = (uint32_t)&waveData;
+  DMA_INIT.DMA_Memory0BaseAddr    = (uint32_t)waveData;
   DMA_INIT.DMA_DIR                = DMA_DIR_MemoryToPeripheral;
   DMA_INIT.DMA_BufferSize         = WAVE_RES;
   DMA_INIT.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
@@ -106,14 +99,17 @@ static void DAC1_Config(uint16_t *waveData){
   DAC_DMACmd(DAC_Channel_1, ENABLE);
 }
 
-void generateSignal(int signalType, float amplitude){
+void generateSignal(uint8_t signalType, float amplitude){
+	static float prevAmplitude;
 	#ifdef DAC_DEBUG
 		printf("[Hardware Subsystem] Signal generation beginning with sigtype: %d Amplitude: %f\r\n", signalType, amplitude);
 	#endif
 	
-	//No error checking in amplitude magnitude as done on Android side
-	generatedSignal = malloc(WAVE_RES * sizeof(uint16_t));
+	if(compare_float(prevAmplitude,amplitude)) return;
 	
+	//No error checking in amplitude magnitude as done on Android side
+	generatedSignal =  calloc(WAVE_RES, sizeof(uint16_t));
+
 	//Copy array into target efficiently using memcpy
 	switch(signalType){
 		case SINE_TYPE:
@@ -128,28 +124,23 @@ void generateSignal(int signalType, float amplitude){
 			memcpy(generatedSignal, sine, WAVE_RES * sizeof(uint16_t));
 			break;
 	}
-	
+
 	//Generate wave with adjusted amplitude
 	for(int i = 0; i < WAVE_RES; i++){
 		generatedSignal[i] *= amplitude;
 		#ifdef DAC_DEBUG
 			printf("[Hardware Subsystem] GeneratedSignal[%d] = %d\r\n", i, generatedSignal[i]);
 		#endif
-	}	
+	}
+
+		dac_initialise(generatedSignal);
+		free(generatedSignal);
 	
-	TIM5_Config(); 
-	DAC1_Config(generatedSignal);
+	prevAmplitude = amplitude;
 }
 
 //Clean up after ourselves following Signal Generation
-void freeGeneratedSignal(bool isSigGen){
-		if(isSigGen){
-			//Change DAC wave reference so isnt using empty memory	
-			DAC1_Config(sine);
-			free(generatedSignal); //Clean up memory used during wave generation
-			
-		}
-		
+void stopGenerating(){	
 		//Disable DMA 
 		DMA_Cmd(DMA1_Stream5, DISABLE);
 		DAC_Cmd(DAC_Channel_1, DISABLE);
@@ -184,10 +175,8 @@ double peakToPeak(double timePeriod){
 
 
 void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepResolution){
-	//Check DAC initialised before beginning frequency response
-	if(!dacInitialised){
-		dac_initialise();
-	}
+		//Check DAC initialised before beginning frequency response
+		dac_initialise(sine);
 	
 		#ifdef DAC_DEBUG
 			printf("[Hardware Subsystem] Frequency Response beginning with sweep start: %d sweep end: %d sweep resolution: %d\r\n", sweepStart, sweepEnd, sweepResolution);
@@ -216,7 +205,7 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 			#endif		
 		}
 		
-		freeGeneratedSignal(false); //Stop generating signal and free STM32 resources
+		stopGenerating(); //Stop generating signal and free STM32 resources
 }
 
 

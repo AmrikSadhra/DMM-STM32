@@ -15,25 +15,25 @@ bool gammaInit = false;
 
 /* Initialise Mode Switch GPIO Pins for Mux (MUX IDENTIFIER HERE) */
 void mode_switch_init(){
-			//Initialisation of stage Alpha
-			RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-			GPIO_InitTypeDef GPIO_InitStruct2;
-			GPIO_InitStruct2.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
-			GPIO_InitStruct2.GPIO_Mode = GPIO_Mode_OUT;
-			GPIO_InitStruct2.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_InitStruct2.GPIO_OType = GPIO_OType_PP;
-			GPIO_InitStruct2.GPIO_PuPd = GPIO_PuPd_UP;
-			GPIO_Init(GPIOB, &GPIO_InitStruct2);
+		//Initialisation of stage Alpha
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+		GPIO_InitTypeDef GPIO_InitStruct2;
+		GPIO_InitStruct2.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+		GPIO_InitStruct2.GPIO_Mode = GPIO_Mode_OUT;
+		GPIO_InitStruct2.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_InitStruct2.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStruct2.GPIO_PuPd = GPIO_PuPd_UP;
+		GPIO_Init(GPIOB, &GPIO_InitStruct2);
 	
-			//Initialisation of Stage Beta
-			RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
-			GPIO_InitTypeDef GPIO_InitStruct;
-			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 ;
-			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
-			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-			GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
-			GPIO_Init(GPIOE, &GPIO_InitStruct);
+		//Initialisation of Stage Beta
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+		GPIO_InitTypeDef GPIO_InitStruct;
+		GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 ;
+		GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+		GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+		GPIO_Init(GPIOE, &GPIO_InitStruct);
 }
 
 /* Function to intiialise all used peripherals    */
@@ -178,8 +178,8 @@ void menu(){
 	uint32_t sweepStart = 0, sweepEnd = 0, sweepResolution = 0;
 	//Signal Generation Parameters
 	uint32_t genFrequency = 0;
-	float genAmplitude = 0;
-	uint8_t sigGenType;
+	float genAmplitude = 0.0;
+	uint8_t sigGenType = 0;
 	
 	//Query the Bluetooth Data to identify mode switches
 	if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) bluetoothMenuPosition = 1;
@@ -233,7 +233,7 @@ void menu(){
 	//Detect menu position change and perform menu switch logic to kill old DMM function
 	if(prevLocalMenuPosition !=  localMenuPosition){
 		if(prevLocalMenuPosition == 5){ //If switching away from Signal Generation
-			freeGeneratedSignal(true); //Clear memory used by Signal generation, Stop DMA operation
+			stopGenerating(); //Stop DMA operation
 		}
 		//Local menu position has changed value, update menu Position so STM board commands menu
 		menuPosition = localMenuPosition;
@@ -332,7 +332,10 @@ void menu(){
 		case 5://Signal Generation
 			signalGenerationMenu(genFrequency,  genAmplitude, sigGenType);
 			break;
-		case 7:
+		case 7://Measure Capacitance
+			sprintf(lcd_line1,"Capacitance");
+			sprintf(lcd_line2,"%d", numHighTicks);
+			if(timerDone) measureCapacitance();
 			break;
 		case 8:
 			break;
@@ -351,13 +354,13 @@ void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sig
 		//TODO: Manual UI for Setting parameters
 		//TODO: Light LED's appropriately to show available selection
 		//Switch between generating Sine, Square, SAW. Set amplitude
-		generateSignal(sigGenType, 1.0);
+		generateSignal(SINE_TYPE, 1.0);
 	} else {//Start Signal generation with Android sent data
 			//TODO: While loop to wait for menuPosition to change to indicate user input
-			
+		
 			//Switch between generating Sine, Square, SAW. Set amplitude
 			genAmplitude = 1.0;
-			generateSignal(sigGenType, genAmplitude);
+			generateSignal(SQUARE_TYPE, genAmplitude);
 	}
 }
 

@@ -51,6 +51,7 @@
 .\dac.o: LED.h
 .\dac.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h
 .\dac.o: adc.h
+.\dac.o: capacitance.h
 .\dac.o: packet.h
 .\dac.o: utils.h
 .\dac.o: switches.h

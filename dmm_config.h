@@ -8,7 +8,7 @@
 #define BUFFER_SIZE 128
 
 /* Frequency Response/Sig Gen Settings */
-#define DAC_DEBUG 
+//#define DAC_DEBUG 
 
 #define   WAVE_RES          128                                  // Waveform resolution
 #define   DAC_DHR12R1_ADDR  0x40007408                           // DMA writes into this reg on every request		
@@ -30,7 +30,7 @@
 #define DEFAULT_BAUD 9600
 
 /* ADC Settings */
-#define ADC_DEBUG 1
+#define ADC_DEBUG 
 
 //TODO: Fill these with cal curve data
 #define CAL_COEFF_X3
@@ -43,5 +43,21 @@
 #define NUM_CAL_SAMPLES 5
 
 #define ADC_SAMPLE_TIME 50E-3 //Time for ADC to take a single sample (used for freq response sampling)
+
+/* IRQ Priorities - Control which interrupt handlers have priority */
+//Used for capacitance
+#define TIM2_IQ_PRIORITY 0 
+#define TIM2_IQ_SUBPRIORITY 0
+
+//Serial Intterupt Handlers
+#define BLUETOOTH_IQ_PRIORITY 1
+#define BLUETOOTH_IQ_SUBPRIORITY 0
+
+#define DEBUG_IQ_PRIORITY 1 
+#define DEBUG_IQ_SUBPRIORITY 1 
+
+//Menu button inputs
+#define SWITCH_IQ_PRIORITY 2
+#define SWITCH_IQ_SUBPRIORITY 0  
 
 #endif /*_DMM_CONFIG_H_*/

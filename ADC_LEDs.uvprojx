@@ -488,6 +488,11 @@
               <FileType>1</FileType>
               <FilePath>.\led.c</FilePath>
             </File>
+            <File>
+              <FileName>capacitance.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\capacitance.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

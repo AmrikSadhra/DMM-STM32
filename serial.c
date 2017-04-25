@@ -59,8 +59,8 @@ void serial_init(uint32_t baudRate) {
   NVIC_InitTypeDef NVIC_InitStructure;
 
   NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn; // we want to configure the USART2 interrupts
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; // this sets the priority group of the USART1 interrupts
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; // this sets the subpriority inside the group
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = DEBUG_IQ_PRIORITY; // this sets the priority group of the USART1 interrupts
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = DEBUG_IQ_SUBPRIORITY; // this sets the subpriority inside the group
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; // the USART2 interrupts are globally enabled
   NVIC_Init( & NVIC_InitStructure); // the properties are passed to the NVIC_Init function which takes care of the low level stuff	
 
@@ -151,8 +151,8 @@ void bluetooth_init(uint32_t baudRate) {
   NVIC_InitTypeDef NVIC_InitStructure;
 
   NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = BLUETOOTH_IQ_PRIORITY;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = BLUETOOTH_IQ_SUBPRIORITY;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init( & NVIC_InitStructure);
 

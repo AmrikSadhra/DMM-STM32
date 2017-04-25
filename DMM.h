@@ -15,6 +15,7 @@
 #include "stdbool.h"
 //Made with Love (by us)
 #include "adc.h"
+#include "capacitance.h"
 #include "serial.h"
 #include "packet.h"
 #include "utils.h"
@@ -27,5 +28,7 @@ void initialise_Peripherals(void);
 void stageAlpha(int mode);
 void stageBeta(int mode);
 void stageGamma(int mode);
+
+
 
 #endif
