@@ -2,12 +2,23 @@
 #define _DMM_CONFIG_H_
 
 /* --------------------------- Debug Settings ---------------------------- */
-//#define DMM_DEBUG 							//Uncomment to debug main DMM menu logic
-//#define DAC_DEBUG 							//Uncomment to debug DAC readings
+#define DMM_DEBUG 							//Uncomment to debug main DMM menu logic
+#define DAC_DEBUG 							//Uncomment to debug DAC readings
 //#define SWITCH_DEBUG 						//Uncomment to external interrupts on switches 
 //#define QUEUE_DEBUG 						//Uncomment to debug actions of serial queues
 //#define PACKET_DEBUG 						//Uncomment to debug packets being sent
-//#define ADC_DEBUG 							//Uncomment to debug ADC value reads
+#define ADC_DEBUG 							//Uncomment to debug ADC value reads
+
+/* ----------------------- DMM Mux Mode Settings ------------------------- */
+//Stage Alpha
+#define PROBE_GROUND 			 0
+#define PROBE_VOLTAGE			 1
+#define PROBE_CAPACIITANCE 2
+
+//Stage Beta
+#define FUNCTION_RESISTANCE
+
+//Stage Gamma
 
 /* ------------------------ Generic DMM Settings ------------------------- */
 //Main menu states
@@ -16,9 +27,10 @@
 #define RESISTANCE_READ_STATE 3
 #define FREQUENCY_RESP_STATE 	4
 #define SIG_GEN_STATE 		 		5		
-#define LIGHT_INTENSITY_STATE 6
+#define AC_VOLTAGE_READ_STATE 6
 #define CAPACITANCE_STATE 		7
 #define DIODE_STATE 					8
+#define LIGHT_INTENSITY_STATE 9
 
 //Manual Menu navigation Settings
 #define MANUAL_VALDOWN_BUTTON 1   //Value decrease button
@@ -79,7 +91,7 @@
 
 #define ADC_CALIBRATION_ENABLED 
 #define SWITCHING_RANGE_TOLERANCE 2000
-#define NUM_AVG_SAMPLES 50
+#define NUM_AVG_SAMPLES 15
 #define NUM_CAL_SAMPLES 5
 
 #define ADC_SAMPLE_TIME 50E-3 						 	//Time for ADC to take a single sample (used for freq response sampling)

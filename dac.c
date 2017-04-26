@@ -104,6 +104,9 @@ static void DAC1_Config(const uint16_t *waveData){
 }
 
 void generateSignal(uint32_t genFrequency, uint8_t signalType, float amplitude){
+	lcd_write_string("Signal Gen", 0, 0);
+	lcd_write_string("on pin A4", 1, 0);
+	
 	static float prevAmplitude;
 	
 	#ifdef DAC_DEBUG
@@ -188,6 +191,10 @@ double peakToPeak(double timePeriod){
 
 
 void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepResolution){
+		lcd_clear_display();
+		lcd_write_string("Sweeping..", 0, 0);
+		lcd_write_string("Please wait", 1, 0);
+	
 		//Check DAC initialised before beginning frequency response
 		dac_initialise(sine);
 	

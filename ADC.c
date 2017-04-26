@@ -5,6 +5,7 @@
 uint16_t calibrationValue = 0;
 bool isInitialised = false;
 uint8_t ADC1_currentRange = 0;
+bool rangeChange = false;
 
 /*--------- Internal Functions (Prototypes) ----------*/
 uint16_t calibrate_ADC1(void); 
@@ -26,12 +27,8 @@ void autorange_init(){
 
 void ADC1_init(void) {
 	//Fix for infinite call in calibration routine
-	if(!isInitialised){
-		isInitialised = true;
-	} else
-	{
-		return;
-	}
+	if(!isInitialised) isInitialised = true;
+	 else return;
 	
 	//Set registers to bring up ADC1 in correct mode
 	RCC->APB2ENR  |= ((1UL <<  8) );         /* Enable ADC1 clock  */
@@ -41,7 +38,7 @@ void ADC1_init(void) {
 	ADC1->CR1 = 0x00;
 	ADC1->CR1 |= (1UL << 11);
 	ADC1->CR2 = 0x00;
-	ADC1->CR2 |= (1UL << 10) ;					/* right alignement of 12 bits */
+	ADC1->CR2 |= (1UL << 10) ;				/* right alignement of 12 bits */
 	ADC->CCR = 0x00;
 	ADC1->SQR1 = 0x01;								/* 1 conversion at a time */
 	ADC1->SMPR1 = 0x00;
@@ -184,12 +181,6 @@ double read_ADC1 (void) {
 		#endif 
 
 		return ADC1_valueScaled + offset + offset1;
-}
-
-void set_cont_ADC1(void){
-	ADC1->CR2 |= (1UL << 30)	;		/* set SWSTART to 1 to start conversion */
-	//Can wire to button to enable cont
-	ADC1->CR2 |= (1UL << 1)	;		
 }
 
 //Function to read ADC1 as quickly as possible

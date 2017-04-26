@@ -16,7 +16,7 @@ void switch_init(){
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 		GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 |GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;  // we want to configure PE8-15
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;       //As inputs
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;	//Polled at 2Mhz (Humans aren't quite fast enough to justify more)
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;		//Polled at 2Mhz (Humans aren't quite fast enough to justify more)
     GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;   	//As push / pull 
     GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_DOWN;   	//With a pulldown resistor, as detecting a high level
     GPIO_Init(GPIOE, &GPIO_InitStruct);             

@@ -6,7 +6,7 @@ Queue *bluetoothQueue, *debugQueue;
 bool isPacket = false;
 
 //-------- GLOBALS ----------
-bool bluetoothConnected = true; //Extern, can disable certain DMM functionality on STM if no phone connected
+bool bluetoothConnected = false; //Extern, can disable certain DMM functionality on STM if no phone connected
 
 /* Ensure initialisation runs before sending data */
 bool bluetoothInitialised = false; 

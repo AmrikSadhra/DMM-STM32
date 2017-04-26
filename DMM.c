@@ -40,73 +40,65 @@ void mode_switch_init(){
 void initialise_Peripherals(void){ 
 			lcd_init(LCD_LINES_TWO, LCD_CURSOR_OFF, LCD_CBLINK_OFF, BUFFER_SIZE);
 			ADC1_init();
-			serial_init(57600);
-			bluetooth_init(57600);
+			serial_init(9600);
+			bluetooth_init(9600);
 			switch_init();
 			LED_Init();
 			mode_switch_init();
 			//Connect Read stage to Voltage
-			stageAlpha(1);
+			stageAlpha(PROBE_VOLTAGE);
 }
 
-//has three stages: ground, voltage,capacitance
-//Stage Alpha
-//J5 4,3 (GPIOB 5 4): 
-//   0 0 Ground       &= ~(3UL << 4) Clear to 00
-//   0 1 Voltage      |=  (1UL << 4)
-//   1 0 Capacitance  |=  (2UL << 4)
+
+//Stage Alpha - 3 Stage Selection: Ground, Voltage,Capacitance
 void stageAlpha(int mode){	
 			if(!alphaInit){
 				mode_switch_init();
 				alphaInit = true;
 			}
+			
 			//Clear Range switch bits
 			GPIOB->ODR &= ~(3UL << 4);
 			switch(mode){
-				case 0:
-					GPIOB->ODR &= ~(3UL << 4);
+				case PROBE_GROUND:						//J5 4,3 (GPIOB 5 4): 
+					GPIOB->ODR &= ~(3UL << 4); 	//   0 0 Ground       &= ~(3UL << 4) Clear to 00
 					break;
-				case 1:
-					GPIOB->ODR |= (1UL << 4);//setting mode to voltage
+				case PROBE_VOLTAGE:
+					GPIOB->ODR |= (1UL << 4);		//   0 1 Voltage      |=  (1UL << 4)/
 					break;
-				case 2:
-					GPIOB->ODR |= (2UL << 4);
+				case PROBE_CAPACIITANCE:
+					GPIOB->ODR |= (2UL << 4);		//   1 0 Capacitance  |=  (2UL << 4)
 					break;
 				default:
 					break;
 			}
 }
 
-//Stage Beta
-//J7 5,4 (GPIOE 6 5): Mode Switch: Current/Resistance/Voltage Circuit
-//   0 0 Voltage      &= ~(3UL << 5) Clear to 00
-//   0 1 Current      |=  (1UL << 5)
-//   1 0 RMS          |=  (2UL << 5)
-//   1 1 Resistance   |=  (3UL << 5)
+//Stage Beta - 4 Mode Switch: Current/Resistance/RMS/Voltage Circuit
 void stageBeta(int mode){
 	if(!betaInit){
 				mode_switch_init();
 				betaInit = true;
 			}
 
-	//Clear bits 
-	GPIOE->ODR &= ~(3UL << 5);
-	switch(mode){
-		case 0://Voltage
-			GPIOE->ODR &= ~(3UL << 5);
-			break;
-		case 1://Current
-			GPIOE->ODR |= (1UL << 5);
-			break;
-		case 2://RMS
-			GPIOE->ODR |= (2UL << 5);
-			break;
-		case 3://Resistance
-			GPIOE->ODR |= (3UL << 5);
-			break;
-		default:
-			break;
-	}
+		//Clear bits 
+		GPIOE->ODR &= ~(3UL << 5);
+		switch(mode){
+			case 0://Voltage            //J7 5,4 (GPIOE 6 5): 
+				GPIOE->ODR &= ~(3UL << 5);//   0 0 Voltage      &= ~(3UL << 5) Clear to 00
+				break;
+			case 1://Current
+				GPIOE->ODR |= (1UL << 5); //   0 1 Current      |=  (1UL << 5)
+				break;
+			case 2://RMS
+				GPIOE->ODR |= (2UL << 5); //   1 0 RMS          |=  (2UL << 5)
+				break;
+			case 3://Resistance
+				GPIOE->ODR |= (3UL << 5); //   1 1 Resistance   |=  (3UL << 5)
+				break;
+			default:
+				break;
+		}
 }
 
 //Stage Gamma
@@ -117,9 +109,8 @@ void stageGamma(int mode){
 	if(!gammaInit){
 				mode_switch_init();
 				gammaInit = true;
-			}
+	}
 
-		
 	switch(mode){
 				case 0://10v in 
 					//Do nothing for Range 0 as pins already cleared
@@ -166,7 +157,8 @@ void menu(){
 		printf("[Android Client] Data Received: %s\r\n", bluetoothSwitchPacket);
 	#endif	
 	
-	double ADC1_valueScaled = 0;
+	//Read ADC and use this value for menu calculations
+	double ADC1_valueScaled = read_ADC1();
 	
 	//Menu Position variables
 	static int bluetoothMenuPosition;
@@ -182,9 +174,9 @@ void menu(){
 	uint8_t sigGenType = 0;
 	
 		//Query the Bluetooth Data to identify mode switches
-		if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) bluetoothMenuPosition = 1;
-		if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) bluetoothMenuPosition = 2;
-		if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) bluetoothMenuPosition = 3;
+		if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) bluetoothMenuPosition = VOLTAGE_READ_STATE;
+		if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) bluetoothMenuPosition = CURRENT_READ_STATE;
+		if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) bluetoothMenuPosition = RESISTANCE_READ_STATE;
 		if(strcmp(bluetoothSwitchPacket,"<m:4") == 0){ 
 			bluetoothMenuPosition = 4;
 			//Parse frequency sweep data from packet
@@ -213,10 +205,14 @@ void menu(){
 			#ifdef DMM_DEBUG
 			if(n != 3) printf("[Android Client] Failed to parse data from Client Signal generation request! Parsed: %d\r\n", n); //If not parsed 3 items from string
 			#endif
-	}
+		}
+		if(strcmp(bluetoothSwitchPacket,"<m:6>") == 0) bluetoothMenuPosition = AC_VOLTAGE_READ_STATE;
+		if(strcmp(bluetoothSwitchPacket,"<m:7>") == 0) bluetoothMenuPosition = CAPACITANCE_STATE;
+		if(strcmp(bluetoothSwitchPacket,"<m:8>") == 0) bluetoothMenuPosition = DIODE_STATE;
+		if(strcmp(bluetoothSwitchPacket,"<m:9>") == 0) bluetoothMenuPosition = LIGHT_INTENSITY_STATE;
 
-	//If bluetooth connected, enable bluetooth override of localMenuPositoon
-	if(bluetoothConnected){
+	
+		//Enable bluetooth override of localMenuPositoon
 		if(prevBluetoothMenuPosition != bluetoothMenuPosition){
 				#ifdef DMM_DEBUG
 					printf("[Android Client] Changing to menu: %d due to Android menu switch request\r\n", bluetoothMenuPosition); //If not parsed 3 items from string
@@ -226,19 +222,18 @@ void menu(){
 				//Update previous menu position
 				prevBluetoothMenuPosition = bluetoothMenuPosition;
 		}
-	}
 	
 	//Detect menu position change and perform menu switch logic to kill old DMM function
 	if(prevLocalMenuPosition !=  localMenuPosition){
 		if(prevLocalMenuPosition == 5){ //If switching away from Signal Generation
-			stopGenerating(); //Stop DMA operation
+			stopGenerating(); //Stop DMA operation for sig gen
 		}
 		//Local menu position has changed value, update menu Position so STM board commands menu
 		menuPosition = localMenuPosition;
 		//Update previous menu position
 		prevLocalMenuPosition = localMenuPosition;
 	} else {
-		if(prevLocalMenuPosition == 5){ //If still in signal Generation
+		if(prevLocalMenuPosition == 5){ //If still in signal Generation, no need to change menu
 			return;
 		}
 	}
@@ -257,8 +252,6 @@ void menu(){
 		case 0: //If menu position not initialised, go to voltage (No break statement)
 		case VOLTAGE_READ_STATE: //voltage
 			stageBeta(0);
-			while(menuPosition == VOLTAGE_READ_STATE){
-				ADC1_valueScaled  = read_ADC1();
 				switch(ADC1_currentRange){
 					case 0:
 						sprintf(lcd_line1,"Volt:0->10V");
@@ -279,9 +272,8 @@ void menu(){
 					default://Invalid range
 						ADC1_currentRange = 0;
 						break;
-				}
-				sendPacket(1, ADC1_valueScaled, ADC1_currentRange, 0);
 			}
+			sendPacket(1, ADC1_valueScaled, ADC1_currentRange, 0);
 			break;
 			
 			case CURRENT_READ_STATE://current
@@ -332,7 +324,7 @@ void menu(){
 					ADC1_currentRange =0;
 					break;
 			}
-			sendPacket(3, resistance, ADC1_currentRange, 0);
+			sendPacket(RESISTANCE_READ_STATE, resistance, ADC1_currentRange, 0);
 			break;
 			
 		case FREQUENCY_RESP_STATE:	//Frequency Response
@@ -343,8 +335,8 @@ void menu(){
 			signalGenerationMenu(genFrequency,  genAmplitude, sigGenType);
 			return;
 		
-		case LIGHT_INTENSITY_STATE: //Measure light intensity
-			
+		case AC_VOLTAGE_READ_STATE: //Measure AC voltage and frequency
+		
 			break;
 		
 		case CAPACITANCE_STATE://Measure Capacitance
@@ -356,6 +348,12 @@ void menu(){
 		case DIODE_STATE:
 			localMenuPosition = VOLTAGE_READ_STATE; //Return from non implemented feature to voltage
 		break;
+		
+		case LIGHT_INTENSITY_STATE: //Measure light intensity (only available through Android due to not enough buttons)
+			sprintf(lcd_line1,"Light Intensity");
+			sprintf(lcd_line2,"%.1f %%", ((ADC1_valueScaled + 10)/20)*100);
+			sendPacket(LIGHT_INTENSITY_STATE, ADC1_valueScaled, 0, 0);
+			break;
 		
 		default:
 			localMenuPosition = VOLTAGE_READ_STATE; //If entered stray state, return to voltage mode
@@ -509,8 +507,7 @@ void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sig
 		lcd_clear_display(); //Clear display for siggen/mode change text
 		if(entriesDone != -1){ //Switch between generating Sine, Square, SAW, If user not cancelled 
 			//We're done, notify user of signal generation
-			lcd_write_string("Signal Gen", 0, 0);
-			lcd_write_string("on pin A4", 1, 0);
+			
 			generateSignal(genFrequency, sigGenType, genAmplitude);
 			localMenuPosition = SIG_GEN_STATE; //Stay in siggen mode until user switch
 		} else { 
@@ -679,9 +676,6 @@ void frequencyResponseMenu(int sweepStart, int sweepEnd, int sweepResolution){
 
 		if(entriesDone != -1){ //Start frequency response with Android sent data, If user not cancelled 
 			//We're done. Notify user of ongoing sweep
-			lcd_clear_display();
-			lcd_write_string("Sweeping..", 0, 0);
-			lcd_write_string("Please wait", 1, 0);
 			frequencyResponse(sweepStart, sweepEnd, sweepResolution);
 			//TODO: Make the screen display a pretty frequency response
 			//TODO: Alter Frequency Response to return a double array of results if called from menu
