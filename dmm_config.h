@@ -2,29 +2,38 @@
 #define _DMM_CONFIG_H_
 
 /* --------------------------- Debug Settings ---------------------------- */
-#define DMM_DEBUG //Uncomment to debug main DMM menu logic
-#define DAC_DEBUG //Uncomment to debug DAC readings
-//#define SWITCH_DEBUG //Uncomment to external interrupts on switches 
-//#define QUEUE_DEBUG //Uncomment to debug actions of serial queues
+//#define DMM_DEBUG 							//Uncomment to debug main DMM menu logic
+//#define DAC_DEBUG 							//Uncomment to debug DAC readings
+//#define SWITCH_DEBUG 						//Uncomment to external interrupts on switches 
+//#define QUEUE_DEBUG 						//Uncomment to debug actions of serial queues
+//#define PACKET_DEBUG 						//Uncomment to debug packets being sent
+//#define ADC_DEBUG 							//Uncomment to debug ADC value reads
 
 /* ------------------------ Generic DMM Settings ------------------------- */
+//Main menu states
+#define VOLTAGE_READ_STATE 		1
+#define CURRENT_READ_STATE 		2
+#define RESISTANCE_READ_STATE 3
+#define FREQUENCY_RESP_STATE 	4
+#define SIG_GEN_STATE 		 		5		
+#define LIGHT_INTENSITY_STATE 6
+#define CAPACITANCE_STATE 		7
+#define DIODE_STATE 					8
 
 //Manual Menu navigation Settings
 #define MANUAL_VALDOWN_BUTTON 1   //Value decrease button
-#define MANUAL_DONE_BUTTON 2 			//Done entering value button
-#define MANUAL_VALUP_BUTTON 3 		//Value increase button
-#define MANUAL_CANCEL_BUTTON 4    //Cancel current value entering button
+#define MANUAL_DONE_BUTTON 		2 	//Done entering value button
+#define MANUAL_VALUP_BUTTON 	3 	//Value increase button
+#define MANUAL_CANCEL_BUTTON 	4   //Cancel current value entering button
 
 #define MANUAL_STEPDOWN_BUTTON 7  //Decrease stepsize button
-#define MANUAL_STEPUP_BUTTON 8		//Increase stepsize button
+#define MANUAL_STEPUP_BUTTON 	 8	//Increase stepsize button
 
 #define NO_ACTION 0 							//Empty state (do nothing in menu)
 #define UPDATE_DISPLAY 9					//State for updating display (arbitrary, larger than num buttons: 8)
 
 //Signal Generation
-#define SIG_GEN_STATE 420					//State for updating display (arbitrary, larger than num buttons: 8)
-
-#define MANUAL_DEFAULT_FREQ 100    	//Default starting frequency
+#define MANUAL_DEFAULT_FREQ 100   //Default starting frequency
 #define MANUAL_MIN_FREQ 100 		 	//Minimum frequency
 #define MANUAL_MAX_FREQ 10000  	 	//Maximum frequency
 
@@ -54,14 +63,15 @@
 #define   WAVE_GEN_VOLTAGE          3.28   // Arbitrary value to determine how long to sample wave for Peak to Peak
 
 /* ---------------------------- Serial Settings -------------------------- */
-#define MAX_SERIAL_IN_LENGTH 16							//Maximum size of debug or bluetooth packet				
+#define MAX_SERIAL_IN_LENGTH 16							//Maximum size of input debug or bluetooth packet				
 #define MAX_BT_BUF_SIZE 10									//Size of bluetooth buffer serial queue (increase if dropping Android packets)
 #define MAX_DBG_BUF_SIZE 10									//Size of debug buffer serial queue (increase if dropping debug packets)
 #define DEFAULT_BAUD 9600										//Default baud rates for serial if none supplied
 
-/* ----------------------------- ADC Settings ---------------------------- */
-#define ADC_DEBUG 
+/* ---------------------------- Packet Settings -------------------------- */
+#define PACKET_SIZE 30											//Maximum size of output debug or bluetooth packet	
 
+/* ----------------------------- ADC Settings ---------------------------- */
 //TODO: Fill these with cal curve data
 #define CAL_COEFF_X3
 #define CAL_COEFF_X2
@@ -79,11 +89,12 @@
 #define TIM2_IQ_SUBPRIORITY 0
 
 #define BLUETOOTH_IQ_PRIORITY 1							//Serial Handlers
-#define BLUETOOTH_IQ_SUBPRIORITY 0
-#define DEBUG_IQ_PRIORITY 1 
-#define DEBUG_IQ_SUBPRIORITY 1 
+#define BLUETOOTH_IQ_SUBPRIORITY 1
 
-#define SWITCH_IQ_PRIORITY 2								//Menu Switch Handlers
+#define DEBUG_IQ_PRIORITY 2 
+#define DEBUG_IQ_SUBPRIORITY 0 
+
+#define SWITCH_IQ_PRIORITY 3								//Menu Switch Handlers
 #define SWITCH_IQ_SUBPRIORITY 0  
 
 #endif /*_DMM_CONFIG_H_*/

@@ -1,18 +1,13 @@
 #include "packet.h"
 
-typedef struct {
-	char packetData[PACKET_SIZE];
-} packet;
-
-typedef struct {
-	float voltage;
-	float current;
-} generic;
-
-void sendPacket(int mode, float voltage, int range){
-		packet toSend;
+void sendPacket(int mode, float voltage, int range, int extra){
+		char packetData[PACKET_SIZE];
+		sprintf(packetData, "<m:%d;v:%f;r:%d;e:%d>",  mode, voltage, range, extra);
 	
-		sprintf(toSend.packetData, "<m:%d;v:%f;r:%d>",  mode, voltage, range);
-		bt_send_str(toSend.packetData);
+		#ifdef PACKET_DEBUG
+			printf("[Android Client] Data Sending: %s\r\n", packetData);
+		#endif
+	
+		bt_send_str(packetData);
 }
 

@@ -211,7 +211,7 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 			double freqResponseRatio = peakToPeak(1/OUT_FREQ)/WAVE_GEN_VOLTAGE;
 
 			//Send output packet 
-			sendPacket(5, freqResponseRatio, OUT_FREQ);
+			sendPacket(5, freqResponseRatio, OUT_FREQ, 0);
 			
 			#ifdef DAC_DEBUG
 				//printf("[Frequency Response] Gain at frequency %d is %lf\r\n", OUT_FREQ, freqResponseRatio);
