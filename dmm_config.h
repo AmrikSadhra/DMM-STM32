@@ -22,9 +22,11 @@
 #define UPDATE_DISPLAY 9					//State for updating display (arbitrary, larger than num buttons: 8)
 
 //Signal Generation
+#define SIG_GEN_STATE 420					//State for updating display (arbitrary, larger than num buttons: 8)
+
+#define MANUAL_DEFAULT_FREQ 100    	//Default starting frequency
 #define MANUAL_MIN_FREQ 100 		 	//Minimum frequency
 #define MANUAL_MAX_FREQ 10000  	 	//Maximum frequency
-#define MANUAL_FREQ_START 100    	//Default starting frequency
 
 #define MANUAL_DEFAULT_STEP 10		//Default step size for frequency (1, 10, 1000, 10000)
 #define MANUAL_STEP_MULTIPLIER 10	//Amount to multiply stepsize by when dropping/bumping
@@ -35,6 +37,10 @@
 #define MANUAL_MAX_AMP 1.0f			 	//Maximum amplitude
 #define MANUAL_AMP_STEPSIZE 0.1f 	//Amplitude stepsize
 
+//Frequency Response
+#define MANUAL_MIN_STEP 1			 		//Minimum Step size
+#define MANUAL_MAX_STEP 100			 	//Maximum Step Size
+#define MANUAL_SWEEP_STEPSIZE 1 	//SweepResolution stepsize
 
 /* ---------------------------- LCD Settings ----------------------------- */
 #define BUFFER_SIZE 128

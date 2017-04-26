@@ -245,8 +245,8 @@ void menu(){
 	double resistance = 0;
 	
 	//If Menu goes outside implemented features, these strings will propagate to LCD
-	char lcd_line1[16] ="ERROR";
-	char lcd_line2[16] ="ERROR";
+	char lcd_line1[16] ="    MODE  ";
+	char lcd_line2[16] ="  CHANGING";
 	
 	switch(menuPosition){
 		case 0: //If menu position not initialised, go to voltage (No break statement)
@@ -334,7 +334,7 @@ void menu(){
 			break;
 		case 7://Measure Capacitance
 			sprintf(lcd_line1,"Capacitance");
-			sprintf(lcd_line2,"%d", numHighTicks);
+			sprintf(lcd_line2,"%dF", numHighTicks);
 			if(timerDone) measureCapacitance();
 			break;
 		case 8:
@@ -353,12 +353,17 @@ void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sig
 	if((genFrequency == 0)&&(compare_float(genAmplitude, 0.0f))&&(sigGenType == 0)){
 		
 		//Buffers holding Text for LCD
-		char line1Buf[16];
-		char line2Buf[16];
+		char line1Buf[16] = "     Signal   ";
+		char line2Buf[16] = "   Generation ";
+		
+		//Write initial menu message
+		lcd_write_string(line1Buf, 0, 0);
+		lcd_write_string(line2Buf, 1, 0);
+		Delay(1000);
 		
 		//Set Defaults
 		uint32_t stepSize = MANUAL_DEFAULT_STEP;
-		genFrequency = MANUAL_FREQ_START;
+		genFrequency = MANUAL_DEFAULT_FREQ;
 		int entriesDone = 0;
 		localMenuPosition = UPDATE_DISPLAY; //Update display immediately
 			
@@ -449,8 +454,8 @@ void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sig
 							#ifdef DMM_DEBUG
 								printf("[Signal Generation] Frequency Vars changing. StepSize: %d GenFrequency: %d\r\n", stepSize, genFrequency); 
 							#endif	
-							sprintf(line1Buf, "Freq:%d", genFrequency);
-							sprintf(line2Buf, "Step:%d", stepSize);
+							sprintf(line1Buf, "Freq:%d Hz", genFrequency);
+							sprintf(line2Buf, "Step:%d Hz", stepSize);
 						break;
 						
 						case 2: //Update LCD and serial with amplitude data
@@ -458,7 +463,7 @@ void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sig
 								printf("[Signal Generation] Amplitude changing. Amplitude: %f\r\n", genAmplitude); 
 							#endif	
 							sprintf(line1Buf, "%s", "Amplitude");
-							sprintf(line2Buf, "%.1f", genAmplitude);
+							sprintf(line2Buf, "%.1f v", genAmplitude);
 						break;
 					}
 					//Update display with new data
@@ -478,18 +483,24 @@ void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sig
 				
 				case MANUAL_CANCEL_BUTTON:
 					if(entriesDone != -1) entriesDone--; //We're done with current variable, move to next
+					localMenuPosition = UPDATE_DISPLAY;
 					break;
 			}
 		}
 
 		if(entriesDone != -1){ //Switch between generating Sine, Square, SAW, If user not cancelled 
+			//We're done, notify user of signal generation
+			//We're done. Notify user of ongoing sweep
+			lcd_clear_display();
+			lcd_write_string("Signal Gen", 0, 0);
+			lcd_write_string("on pin A4", 1, 0);
 			generateSignal(genFrequency, sigGenType, genAmplitude);
-		} 
-		#ifdef DMM_DEBUG
-			else {
-				printf("[Signal Generation] User cancelled signal generation\r\n"); 
-			}		
-		#endif	
+		} else { 
+			#ifdef DMM_DEBUG
+				printf("[Signal Generation] User cancelled signal generation\r\n"); 		
+			#endif	
+		}
+		//TODO: Rerun method but show "signal generating on Pin A4" if signal is genning until user switches mode
 	} else {//Start Signal generation with Android sent data
 			generateSignal(genFrequency, sigGenType, genAmplitude);
 	}
@@ -498,11 +509,167 @@ void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sig
 void frequencyResponseMenu(int sweepStart, int sweepEnd, int sweepResolution){
 	//Android hasnt set any data, so use board buttons to manually set sweep parameters
 	if((sweepStart == 0)&&(sweepEnd == 0)&&(sweepResolution == 0)){
-		//TODO: Manual UI for Setting parameters
-		//TODO: Light LED's appropriately to show available selection
-		//TODO: Make the screen display a pretty frequency response
-		//TODO: Alter Frequency Response to return a double array of results if called from menu
-			frequencyResponse(10, 20, 1);
+
+		//Buffers holding Text for LCD
+		char line1Buf[16] = "    Frequency   ";
+		char line2Buf[16] = "    Response    ";
+		
+		//Write initial menu message
+		lcd_write_string(line1Buf, 0, 0);
+		lcd_write_string(line2Buf, 1, 0);
+		Delay(1000);
+		
+		//Set Defaults
+		uint32_t stepSize = MANUAL_DEFAULT_STEP;
+		sweepStart = MANUAL_DEFAULT_FREQ;
+		sweepEnd =  MANUAL_DEFAULT_FREQ + 10;
+		sweepResolution = 1;
+		
+		int entriesDone = 0;
+		localMenuPosition = UPDATE_DISPLAY; //Update display immediately
+			
+		while((entriesDone != 3)&&(entriesDone != -1)){ //Whilst Still data to collect (3 values needed), and not cancelled (Entries done = -1)
+			switch(localMenuPosition){
+				case MANUAL_VALDOWN_BUTTON:
+					switch(entriesDone){
+						case 0: //SweepStart Data collection
+							//If freqDown is valid 
+							if((sweepStart - stepSize) >= MANUAL_MIN_FREQ){
+								sweepStart -= stepSize;
+							}
+						break;
+						
+						case 1: //SweepEnd Data collection
+						//If freqDown is valid 
+							if((sweepEnd - stepSize) >= MANUAL_MIN_FREQ + 10){
+								sweepEnd -= stepSize;
+							}
+						break;
+						
+						case 2: //SweepResolution Data Collection
+						if((sweepResolution - MANUAL_SWEEP_STEPSIZE) >= MANUAL_MIN_STEP){
+							sweepResolution -= MANUAL_SWEEP_STEPSIZE;
+						}
+						break;
+					}
+				localMenuPosition = UPDATE_DISPLAY; //Update Display next time through switch statement
+				break;
+					
+				case MANUAL_VALUP_BUTTON:
+					switch(entriesDone){
+						case 0: //SweepStart Data collection
+							//If freqUp is valid 
+							if((sweepStart + stepSize) <= MANUAL_MAX_FREQ){
+								sweepStart += stepSize;
+							}
+						break;
+						
+						case 1: //SweepEnd Data collection
+							//If freqUp is valid 
+							if((sweepEnd + stepSize) <= MANUAL_MAX_FREQ){
+								sweepEnd += stepSize;
+							}
+						break;
+						
+						case 2: //SweepResolution Data Collection
+							if((sweepResolution + MANUAL_SWEEP_STEPSIZE) <= MANUAL_MAX_STEP){
+								sweepResolution += MANUAL_SWEEP_STEPSIZE;
+							}
+						break;
+					}
+				localMenuPosition = UPDATE_DISPLAY;
+				break;
+					
+				case MANUAL_STEPDOWN_BUTTON:
+						switch(entriesDone){
+							case 0: //SweepStart Step Data collection
+							case 1: //SweepEnd Step Data collection
+								//If stepDown is valid 
+								if((stepSize / MANUAL_STEP_MULTIPLIER) >= MANUAL_MIN_STEPSIZE){
+									stepSize /= MANUAL_STEP_MULTIPLIER;
+								}
+								break;
+						}
+				localMenuPosition = UPDATE_DISPLAY;
+				break;
+				
+				case MANUAL_STEPUP_BUTTON:
+					switch(entriesDone){
+						case 0: 	//SweepStart Step Data collection
+							case 1: //SweepEnd Step Data collection
+								//If stepUp is valid 
+								if((stepSize * MANUAL_STEP_MULTIPLIER) <= MANUAL_MAX_STEPSIZE){
+									stepSize *= MANUAL_STEP_MULTIPLIER;
+								}
+							break;
+						}
+				localMenuPosition = UPDATE_DISPLAY; 
+				break;
+					
+				case UPDATE_DISPLAY:
+					lcd_clear_display(); //Clear display so ready for new data
+					switch(entriesDone){
+						case 0: //Update LCD and serial with sweep start data
+							#ifdef DMM_DEBUG
+								printf("[Frequency Response] Sweep start changing: %d\r\n", sweepStart); 
+							#endif
+							sprintf(line1Buf, "Start:%d Hz", sweepStart);
+							sprintf(line2Buf, "Step:%d", stepSize);
+						break;
+						
+						case 1: //Update LCD and serial with sweep start data
+							#ifdef DMM_DEBUG
+								printf("[Frequency Response] Sweep end changing: %d\r\n", sweepEnd); 
+							#endif
+							sprintf(line1Buf, "End:%d Hz", sweepEnd);
+							sprintf(line2Buf, "Step:%d", stepSize);
+						break;
+						
+						case 2: //Update LCD and serial with sweep Resolution data
+							#ifdef DMM_DEBUG
+								printf("[Frequency Response] Sweep step size changing: %d\r\n", sweepResolution); 
+							#endif	
+							sprintf(line1Buf, "%s", "Step Size");
+							sprintf(line2Buf, "%d", sweepResolution);
+						break;
+					}
+					//Update display with new data
+					lcd_write_string(line1Buf, 0, 0);
+					lcd_write_string(line2Buf, 1, 0);
+					localMenuPosition =  NO_ACTION;  //Reset MenuPosition var to avoid infinite repeat
+					break;
+				
+				case NO_ACTION:
+					//Wait, no action to perform 
+					break;
+				
+				case MANUAL_DONE_BUTTON:
+					entriesDone++; //We're done with current variable, move to next
+					localMenuPosition = UPDATE_DISPLAY;
+					break;
+				
+				case MANUAL_CANCEL_BUTTON:
+					if(entriesDone != -1) entriesDone--; //We're done with current variable, move to next
+					localMenuPosition = UPDATE_DISPLAY;
+					break;
+			}
+		}
+
+		if(entriesDone != -1){ //Start frequency response with Android sent data, If user not cancelled 
+			//We're done. Notify user of ongoing sweep
+			lcd_clear_display();
+			lcd_write_string("Sweeping..", 0, 0);
+			lcd_write_string("Please wait", 1, 0);
+			frequencyResponse(sweepStart, sweepEnd, sweepResolution);
+			//TODO: Make the screen display a pretty frequency response
+			//TODO: Alter Frequency Response to return a double array of results if called from menu
+		} else { 
+			#ifdef DMM_DEBUG
+				printf("[Frequency Response] User cancelled frequency response\r\n"); 		
+			#endif	
+		}
+		localMenuPosition = 1; //Move to Voltage measuring mode when response done or exiting
+		lcd_clear_display();
 	} else {//Start frequency response with Android sent data
 		frequencyResponse(sweepStart, sweepEnd, sweepResolution);
 	}
