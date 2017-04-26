@@ -201,6 +201,8 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 		#ifdef DAC_DEBUG
 			printf("[Hardware Subsystem] Frequency Response beginning with sweep start: %d sweep end: %d sweep resolution: %d\r\n", sweepStart, sweepEnd, sweepResolution);
 		#endif
+	
+		sendPacket(FREQUENCY_RESP_STATE, 0, 0, 0); //Send start packet (freq data = 0)
 
 		//Move from sweepstart to sweep end via stepnumber
 		for(int OUT_FREQ = sweepStart; OUT_FREQ <= sweepEnd; OUT_FREQ += sweepResolution){
@@ -218,13 +220,14 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 			double freqResponseRatio = peakToPeak(1/OUT_FREQ)/WAVE_GEN_VOLTAGE;
 
 			//Send output packet 
-			sendPacket(5, freqResponseRatio, OUT_FREQ, 0);
+			sendPacket(FREQUENCY_RESP_STATE, freqResponseRatio, OUT_FREQ, 0);
 			
 			#ifdef DAC_DEBUG
-				//printf("[Frequency Response] Gain at frequency %d is %lf\r\n", OUT_FREQ, freqResponseRatio);
+				//printf("[Frequency Response] Gain at frequency %d is %lf\r\n", OUT_FREQ, freqResponseRatio); //Corrupts DAC signal
 			#endif		
 		}
 		
+	
 		stopGenerating(); //Stop generating signal and free STM32 resources
 }
 

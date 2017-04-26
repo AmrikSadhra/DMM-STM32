@@ -177,21 +177,25 @@ void menu(){
 		if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) bluetoothMenuPosition = VOLTAGE_READ_STATE;
 		if(strcmp(bluetoothSwitchPacket,"<m:2>") == 0) bluetoothMenuPosition = CURRENT_READ_STATE;
 		if(strcmp(bluetoothSwitchPacket,"<m:3>") == 0) bluetoothMenuPosition = RESISTANCE_READ_STATE;
-		if(strcmp(bluetoothSwitchPacket,"<m:4") == 0){ 
-			bluetoothMenuPosition = 4;
+		if(strstr(bluetoothSwitchPacket,"<m: 4") != NULL){ bluetoothMenuPosition = 4;
+			
 			//Parse frequency sweep data from packet
-			int n = sscanf(bluetoothSwitchPacket, "<m:4;start:%d;end:%d;steps:%d>", &sweepStart, &sweepEnd, &sweepResolution);
+			int n = sscanf(bluetoothSwitchPacket, "<m: 4 ;start: %d ;end: %d ;steps: %d >", &sweepStart, &sweepEnd, &sweepResolution);
+			
 			#ifdef DMM_DEBUG
 				if(n != 3) printf("[Android Client] Failed to parse Frequency data from Client Frequency Response request!\r\n"); //If not parsed 3 items from string
 			#endif
+			
+			printf("[Android Client] Failed to parse Frequency data from Client Frequency Response request!\r\n"); //If not parsed 3 items from string
 		}
-		if(strcmp(bluetoothSwitchPacket,"<m:5") == 0){ 
+		
+		if(strstr(bluetoothSwitchPacket,"<m: 5") != NULL){ 
 			bluetoothMenuPosition = 5;
 			
 			char *genType; //Temporary variable with which to parse signal type to int
 			//TODO: Will sscanf work with char buffer? Get Jonathan to refactor to send ints and document which int corresponds to which Wave (dac.h defines)
 			//Parse signal generation data from packet
-			int n = sscanf(bluetoothSwitchPacket, "<m:5;freq:%d;ampl:%f;type:%s>", &genFrequency, &genAmplitude, genType);
+			int n = sscanf(bluetoothSwitchPacket, "<m: 5 ;freq: %d ;ampl: %f ;type: %s >", &genFrequency, &genAmplitude, genType);
 			
 			//Convert Strings to Wave integers to reduce processing overhead for Strings
 			if(strcmp(genType,"sinusoidal") == 0){
@@ -203,7 +207,7 @@ void menu(){
 			} 
 			
 			#ifdef DMM_DEBUG
-			if(n != 3) printf("[Android Client] Failed to parse data from Client Signal generation request! Parsed: %d\r\n", n); //If not parsed 3 items from string
+				if(n != 3) printf("[Android Client] Failed to parse data from Client Signal generation request! Parsed: %d\r\n", n); //If not parsed 3 items from string
 			#endif
 		}
 		if(strcmp(bluetoothSwitchPacket,"<m:6>") == 0) bluetoothMenuPosition = AC_VOLTAGE_READ_STATE;
