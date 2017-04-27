@@ -15,7 +15,7 @@ extern bool rangeChange;
 
 /* Functions to read ADC and return value */
 void ADC1_init(void);
-double read_ADC1 (void);
+double read_ADC1 (bool resistanceMode);
 double read_ADC1_NOAVERAGE (void);
 
 #endif /*_ADC_H_*/

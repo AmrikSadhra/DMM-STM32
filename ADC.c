@@ -12,16 +12,22 @@ uint16_t calibrate_ADC1(void);
 void ADC1_init(void);
 
 void autorange_init(){
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
-
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE); //Enable GPIOE for voltage gain mux selection
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE); //Enable GPIOB for resistance gain enable
+	
   GPIO_InitTypeDef GPIO_InitStruct;
 
+	//Enable Voltage Gain mux pins
   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOE, &GPIO_InitStruct);
+	
+	//Enable Resistance Gain pins
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8;
+	GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
 
@@ -102,19 +108,54 @@ double runningAverage(uint8_t numSamples){
 
 
 /* Function to Automatically set the range dependent upon ADC1 value */
-void autoRange(uint16_t adc1_raw){
+void autoRange(uint16_t adc1_raw, bool resistanceMode){ //Resistance mode drops Voltage gain to minimum, used Resistance mux to assert higher gain
 		bool rangeSwitch = false;
 		static uint8_t ADC1_prevRange;
-			
-		//If RAW value greater than max value it can return - switch tolerance, probably time to change range (unless we maxed on range)
-		if(((adc1_raw  > ADC_VALUE_3V - SWITCHING_RANGE_TOLERANCE)||(adc1_raw  < SWITCHING_RANGE_TOLERANCE))&&(ADC1_currentRange != 0)){
-				//ADC1_currentRange--;	
-				ADC1_currentRange=0;	
-				rangeSwitch = true;
-			} else if((adc1_raw  < ADC_VALUE_3V*0.55)&&(adc1_raw  > ADC_VALUE_3V*0.45)&&(ADC1_currentRange != 3)){//If we're close (and not at lowest range)
-				//ADC1_currentRange++;
-				ADC1_currentRange=0;	
-				rangeSwitch = true;
+
+	  static bool extraRange;
+	
+		bool lowerThreshold = ((adc1_raw  < ADC_VALUE_3V*0.55)&&(adc1_raw  > ADC_VALUE_3V*0.45));
+		bool higherThreshold = ((adc1_raw  > ADC_VALUE_3V - SWITCHING_RANGE_TOLERANCE)||(adc1_raw  < SWITCHING_RANGE_TOLERANCE));
+	
+		if(!resistanceMode){
+			//If RAW value greater than max value it can return - switch tolerance, probably time to change range (unless we maxed on range)
+			if(higherThreshold &&(ADC1_currentRange != 0)){
+					//High threshold
+					ADC1_currentRange--;	
+					rangeSwitch = true;
+				} else if(lowerThreshold &&(ADC1_currentRange != 3)){//If we're close (and not at lowest range)
+					//Low threshold
+					ADC1_currentRange++;
+					rangeSwitch = true;
+			}
+		} else {//Measuring resistance
+						if(!extraRange){ //If no extra range, check if its needed
+								if(lowerThreshold &&(ADC1_currentRange == 2)){//If we're close (and not at lowest range)
+									//Low threshold
+									ADC1_currentRange = 0; //Drop to lowest range to get Max gain from voltage side
+									extraRange = true;     //Enable extra gain for resistance measurement
+									rangeSwitch = true;
+								}
+								//If extra range not needed, proceed as normal with range switching
+								if(higherThreshold &&(ADC1_currentRange != 0)){//If not in min gain, and at ADC threshold max of 10v, drop to lower range for less gain 
+									//High threshold
+									ADC1_currentRange--;	
+									rangeSwitch = true;
+								} 
+						} else { //If extra range enabled
+							if(lowerThreshold && ADC1_currentRange != 2){//If not at max gain, and ADC value low, increase gain by moving up a range
+								ADC1_currentRange++;
+								rangeSwitch = true;
+							} 
+							if(higherThreshold && (ADC1_currentRange != 0)){
+									ADC1_currentRange--;	
+									rangeSwitch = true;
+							} else if (higherThreshold && (ADC1_currentRange == 0)){
+								extraRange = false;
+								ADC1_currentRange = 2;
+								rangeSwitch = true;
+						}
+					}
 		}
 			
 		if(rangeSwitch){
@@ -123,7 +164,13 @@ void autoRange(uint16_t adc1_raw){
 			#endif
 			
 			//Clear Range switch bits
-			GPIOE->ODR &= ~(7UL << 3);
+			GPIOE->ODR &= ~(3UL << 3);
+			
+			if(extraRange){
+					GPIOB->ODR |= (1 << 8);	
+			} else {
+					GPIOB->ODR &= ~(1 << 8);	
+			}
 			
 		switch(ADC1_currentRange){
 				case 0://10v in 
@@ -137,17 +184,17 @@ void autoRange(uint16_t adc1_raw){
 					//Range 2
 					GPIOE->ODR |= (2UL << 3);
 					break;
-				case 3://0.01v
+				case 3://0.01
 					//Range 3
 					GPIOE->ODR |= (3UL << 3);
-					break;
+					break;	
 			}
 			ADC1_prevRange = ADC1_currentRange;
 		}
 }
 
 //Function to read ADC and return scaled value
-double read_ADC1 (void) {
+double read_ADC1 (bool resistanceMode){
 	if(!isInitialised) ADC1_init();
 	
 	//Average data coming in (smooth)
@@ -155,7 +202,7 @@ double read_ADC1 (void) {
 	double ADC1_valueScaled = 0.0f;
 	
 	//Adjust range
-	autoRange((uint16_t) ADC1_valueAveraged);
+	autoRange((uint16_t) ADC1_valueAveraged, resistanceMode);
 	
 	switch(ADC1_currentRange){
 			case 0:
@@ -169,7 +216,7 @@ double read_ADC1 (void) {
 				break;
 			case 3:
 				ADC1_valueScaled = map(ADC1_valueAveraged, 0, ADC_VALUE_3V, -0.01, 0.01);
-				break;
+				break;		
 		}
 		
 		//Apply 3rd order calibration equation to output
@@ -190,7 +237,7 @@ double read_ADC1_NOAVERAGE (void) {
 	double ADC1_valueScaled = 0.0f;
 	
 	//Adjust range
-	autoRange((uint16_t) ADC1_value);
+	autoRange((uint16_t) ADC1_value, false);
 	
 	switch(ADC1_currentRange){
 			case 0:

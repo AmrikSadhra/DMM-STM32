@@ -25,8 +25,4 @@
 
 void initialise_Peripherals(void);
 
-void stageAlpha(int mode);
-void stageBeta(int mode);
-void stageGamma(int mode);
-
 #endif

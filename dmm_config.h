@@ -10,15 +10,27 @@
 #define ADC_DEBUG 							//Uncomment to debug ADC value reads
 
 /* ----------------------- DMM Mux Mode Settings ------------------------- */
-//Stage Alpha
-#define PROBE_GROUND 			 0
-#define PROBE_VOLTAGE			 1
-#define PROBE_CAPACIITANCE 2
+/* ------------------ DONT MODIFY - TIED TO HARDWARE --------------------- */
+//Probe states
+#define PROBE_VOLTAGE			 0
+#define PROBE_CONTINUITY		 1
+#define PROBE_RMS 					2
+#define PROBE_RESISTANCE 3
+#define PROBE_CAPACITANCE 4
+#define PROBE_DIODE 5
 
-//Stage Beta
-#define FUNCTION_RESISTANCE
+//Circuit select states
+#define CIRCUIT_GND			 0
+#define CIRCUIT_VOLTAGE		 1
+#define CIRCUIT_CAPACITANCE 2
+#define CIRCUIT_LIGHT 3
+#define CIRCUIT_DIODE 4
 
-//Stage Gamma
+//Mode select states
+#define MODE_VOLTAGE 0
+#define MODE_CURRENT 1
+#define MODE_RMS 2
+#define MODE_RESISTANCE 3
 
 /* ------------------------ Generic DMM Settings ------------------------- */
 //Main menu states
@@ -89,7 +101,7 @@
 #define CAL_COEFF_X2
 #define CAL_COEFF_OFFSET
 
-#define ADC_CALIBRATION_ENABLED 
+//#define ADC_CALIBRATION_ENABLED 
 #define SWITCHING_RANGE_TOLERANCE 2000
 #define NUM_AVG_SAMPLES 15
 #define NUM_CAL_SAMPLES 5

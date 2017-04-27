@@ -13,27 +13,227 @@ bool alphaInit = false;
 bool betaInit = false;
 bool gammaInit = false;
 
-/* Initialise Mode Switch GPIO Pins for Mux (MUX IDENTIFIER HERE) */
-void mode_switch_init(){
-		//Initialisation of stage Alpha
-		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-		GPIO_InitTypeDef GPIO_InitStruct2;
-		GPIO_InitStruct2.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
-		GPIO_InitStruct2.GPIO_Mode = GPIO_Mode_OUT;
-		GPIO_InitStruct2.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_InitStruct2.GPIO_OType = GPIO_OType_PP;
-		GPIO_InitStruct2.GPIO_PuPd = GPIO_PuPd_UP;
-		GPIO_Init(GPIOB, &GPIO_InitStruct2);
+void circuitSelect(uint8_t circuitType){
+	static uint8_t prevCircuitType;
+	if( prevCircuitType == circuitType) return; //No need to alter mux if no change
 	
-		//Initialisation of Stage Beta
+	//Clear Circuit select pins
+	GPIOB->ODR &= (~(1<<7) | ~(3<<4));
+	
+	switch(circuitType){
+		case CIRCUIT_GND:
+			//Do nothing because already clear
+			break;
+		
+		case CIRCUIT_VOLTAGE:
+			GPIOB->ODR &= ~(1<<7);
+			GPIOB->ODR |= (1<<4);
+			break;
+		
+		case CIRCUIT_CAPACITANCE:
+			GPIOB->ODR &= ~(1<<7);
+			GPIOB->ODR |= (2<<4);
+			break;
+		
+		case CIRCUIT_LIGHT:
+			GPIOB->ODR &= ~(1<<7);
+			GPIOB->ODR |= (3<<4);
+			break;
+		
+		case CIRCUIT_DIODE:
+			GPIOB->ODR |= (1<<7);
+			GPIOB->ODR &= ~(3<<4);
+			break;
+	}
+	
+	prevCircuitType = circuitType;
+}
+
+
+void probeSelect(uint8_t probeType){
+	static uint8_t prevProbeType;
+	if(prevProbeType == probeType) return; //No need to alter mux if no change
+	
+	//Clear Probe select pins
+	GPIOC->ODR &= (~(1<<13) | ~(3<<5));
+	
+	switch(probeType){
+		case PROBE_VOLTAGE:
+			//Do nothing as already cleared
+			break;
+		
+		case PROBE_CONTINUITY:
+			GPIOC->ODR &=  ~(1 << 13);
+			GPIOC->ODR |=  (1 << 5);
+			break;
+		
+		case PROBE_RMS:
+			GPIOC->ODR &=  ~(1 << 13);
+			GPIOC->ODR |=  (2 << 5);
+			break;
+		
+		case PROBE_RESISTANCE:
+			GPIOC->ODR &=  ~(1 << 13);
+			GPIOC->ODR |=  (3 << 5);
+			break;
+		
+		case PROBE_CAPACITANCE:
+			GPIOC->ODR |=  (1 << 13);
+			GPIOC->ODR &=  ~(3 << 5);
+			break;
+		
+		case PROBE_DIODE:
+			GPIOC->ODR |=  (1 << 13);
+			GPIOC->ODR |=  (1 << 5);
+			break;
+	}
+	
+	prevProbeType = probeType;
+}
+void modeSelect(uint8_t modeSelect){
+	static uint8_t prevModeSelect;
+	if(modeSelect == prevModeSelect) return;
+	
+	//Clear mode select bits
+	GPIOE->ODR &= ~(3 << 5);
+	
+	switch(modeSelect){
+		case MODE_VOLTAGE://Voltage
+			//Do nothing because left cleared
+			break;
+		
+		case MODE_CURRENT://Current
+			GPIOE->ODR |= (1 << 5);
+			break;
+		
+		case MODE_RMS://RMS
+			GPIOE->ODR |= (2 << 5);
+			break;
+		
+		case MODE_RESISTANCE://Resistance
+			GPIOE->ODR |= (3 << 5);
+			break;
+	}
+	
+	prevModeSelect = modeSelect;
+}
+
+
+void dmmModeSelect(uint8_t function){
+	static uint8_t prevFunction;
+	if(prevFunction == function) return; //No need to alter function if no change
+	
+	switch(function){
+		case VOLTAGE_READ_STATE:
+			modeSelect(MODE_VOLTAGE);
+			circuitSelect(CIRCUIT_VOLTAGE);
+			probeSelect(PROBE_VOLTAGE);
+				break;
+		
+		case CURRENT_READ_STATE :
+			modeSelect(MODE_CURRENT);
+			circuitSelect(CIRCUIT_VOLTAGE);
+				break;		
+		
+		case RESISTANCE_READ_STATE:
+			modeSelect(MODE_RESISTANCE);
+			circuitSelect(CIRCUIT_VOLTAGE);
+			probeSelect(PROBE_RESISTANCE);
+				break;
+		
+		case FREQUENCY_RESP_STATE:
+				break; 
+		
+		case SIG_GEN_STATE:
+				break; 
+		
+		case AC_VOLTAGE_READ_STATE:
+			modeSelect(MODE_RMS);
+			circuitSelect(CIRCUIT_VOLTAGE);
+			probeSelect(PROBE_RMS);
+				break;
+		
+		case CAPACITANCE_STATE:
+			probeSelect(PROBE_CAPACITANCE);
+				break; 
+		
+		case DIODE_STATE:
+			circuitSelect(CIRCUIT_DIODE);
+			probeSelect(PROBE_DIODE);
+		//TODO: Add in extra state required for diode
+				break; 
+		
+		case LIGHT_INTENSITY_STATE:
+			circuitSelect(CIRCUIT_LIGHT);
+				break;
+		
+		}
+	
+	prevFunction = function;
+}
+
+/* Initialise All DMM mode GPIO Pins for Multiplexers */
+void dmm_init(){
+		//Initialisation of Range
 		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
-		GPIO_InitTypeDef GPIO_InitStruct;
-		GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 ;
-		GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
-		GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-		GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
-		GPIO_Init(GPIOE, &GPIO_InitStruct);
+			GPIO_InitTypeDef GPIO_InitStruct;
+			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
+			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+			GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+			GPIO_Init(GPIOE, &GPIO_InitStruct);
+	
+		//Initialisation of Extra Resistance Range pin
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8;
+			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+			GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+			GPIO_Init(GPIOB, &GPIO_InitStruct);
+		
+			//Initialisation of AC input pin for frequency comparator
+			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_15;
+			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
+			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+			GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+			GPIO_Init(GPIOB, &GPIO_InitStruct);
+		
+		//Initialisation of Mode Switching Pins
+			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6;
+			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+			GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+			GPIO_Init(GPIOE, &GPIO_InitStruct);
+			
+		//Initialisation of Circuit switching pins
+			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_7;
+			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+			GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+			GPIO_Init(GPIOB, &GPIO_InitStruct);
+			
+		//ADC init handled in ADC.C
+			
+		//Initialisation of Probe selection pins
+			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_13;
+			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+			GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+			GPIO_Init(GPIOC, &GPIO_InitStruct);
+		
+		//Initialisation of Capacitance range pins
+			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
+			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+			GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+			GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+			GPIO_Init(GPIOE, &GPIO_InitStruct);
 }
 
 /* Function to intiialise all used peripherals    */
@@ -43,93 +243,10 @@ void initialise_Peripherals(void){
 			serial_init(9600);
 			bluetooth_init(9600);
 			switch_init();
-			LED_Init();
-			mode_switch_init();
+			dmm_init();
 			//Connect Read stage to Voltage
-			stageAlpha(PROBE_VOLTAGE);
+			dmmModeSelect(VOLTAGE_READ_STATE);
 }
-
-
-//Stage Alpha - 3 Stage Selection: Ground, Voltage,Capacitance
-void stageAlpha(int mode){	
-			if(!alphaInit){
-				mode_switch_init();
-				alphaInit = true;
-			}
-			
-			//Clear Range switch bits
-			GPIOB->ODR &= ~(3UL << 4);
-			switch(mode){
-				case PROBE_GROUND:						//J5 4,3 (GPIOB 5 4): 
-					GPIOB->ODR &= ~(3UL << 4); 	//   0 0 Ground       &= ~(3UL << 4) Clear to 00
-					break;
-				case PROBE_VOLTAGE:
-					GPIOB->ODR |= (1UL << 4);		//   0 1 Voltage      |=  (1UL << 4)/
-					break;
-				case PROBE_CAPACIITANCE:
-					GPIOB->ODR |= (2UL << 4);		//   1 0 Capacitance  |=  (2UL << 4)
-					break;
-				default:
-					break;
-			}
-}
-
-//Stage Beta - 4 Mode Switch: Current/Resistance/RMS/Voltage Circuit
-void stageBeta(int mode){
-	if(!betaInit){
-				mode_switch_init();
-				betaInit = true;
-			}
-
-		//Clear bits 
-		GPIOE->ODR &= ~(3UL << 5);
-		switch(mode){
-			case 0://Voltage            //J7 5,4 (GPIOE 6 5): 
-				GPIOE->ODR &= ~(3UL << 5);//   0 0 Voltage      &= ~(3UL << 5) Clear to 00
-				break;
-			case 1://Current
-				GPIOE->ODR |= (1UL << 5); //   0 1 Current      |=  (1UL << 5)
-				break;
-			case 2://RMS
-				GPIOE->ODR |= (2UL << 5); //   1 0 RMS          |=  (2UL << 5)
-				break;
-			case 3://Resistance
-				GPIOE->ODR |= (3UL << 5); //   1 1 Resistance   |=  (3UL << 5)
-				break;
-			default:
-				break;
-		}
-}
-
-//Stage Gamma
-//J7 3,2 (GPIOE 4 3): Range for V/R/I/Universe
-//   0 0 Gain 1
-//   0 1 Gain 1000   
-void stageGamma(int mode){
-	if(!gammaInit){
-				mode_switch_init();
-				gammaInit = true;
-	}
-
-	switch(mode){
-				case 0://10v in 
-					//Do nothing for Range 0 as pins already cleared
-					break;			
-				case 1://1v in 
-					//Range 1
-					GPIOE->ODR |= (1UL << 3);
-					break;
-				case 2://0.1v
-					//Range 2
-					GPIOE->ODR |= (2UL << 3);
-					break;
-				case 3://0.01v
-					//Range 3
-					GPIOE->ODR |= (3UL << 3);
-					break;
-	}
-}
-
 
 /*----------------------------------------------------------------------------
   MAIN function
@@ -158,8 +275,8 @@ void menu(){
 	#endif	
 	
 	//Read ADC and use this value for menu calculations
-	double ADC1_valueScaled = read_ADC1();
-	
+	double ADC1_valueScaled;
+
 	//Menu Position variables
 	static int bluetoothMenuPosition;
 	static int prevBluetoothMenuPosition;
@@ -255,7 +372,8 @@ void menu(){
 	switch(menuPosition){
 		case 0: //If menu position not initialised, go to voltage (No break statement)
 		case VOLTAGE_READ_STATE: //voltage
-			stageBeta(0);
+			dmmModeSelect(VOLTAGE_READ_STATE);
+			ADC1_valueScaled	= read_ADC1(false);
 				switch(ADC1_currentRange){
 					case 0:
 						sprintf(lcd_line1,"Volt:0->10V");
@@ -281,7 +399,9 @@ void menu(){
 			break;
 			
 			case CURRENT_READ_STATE://current
-			stageBeta(1);
+			dmmModeSelect(CURRENT_READ_STATE);
+			//stageBeta(1);
+			ADC1_valueScaled	= read_ADC1(false);
 			current = ADC1_valueScaled/10;
 			switch(ADC1_currentRange){
 				case 0:
@@ -308,7 +428,8 @@ void menu(){
 			break;
 			
 		case RESISTANCE_READ_STATE://resistance
-			stageBeta(3);
+			dmmModeSelect(RESISTANCE_READ_STATE);
+			ADC1_valueScaled	= read_ADC1(true);
 			resistance = fabs(ADC1_valueScaled)/0.000010;
 			sprintf(lcd_line2,"%lf",resistance);
 			switch(ADC1_currentRange){
@@ -340,8 +461,8 @@ void menu(){
 			return;
 		
 		case AC_VOLTAGE_READ_STATE: //Measure AC voltage and frequency
-		
-			break;
+			dmmModeSelect(AC_VOLTAGE_READ_STATE);
+				break;
 		
 		case CAPACITANCE_STATE://Measure Capacitance
 			//sprintf(lcd_line1,"Capacitance");
@@ -350,16 +471,19 @@ void menu(){
 			break;
 		
 		case DIODE_STATE:
+			dmmModeSelect(DIODE_STATE);
 			localMenuPosition = VOLTAGE_READ_STATE; //Return from non implemented feature to voltage
 		break;
 		
 		case LIGHT_INTENSITY_STATE: //Measure light intensity (only available through Android due to not enough buttons)
+			dmmModeSelect(LIGHT_INTENSITY_STATE);
 			sprintf(lcd_line1,"Light Intensity");
 			sprintf(lcd_line2,"%.1f %%", ((ADC1_valueScaled + 10)/20)*100);
 			sendPacket(LIGHT_INTENSITY_STATE, ADC1_valueScaled, 0, 0);
 			break;
 		
 		default:
+			dmmModeSelect(VOLTAGE_READ_STATE);
 			localMenuPosition = VOLTAGE_READ_STATE; //If entered stray state, return to voltage mode
 			break;
 	}
