@@ -57,8 +57,8 @@
 #define UPDATE_DISPLAY 9					//State for updating display (arbitrary, larger than num buttons: 8)
 
 //Signal Generation
-#define MANUAL_DEFAULT_FREQ 100   //Default starting frequency
-#define MANUAL_MIN_FREQ 100 		 	//Minimum frequency
+#define MANUAL_DEFAULT_FREQ 50   //Default starting frequency
+#define MANUAL_MIN_FREQ 15 		 	//Minimum frequency
 #define MANUAL_MAX_FREQ 10000  	 	//Maximum frequency
 
 #define MANUAL_DEFAULT_STEP 10		//Default step size for frequency (1, 10, 1000, 10000)
@@ -66,7 +66,7 @@
 #define MANUAL_MAX_STEPSIZE 10000 //Maximum stepsize for frequency
 #define MANUAL_MIN_STEPSIZE 1			//Minimum stepsize for frequency
 
-#define MANUAL_MIN_AMP 0.1f			 	//Minimum amplitude
+#define MANUAL_MIN_AMP 1.0f			 	//Minimum amplitude
 #define MANUAL_MAX_AMP 3.3f			 	//Maximum amplitude
 #define MANUAL_AMP_STEPSIZE 0.1f 	//Amplitude stepsize
 
@@ -84,7 +84,7 @@
 #define   DAC_DHR12R1_ADDR  0x40007408     // DMA writes into this reg on every request		
 #define   CNT_FREQ          83000000       // TIM6 counter clock (prescaled APB1)	
 #define   MAX_WAVE_SAMPLES          10     // Arbitrary value to determine how long to sample wave for Peak to Peak
-#define   WAVE_GEN_VOLTAGE          3.28   // Arbitrary value to determine how long to sample wave for Peak to Peak
+#define   WAVE_GEN_VOLTAGE          3.28f   // Arbitrary value to determine how long to sample wave for Peak to Peak
 
 /* ---------------------------- Serial Settings -------------------------- */
 #define MAX_SERIAL_IN_LENGTH 16							//Maximum size of input debug or bluetooth packet				
@@ -106,8 +106,6 @@
 #define NUM_AVG_SAMPLES 15
 #define NUM_CAL_SAMPLES 5
 
-#define ADC_SAMPLE_TIME 50E-3 						 	//Time for ADC to take a single sample (used for freq response sampling)
-
 /* ---- IRQ Priorities - Control which interrupt handlers have priority ---- */
 #define TIM2_IQ_PRIORITY 0 									//Capacitance timer Handlers
 #define TIM2_IQ_SUBPRIORITY 0
@@ -120,5 +118,8 @@
 
 #define SWITCH_IQ_PRIORITY 3								//Menu Switch Handlers
 #define SWITCH_IQ_SUBPRIORITY 0  
+
+/* ----------------------- Freq Response Settings ----------------------- */
+#define NUM_PK_PK_SAMPLES 200
 
 #endif /*_DMM_CONFIG_H_*/

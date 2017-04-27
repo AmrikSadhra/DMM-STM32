@@ -286,13 +286,9 @@ void menu(){
 	//Frequency Sweep Parameters
 	uint32_t sweepStart = 0, sweepEnd = 0, sweepResolution = 0;
 	//Signal Generation Parameters
-	static uint32_t prevGenFrequency = 0;
-	static float prevGenAmplitude = 0.0;
-	static uint8_t prevSigGenType = 0;
 	uint32_t genFrequency = 0;
 	float genAmplitude = 0.0;
 	uint8_t sigGenType = 0;
-	bool newSignal = false;
 	
 		//Query the Bluetooth Data to identify mode switches
 		if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) bluetoothMenuPosition = VOLTAGE_READ_STATE;
@@ -325,15 +321,6 @@ void menu(){
 				sigGenType = SAW_TYPE;
 			} 
 		
-			if((prevGenFrequency != genFrequency)||(prevGenAmplitude != genAmplitude)||(prevSigGenType != sigGenType)){
-				newSignal = true;
-			}
-			
-			//Update previous values
-			prevGenFrequency = genFrequency;
-			prevGenAmplitude = genAmplitude;
-			prevSigGenType = sigGenType;
-			
 			#ifdef DMM_DEBUG
 				if(n != 3) printf("[Android Client] Failed to parse data from Client Signal generation request! Parsed: %d\r\n", n); //If not parsed 3 items from string
 			#endif
@@ -366,9 +353,7 @@ void menu(){
 		prevLocalMenuPosition = localMenuPosition;
 	} else {
 		if(prevLocalMenuPosition == 5){ //If still in signal Generation, no need to change menu
-			if(!newSignal){ //If no new signal from Bluetooth
 				return;
-			}
 		}
 	}
 
@@ -523,6 +508,7 @@ void signalGenerationMenu(uint32_t genFrequency, float genAmplitude, uint8_t sig
 		//Set Defaults
 		uint32_t stepSize = MANUAL_DEFAULT_STEP;
 		genFrequency = MANUAL_DEFAULT_FREQ;
+		genAmplitude = MANUAL_MIN_AMP;
 		int entriesDone = 0;
 		localMenuPosition = UPDATE_DISPLAY; //Update display immediately
 			

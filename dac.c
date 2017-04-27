@@ -113,14 +113,11 @@ void generateSignal(uint32_t genFrequency, uint8_t signalType, float amplitude){
 		printf("[Hardware Subsystem] Signal generation beginning with sigtype: %d Amplitude: %f Frequency: %d\r\n", signalType, amplitude, genFrequency);
 	#endif
 	
-	//Calculate new time period for genFrequency
-	TIM_PERIOD = ((CNT_FREQ)/((WAVE_RES)*(genFrequency)))/5;
 	//Update timer with new period
-	TIM_TimeBaseStructInit(&TIM5_TimeBase); 
-	TIM5_TimeBase.TIM_Period = (uint16_t)TIM_PERIOD;           
-	TIM_TimeBaseInit(TIM5, &TIM5_TimeBase);
-	TIM_SelectOutputTrigger(TIM5, TIM_TRGOSource_Update);
-	
+	OUT_FREQ = genFrequency;
+	TIM5_Config();
+
+
 	//Work out whether there is a need to adjust the current signal, if not, return. If there is, free old pointer.
 	if(compare_float(prevAmplitude,amplitude)){
 		return;
@@ -168,18 +165,13 @@ void stopGenerating(){
 }
 
 
-double peakToPeak(double timePeriod){
+double peakToPeak(){
 		double minVal = 0;
 		double maxVal = 0;
-	
-		//TODO: Get a nice number
-		int numSamples = (int)((double) timePeriod/ADC_SAMPLE_TIME);
-		numSamples = 100;
 
-		//Try to sample two lots of the period
-		for(int i = 0; i < numSamples; i++){
+		//Sample enough of the input to ensure we have come across max and minimum
+		for(int i = 0; i < NUM_PK_PK_SAMPLES; i++){
 			double readVal = read_ADC1_NOAVERAGE();
-			
 			if(readVal > maxVal) maxVal = readVal;
 			if(readVal < minVal) minVal = readVal;
 		}
@@ -207,28 +199,20 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 		sendPacket(FREQUENCY_RESP_STATE, 0, 0, 0); //Send start packet (freq data = 0)
 
 		//Move from sweepstart to sweep end via stepnumber
-		for(int OUT_FREQ = sweepStart; OUT_FREQ <= sweepEnd; OUT_FREQ += sweepResolution){
-			//Calculate new time period
-			TIM_PERIOD = ((CNT_FREQ)/((WAVE_RES)*(OUT_FREQ)));
-		
-			TIM_TimeBaseStructInit(&TIM5_TimeBase); 
-			TIM5_TimeBase.TIM_Period = (uint16_t)TIM_PERIOD;           
-			TIM_TimeBaseInit(TIM5, &TIM5_TimeBase);
-			TIM_SelectOutputTrigger(TIM5, TIM_TRGOSource_Update);
+		for(int outFrequency = sweepStart; outFrequency <= sweepEnd; outFrequency += sweepResolution){
 			
-			//Wait for voltage to propagate through circuit
-			Delay(10);
+			OUT_FREQ = outFrequency;
+			TIM5_Config();
 			
-			double freqResponseRatio = peakToPeak(1/OUT_FREQ)/WAVE_GEN_VOLTAGE;
+			double freqResponseRatio = peakToPeak()/((double) WAVE_GEN_VOLTAGE);
 
 			//Send output packet 
 			sendPacket(FREQUENCY_RESP_STATE, freqResponseRatio, OUT_FREQ, 0);
 			
 			#ifdef DAC_DEBUG
-				//printf("[Frequency Response] Gain at frequency %d is %lf\r\n", OUT_FREQ, freqResponseRatio); //Corrupts DAC signal
+				printf("[Frequency Response] Gain at frequency %d is %lf\r\n", OUT_FREQ, freqResponseRatio); //Corrupts DAC signal
 			#endif		
 		}
-		
 	
 		stopGenerating(); //Stop generating signal and free STM32 resources
 }
