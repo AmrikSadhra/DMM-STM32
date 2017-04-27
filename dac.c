@@ -114,7 +114,7 @@ void generateSignal(uint32_t genFrequency, uint8_t signalType, float amplitude){
 	#endif
 	
 	//Calculate new time period for genFrequency
-	TIM_PERIOD = ((CNT_FREQ)/((WAVE_RES)*(genFrequency)));
+	TIM_PERIOD = ((CNT_FREQ)/((WAVE_RES)*(genFrequency)))/5;
 	//Update timer with new period
 	TIM_TimeBaseStructInit(&TIM5_TimeBase); 
 	TIM5_TimeBase.TIM_Period = (uint16_t)TIM_PERIOD;           
@@ -145,6 +145,8 @@ void generateSignal(uint32_t genFrequency, uint8_t signalType, float amplitude){
 			memcpy(generatedSignal, sine, WAVE_RES * sizeof(uint16_t));
 			break;
 	}
+	
+	amplitude /= MANUAL_MAX_AMP; //Normalise target voltage so is scalar between 0 and 1 (avoid clipping dac output)
 
 	//Generate wave with adjusted amplitude
 	for(int i = 0; i < WAVE_RES; i++){

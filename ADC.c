@@ -135,18 +135,28 @@ void autoRange(uint16_t adc1_raw, bool resistanceMode){ //Resistance mode drops 
 									ADC1_currentRange = 0; //Drop to lowest range to get Max gain from voltage side
 									extraRange = true;     //Enable extra gain for resistance measurement
 									rangeSwitch = true;
+								} else if(lowerThreshold &&(ADC1_currentRange != 2)) {
+									ADC1_currentRange++;
+									rangeSwitch = true;
 								}
+								
 								//If extra range not needed, proceed as normal with range switching
 								if(higherThreshold &&(ADC1_currentRange != 0)){//If not in min gain, and at ADC threshold max of 10v, drop to lower range for less gain 
 									//High threshold
 									ADC1_currentRange--;	
 									rangeSwitch = true;
-								} 
+								} else if(higherThreshold &&(ADC1_currentRange == 0)){
+									//Do nothing
+								}
+								
 						} else { //If extra range enabled
 							if(lowerThreshold && ADC1_currentRange != 2){//If not at max gain, and ADC value low, increase gain by moving up a range
 								ADC1_currentRange++;
 								rangeSwitch = true;
-							} 
+							} else if(lowerThreshold && ADC1_currentRange == 2){
+									//Do nothing
+							}
+							
 							if(higherThreshold && (ADC1_currentRange != 0)){
 									ADC1_currentRange--;	
 									rangeSwitch = true;
@@ -166,6 +176,7 @@ void autoRange(uint16_t adc1_raw, bool resistanceMode){ //Resistance mode drops 
 			//Clear Range switch bits
 			GPIOE->ODR &= ~(3UL << 3);
 			
+			//If in extra range mode, give the Circuit more gain through resistance amplification circuit
 			if(extraRange){
 					GPIOB->ODR |= (1 << 8);	
 			} else {

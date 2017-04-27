@@ -269,7 +269,7 @@ int main (void) {
 void menu(){
 	//Bluetooth Override of Buttons
 	char *bluetoothSwitchPacket = DequeueString(bluetoothQueue);
-	
+
 	#ifdef DMM_DEBUG
 		printf("[Android Client] Data Received: %s\r\n", bluetoothSwitchPacket);
 	#endif	
@@ -286,9 +286,13 @@ void menu(){
 	//Frequency Sweep Parameters
 	uint32_t sweepStart = 0, sweepEnd = 0, sweepResolution = 0;
 	//Signal Generation Parameters
+	static uint32_t prevGenFrequency = 0;
+	static float prevGenAmplitude = 0.0;
+	static uint8_t prevSigGenType = 0;
 	uint32_t genFrequency = 0;
 	float genAmplitude = 0.0;
 	uint8_t sigGenType = 0;
+	bool newSignal = false;
 	
 		//Query the Bluetooth Data to identify mode switches
 		if(strcmp(bluetoothSwitchPacket,"<m:1>") == 0) bluetoothMenuPosition = VOLTAGE_READ_STATE;
@@ -302,14 +306,12 @@ void menu(){
 			#ifdef DMM_DEBUG
 				if(n != 3) printf("[Android Client] Failed to parse Frequency data from Client Frequency Response request!\r\n"); //If not parsed 3 items from string
 			#endif
-			
-			printf("[Android Client] Failed to parse Frequency data from Client Frequency Response request!\r\n"); //If not parsed 3 items from string
 		}
 		
 		if(strstr(bluetoothSwitchPacket,"<m: 5") != NULL){ 
 			bluetoothMenuPosition = 5;
 			
-			char *genType; //Temporary variable with which to parse signal type to int
+			char *genType = (char *) malloc(16 * sizeof(char)); //Temporary variable with which to parse signal type to int
 			//TODO: Will sscanf work with char buffer? Get Jonathan to refactor to send ints and document which int corresponds to which Wave (dac.h defines)
 			//Parse signal generation data from packet
 			int n = sscanf(bluetoothSwitchPacket, "<m: 5 ;freq: %d ;ampl: %f ;type: %s >", &genFrequency, &genAmplitude, genType);
@@ -322,6 +324,15 @@ void menu(){
 			} else if(strcmp(genType,"triangle") == 0){
 				sigGenType = SAW_TYPE;
 			} 
+		
+			if((prevGenFrequency != genFrequency)||(prevGenAmplitude != genAmplitude)||(prevSigGenType != sigGenType)){
+				newSignal = true;
+			}
+			
+			//Update previous values
+			prevGenFrequency = genFrequency;
+			prevGenAmplitude = genAmplitude;
+			prevSigGenType = sigGenType;
 			
 			#ifdef DMM_DEBUG
 				if(n != 3) printf("[Android Client] Failed to parse data from Client Signal generation request! Parsed: %d\r\n", n); //If not parsed 3 items from string
@@ -355,7 +366,9 @@ void menu(){
 		prevLocalMenuPosition = localMenuPosition;
 	} else {
 		if(prevLocalMenuPosition == 5){ //If still in signal Generation, no need to change menu
-			return;
+			if(!newSignal){ //If no new signal from Bluetooth
+				return;
+			}
 		}
 	}
 
@@ -465,6 +478,7 @@ void menu(){
 				break;
 		
 		case CAPACITANCE_STATE://Measure Capacitance
+			dmmModeSelect(CAPACITANCE_STATE);
 			//sprintf(lcd_line1,"Capacitance");
 			//sprintf(lcd_line2,"%dF", numHighTicks);
 			if(timerDone) measureCapacitance();

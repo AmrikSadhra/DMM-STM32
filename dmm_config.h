@@ -67,7 +67,7 @@
 #define MANUAL_MIN_STEPSIZE 1			//Minimum stepsize for frequency
 
 #define MANUAL_MIN_AMP 0.1f			 	//Minimum amplitude
-#define MANUAL_MAX_AMP 1.0f			 	//Maximum amplitude
+#define MANUAL_MAX_AMP 3.3f			 	//Maximum amplitude
 #define MANUAL_AMP_STEPSIZE 0.1f 	//Amplitude stepsize
 
 //Frequency Response
