@@ -23,8 +23,19 @@ uint16_t square[WAVE_RES] = {4020,4020,4020,4020,4020,4020,4020,4020,4020,4020,4
 																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,
 																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,
 																	75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75};		
+	
+uint16_t saw[WAVE_RES] = {2048,2112,2176,2240,2305,2369,2433,2497,2561,2625,2689,2753,2818,2882,
+													2946,3010,3074,3138,3202,3267,3331,3395,3459,3523,3587,3651,3716,3780,
+													3844,3908,3972,4036,4100,4020,3956,3892,3828,3763,3699,3635,3571,3507,
+													3443,3379,3315,3250,3186,3122,3058,2994,2930,2866,2801,2737,2673,2609,
+													2545,2481,2417,2352,2288,2224,2160,2096,2032,1968,1904,1839,1775,1711,
+													1647,1583,1519,1455,1390,1326,1262,1198,1134,1070,1006,941,877,813,749,
+													685,621,557,493,428,364,300,236,172,108,44,0,64,128,192,257,321,385,449,
+													513,577,641,705,770,834,898,962,1026,1090,1154,1219,1283,1347,1411,1475,
+													1539,1603,1668,1732,1796,1860,1924,1988};
 
-char *waveTypes[] = {"SINE", "SQUARE", "SAW"};
+
+char *waveTypes[] = {"SINE", "SQUARE", "SAW", "NOISE"};
 
 /*--------- Internal Functions (Prototypes) ----------*/
 static void TIM5_Config(void);
@@ -139,15 +150,26 @@ void generateSignal(uint32_t genFrequency, uint8_t signalType, float amplitude){
 			break;
 		
 		case SAW_TYPE:
-			memcpy(generatedSignal, sine, WAVE_RES * sizeof(uint16_t));
+			memcpy(generatedSignal, saw, WAVE_RES * sizeof(uint16_t));
+			break;
+		
+		case NOISE_TYPE:
+			//Calculate noise in amplitude loop
 			break;
 	}
 	
 	amplitude /= MANUAL_MAX_AMP; //Normalise target voltage so is scalar between 0 and 1 (avoid clipping dac output)
-
-	//Generate wave with adjusted amplitude
-	for(int i = 0; i < WAVE_RES; i++){
-		generatedSignal[i] *= amplitude;
+	
+	if(signalType == NOISE_TYPE){
+		//Generate wave with adjusted amplitude and noise
+		for(int i = 0; i < WAVE_RES; i++){
+			generatedSignal[i] *= (amplitude)*rand_between(43, 2048); 
+		}
+	} else {
+		//Generate wave with adjusted amplitude
+		for(int i = 0; i < WAVE_RES; i++){
+			generatedSignal[i] *= (amplitude)*rand_between(43, 2048);
+		}
 	}
 
 	dac_initialise(generatedSignal);

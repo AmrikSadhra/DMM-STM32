@@ -176,7 +176,7 @@ void USART3_IRQHandler(void) {
       if (iB == '>') {
         isPacket = false;
         jB = 0;
-				
+								
 				//Check for connected packet
 				if(strcmp(bluetoothBuf,"<CONNECTED>") == 0) bluetoothConnected = true;
 			

@@ -12,6 +12,6 @@ void switch_init(void);
 /*--------- INTERRUPT GLOBALS ----------*/
 //Externally available global for menu position
 extern uint8_t localMenuPosition;
-
+extern uint8_t buttonState; //Blue button 
 #endif /*_SWITCHES_H_*/
 

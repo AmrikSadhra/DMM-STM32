@@ -44,13 +44,13 @@ void ADC1_init(void) {
 	ADC1->CR1 = 0x00;
 	ADC1->CR1 |= (1UL << 11);
 	ADC1->CR2 = 0x00;
-	ADC1->CR2 |= (1UL << 10) ;				/* right alignement of 12 bits */
+	ADC1->CR2 |= (1UL << 10) ;							/* right alignment of 12 bits */
 	ADC->CCR = 0x00;
-	ADC1->SQR1 = 0x01;								/* 1 conversion at a time */
+	ADC1->SQR1 = 0x01;											/* 1 conversion at a time */
 	ADC1->SMPR1 = 0x00;
 	ADC1->SMPR1 = 0x0300;
 	ADC1->SQR1 = 0x01;
-	ADC1->SQR3 = 0x0e;								/* ADC_IN14 = 0x0e: ADC_IN15 = 0x0f */
+	ADC1->SQR3 = 0x0e;											/* ADC_IN14 = 0x0e: ADC_IN15 = 0x0f */
 	ADC1->CR2 |= (1UL << 0);
 	
 	autorange_init();
@@ -74,12 +74,8 @@ uint16_t read_ADC1_raw (void) {
 uint16_t calibrate_ADC1(){
 		#ifdef ADC_CALIBRATION_ENABLED
 			//Connect read stage to Ground to calibrate ADC
-			stageAlpha(0);
-			//Connect mode switching stage to Voltage
-			stageBeta(0);
-			//Set Gain to 1
-			stageGamma(0);
-			
+			dmmModeSelect(CALIBRATE_ADC_STATE);
+	
 			uint32_t runningTotal = 0;
 			
 			for(int i = 0; i < NUM_CAL_SAMPLES; i++){
@@ -87,7 +83,7 @@ uint16_t calibrate_ADC1(){
 			}
 
 			//Connect read stage to voltage input, calibration over
-			stageAlpha(1);
+			dmmModeSelect(VOLTAGE_READ_STATE);
 		return (uint16_t) runningTotal/5;
 		#else 
 			return 0;
@@ -230,15 +226,11 @@ double read_ADC1 (bool resistanceMode){
 				break;		
 		}
 		
-		//Apply 3rd order calibration equation to output
-		double offset = 0.0014*pow(ADC1_valueScaled, 3) + 0.0094*pow(ADC1_valueScaled, 2) - 0.2351*ADC1_valueScaled + 0.0073; 
-		double offset1 = 9E-05*pow(ADC1_valueScaled, 4) - 0.0002*pow(ADC1_valueScaled, 3) - 0.0123*pow(ADC1_valueScaled, 2) + 0.0614*ADC1_valueScaled- 0.0008;
-	
 		#ifdef ADC_DEBUG
-			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf, Calibrated w/ Offset: %lf\r\n", ADC1_valueScaled, ADC1_valueScaled + offset + offset1);
+			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf\r\n", ADC1_valueScaled);
 		#endif 
 
-		return ADC1_valueScaled + offset + offset1;
+		return ADC1_valueScaled;
 }
 
 //Function to read ADC1 as quickly as possible

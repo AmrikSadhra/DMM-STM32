@@ -2,6 +2,7 @@
 
 //Global for storing menu position
 uint8_t localMenuPosition = 1;
+uint8_t buttonState = 1;
 
 void switch_init(){
 		/* Enable clock for SYSCFG */
@@ -11,7 +12,16 @@ void switch_init(){
 		GPIO_InitTypeDef GPIOB_InitStruct;
     EXTI_InitTypeDef EXTI_InitStruct;
     NVIC_InitTypeDef NVIC_InitStruct;
-    
+	
+		//Initialise Blue User button (A0)
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);	//Enable clock for GPOIA
+		GPIO_InitStruct.GPIO_Pin = GPIO_Pin_0;
+		GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
+		GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_DOWN;
+		GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_Init(GPIOA, &GPIO_InitStruct);
+	
 		//Initialise GPIOE 
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 		GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 |GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;  // we want to configure PE8-15
@@ -39,6 +49,8 @@ void switch_init(){
 		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource13);
 		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource14);
     SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource15);
+		//And PA0 for blue button
+		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
     
     /* Port E's buttons from 8 through 15 all lie on different EXTI lines*/
     EXTI_InitStruct.EXTI_Line = EXTI_Line8 | EXTI_Line9 | EXTI_Line10 | EXTI_Line11 | EXTI_Line12 | EXTI_Line13 | EXTI_Line14 | EXTI_Line15;
@@ -49,6 +61,13 @@ void switch_init(){
     /* Triggers on rising and falling edge */
     EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising;
     /* Add to EXTI */
+    EXTI_Init(&EXTI_InitStruct);
+		
+		/* Port A's button on line 0*/
+    EXTI_InitStruct.EXTI_Line = EXTI_Line0;
+    EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+    EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising;
     EXTI_Init(&EXTI_InitStruct);
 
     /* Add IRQ vector to NVIC */
@@ -65,7 +84,24 @@ void switch_init(){
 		NVIC_InitStruct.NVIC_IRQChannel = EXTI9_5_IRQn;
 		/* Add to NVIC Again */
     NVIC_Init(&NVIC_InitStruct);
+		
+		NVIC_InitStruct.NVIC_IRQChannel = EXTI0_IRQn;
+		/* Add to NVIC Again again (blue button) */
+    NVIC_Init(&NVIC_InitStruct);
 }
+
+
+void EXTI0_IRQHandler(void) {
+	/* Make sure that interrupt flag is set */
+   if (EXTI_GetITStatus(EXTI_Line0) != RESET) {
+				buttonState = !buttonState; //Toggle button state
+       /* Clear interrupt flag */
+       EXTI_ClearITPendingBit(EXTI_Line0);
+   } 
+	 		#ifdef SWITCH_DEBUG
+				printf("[Blue Button External Interrupt] Toggling button state to %d\r\n", buttonState);
+			#endif
+ }
 
 void EXTI9_5_IRQHandler(void) {
 	/* Make sure that interrupt flag is set */
@@ -78,7 +114,7 @@ void EXTI9_5_IRQHandler(void) {
        EXTI_ClearITPendingBit(EXTI_Line9);
    } 
 	 		#ifdef SWITCH_DEBUG
-				printf("[Switch External Interrupt] Menu Position: %d\r\n~", localMenuPosition);
+				printf("[Switch External Interrupt] Menu Position: %d\r\n", localMenuPosition);
 			#endif
  }
 
@@ -104,6 +140,6 @@ void EXTI15_10_IRQHandler(void) {
    }
 	
 	 #ifdef SWITCH_DEBUG
-			printf("[Switch External Interrupt] Menu Position: %d\r\n~", localMenuPosition);
+			printf("[Switch External Interrupt] Menu Position: %d\r\n", localMenuPosition);
 		#endif
  }

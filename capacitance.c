@@ -8,7 +8,8 @@ bool timerDone = true;
 int averageIndex = 0;
 double average[10];
 
-void LED_Init1(){
+void capacitanceInit(){
+	//Enable clock to GPIOD
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
  
 		//Pulse Generate
@@ -96,7 +97,7 @@ void Timer_Init(){
 void measureCapacitance(){
 	numHighTicks = 0;
 	timerDone = false;
-	LED_Init1();
+	capacitanceInit();
 	
 	GPIO_WriteBit(GPIOD, GPIO_Pin_13, Bit_SET); //Set pulse pin high
 	GPIO_WriteBit(GPIOD, GPIO_Pin_13, Bit_RESET);

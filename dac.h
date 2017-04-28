@@ -11,6 +11,7 @@
 #define   SINE_TYPE     	0
 #define   SQUARE_TYPE   	1   
 #define   SAW_TYPE 				2
+#define   NOISE_TYPE      3
 
 extern char *waveTypes[];
 

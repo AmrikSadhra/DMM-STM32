@@ -32,6 +32,10 @@
 #define MODE_RMS 2
 #define MODE_RESISTANCE 3
 
+//Diode Test Modes
+#define DTM_DIODE_TEST 0
+#define ZDT_DIODE_TEST 1
+
 /* ------------------------ Generic DMM Settings ------------------------- */
 //Main menu states
 #define VOLTAGE_READ_STATE 		1
@@ -43,6 +47,8 @@
 #define CAPACITANCE_STATE 		7
 #define DIODE_STATE 					8
 #define LIGHT_INTENSITY_STATE 9
+#define CONTINUITY_STATE		 	10
+#define CALIBRATE_ADC_STATE 	11
 
 //Manual Menu navigation Settings
 #define MANUAL_VALDOWN_BUTTON 1   //Value decrease button
@@ -57,8 +63,8 @@
 #define UPDATE_DISPLAY 9					//State for updating display (arbitrary, larger than num buttons: 8)
 
 //Signal Generation
-#define MANUAL_DEFAULT_FREQ 50   //Default starting frequency
-#define MANUAL_MIN_FREQ 15 		 	//Minimum frequency
+#define MANUAL_DEFAULT_FREQ 50    //Default starting frequency
+#define MANUAL_MIN_FREQ 15 		 	  //Minimum frequency
 #define MANUAL_MAX_FREQ 10000  	 	//Maximum frequency
 
 #define MANUAL_DEFAULT_STEP 10		//Default step size for frequency (1, 10, 1000, 10000)
@@ -87,7 +93,7 @@
 #define   WAVE_GEN_VOLTAGE          3.28f   // Arbitrary value to determine how long to sample wave for Peak to Peak
 
 /* ---------------------------- Serial Settings -------------------------- */
-#define MAX_SERIAL_IN_LENGTH 16							//Maximum size of input debug or bluetooth packet				
+#define MAX_SERIAL_IN_LENGTH 32							//Maximum size of input debug or bluetooth packet				
 #define MAX_BT_BUF_SIZE 10									//Size of bluetooth buffer serial queue (increase if dropping Android packets)
 #define MAX_DBG_BUF_SIZE 10									//Size of debug buffer serial queue (increase if dropping debug packets)
 #define DEFAULT_BAUD 9600										//Default baud rates for serial if none supplied
@@ -96,12 +102,7 @@
 #define PACKET_SIZE 30											//Maximum size of output debug or bluetooth packet	
 
 /* ----------------------------- ADC Settings ---------------------------- */
-//TODO: Fill these with cal curve data
-#define CAL_COEFF_X3
-#define CAL_COEFF_X2
-#define CAL_COEFF_OFFSET
-
-//#define ADC_CALIBRATION_ENABLED 
+#define ADC_CALIBRATION_ENABLED 
 #define SWITCHING_RANGE_TOLERANCE 2000
 #define NUM_AVG_SAMPLES 15
 #define NUM_CAL_SAMPLES 5

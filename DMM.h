@@ -22,7 +22,8 @@
 #include "queue.h"
 #include "switches.h"
 #include "dac.h"
+#include "diode.h"
 
-void initialise_Peripherals(void);
+void dmmModeSelect(uint8_t function);
 
 #endif
