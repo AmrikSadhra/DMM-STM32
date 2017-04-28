@@ -37,12 +37,12 @@ double readDiode(uint8_t diodeTestMode){
 			GPIOE->ODR &= ~(1<<1);//Clear Test mode
 			
 			switch(diodeTestMode){
-				case DTM_DIODE_TEST:
-					//Do nothing as already clear
-				break;
-				
 				case ZDT_DIODE_TEST:
 					GPIOE->ODR |= (1<<1); //Set ZDT high
+				break;
+				
+				case DTM_DIODE_TEST:
+					//Do nothing as already clear
 				break;
 			}
 	}
@@ -51,7 +51,7 @@ double readDiode(uint8_t diodeTestMode){
 	
 		//TODO: may need to apply bitmask
 		switch(diodeTestMode){
-			case ZDT_DIODE_TEST:
+			case DTM_DIODE_TEST:
 				//A3 High
 				if((GPIOA->IDR >> 10) & 1){
 					return 4.0f; //Overload! Open diode.
@@ -70,7 +70,7 @@ double readDiode(uint8_t diodeTestMode){
 		}	
 			break;
 			
-			case DTM_DIODE_TEST:
+			case ZDT_DIODE_TEST:
 				return map((double) read_ADC1_raw(), 0, ADC_VALUE_3V, 0, 12);
 		}
 		

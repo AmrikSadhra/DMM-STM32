@@ -68,7 +68,7 @@ uint16_t read_ADC1_raw (void) {
 	Delay(10);
 	
 	//Return raw 32bit uint (MAGIC)
-	return ((ADC1->DR << 4) & 0xFF00) + 50;
+	return ((ADC1->DR << 4) & 0xFF00);
 }
 
 uint16_t calibrate_ADC1(){
@@ -107,19 +107,21 @@ double runningAverage(uint8_t numSamples){
 void autoRange(uint16_t adc1_raw, bool resistanceMode){ //Resistance mode drops Voltage gain to minimum, used Resistance mux to assert higher gain
 		bool rangeSwitch = false;
 		static uint8_t ADC1_prevRange;
-
+		
+		double ADC1_rangeSwitch = map(adc1_raw, 0, ADC_VALUE_3V, 0, 3);
+		bool lowerThreshold = ((ADC1_rangeSwitch  < MODE_SWITCHDOWN_HIGHER)&&(ADC1_rangeSwitch  > MODE_SWITCHDOWN_LOWER));
+		bool higherThreshold = ((ADC1_rangeSwitch  > MODE_SWITCHUP_HIGHER)||(ADC1_rangeSwitch  < MODE_SWITCHUP_LOWER));
+	
 	  static bool extraRange;
 	
-		bool lowerThreshold = ((adc1_raw  < ADC_VALUE_3V*0.55)&&(adc1_raw  > ADC_VALUE_3V*0.45));
-		bool higherThreshold = ((adc1_raw  > ADC_VALUE_3V - SWITCHING_RANGE_TOLERANCE)||(adc1_raw  < SWITCHING_RANGE_TOLERANCE));
-	
 		if(!resistanceMode){
+			extraRange = false;
 			//If RAW value greater than max value it can return - switch tolerance, probably time to change range (unless we maxed on range)
 			if(higherThreshold &&(ADC1_currentRange != 0)){
 					//High threshold
 					ADC1_currentRange--;	
 					rangeSwitch = true;
-				} else if(lowerThreshold &&(ADC1_currentRange != 3)){//If we're close (and not at lowest range)
+				} else if(lowerThreshold &&(ADC1_currentRange != 2)){//If we're close (and not at lowest range)
 					//Low threshold
 					ADC1_currentRange++;
 					rangeSwitch = true;
@@ -172,15 +174,15 @@ void autoRange(uint16_t adc1_raw, bool resistanceMode){ //Resistance mode drops 
 			//Clear Range switch bits
 			GPIOE->ODR &= ~(3UL << 3);
 			
-			//If in extra range mode, give the Circuit more gain through resistance amplification circuit
-			if(extraRange){
-					GPIOB->ODR |= (1 << 8);	
-			} else {
-					GPIOB->ODR &= ~(1 << 8);	
-			}
-			
+		
 		switch(ADC1_currentRange){
 				case 0://10v in 
+				//If in extra range mode, give the Circuit more gain through resistance amplification circuit
+				if(extraRange){
+						GPIOB->ODR |= (1 << 8);	
+				} else {
+						GPIOB->ODR &= ~(1 << 8);	
+				}
 					//Do nothing for Range 0 as pins already cleared
 					break;			
 				case 1://1v in 
@@ -225,12 +227,14 @@ double read_ADC1 (bool resistanceMode){
 				ADC1_valueScaled = map(ADC1_valueAveraged, 0, ADC_VALUE_3V, -0.01, 0.01);
 				break;		
 		}
-		
+	
+		double offset  = 0.0039*ADC1_valueScaled - 0.0225;
+
 		#ifdef ADC_DEBUG
-			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf\r\n", ADC1_valueScaled);
+			printf("[Hardware Subsystem] ADC_1 Scaled Voltage %lf, Calibrated : %lf\r\n", ADC1_valueScaled, offset);
 		#endif 
 
-		return ADC1_valueScaled;
+		return ADC1_valueScaled + offset;
 }
 
 //Function to read ADC1 as quickly as possible

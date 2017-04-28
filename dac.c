@@ -118,6 +118,8 @@ void generateSignal(uint32_t genFrequency, uint8_t signalType, float amplitude){
 	lcd_write_string("Signal Gen", 0, 0);
 	lcd_write_string("on pin A4", 1, 0);
 	
+	static uint32_t prevGenFrequency;
+	static uint8_t prevSignalType;
 	static float prevAmplitude;
 	
 	#ifdef DAC_DEBUG
@@ -130,7 +132,7 @@ void generateSignal(uint32_t genFrequency, uint8_t signalType, float amplitude){
 
 
 	//Work out whether there is a need to adjust the current signal, if not, return. If there is, free old pointer.
-	if(compare_float(prevAmplitude,amplitude)){
+	if(compare_float(prevAmplitude,amplitude)&&(prevGenFrequency == genFrequency)&&(prevSignalType == signalType)){
 		return;
 	}else{
 		free(generatedSignal);
@@ -163,18 +165,20 @@ void generateSignal(uint32_t genFrequency, uint8_t signalType, float amplitude){
 	if(signalType == NOISE_TYPE){
 		//Generate wave with adjusted amplitude and noise
 		for(int i = 0; i < WAVE_RES; i++){
-			generatedSignal[i] *= (amplitude)*rand_between(43, 2048); 
+			generatedSignal[i] = (amplitude)*((int)rand_between(43, 4020)); 
 		}
 	} else {
 		//Generate wave with adjusted amplitude
 		for(int i = 0; i < WAVE_RES; i++){
-			generatedSignal[i] *= (amplitude)*rand_between(43, 2048);
+			generatedSignal[i] *= (amplitude);
 		}
 	}
 
 	dac_initialise(generatedSignal);
 	prevAmplitude = amplitude;
-}
+	prevGenFrequency = genFrequency;
+	prevSignalType = signalType;
+} 
 
 //Clean up after ourselves following Signal Generation
 void stopGenerating(){	
@@ -210,7 +214,7 @@ void frequencyResponse(uint32_t sweepStart, uint32_t sweepEnd, uint32_t sweepRes
 		lcd_clear_display();
 		lcd_write_string("Sweeping..", 0, 0);
 		lcd_write_string("Please wait", 1, 0);
-	
+
 		//Check DAC initialised before beginning frequency response
 		dac_initialise(sine);
 	

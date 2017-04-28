@@ -5,10 +5,12 @@ uint32_t numHighTicks;
 double timeHigh; //ayyyy
 bool timerDone = true;
 
-int averageIndex = 0;
-double average[10];
+double capacitance;
+static uint32_t capacitanceRange = CAP_RANGE_0;
 
 void capacitanceInit(){
+	capacitanceRange = CAP_RANGE_0;
+	
 	//Enable clock to GPIOD
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
  
@@ -32,21 +34,16 @@ void processResults(){
 	TIM_Cmd(TIM2, DISABLE); //Stop Timer
 	
 	double timeHigh = (double)(numHighTicks*2.4E-6);
+
+	capacitance = (double) (timeHigh/(double)(1.1 * 910E3));
 	
-	if(averageIndex < 10){ 
-		if(timeHigh > 0){ 
-			average[averageIndex] = timeHigh;
-			printf("[Capacitance Measuring] Pulse size at %d: %f seconds\n\r", averageIndex, timeHigh);	
-			averageIndex++;
-		}
-	} else {
-		double runningTotal = 0;
-		for(int i = 0; i < 10; i++){
-			runningTotal += average[i];
-		}
-		runningTotal /= 10;
-		printf("[Capacitance Measuring] Pulse size average: %f seconds\n\r", runningTotal);	
-		averageIndex = 0;
+	capacitance *= 1E9;
+	
+	printf("Cap: %.16f nF\n", capacitance); 
+
+	//If capacitance not 0
+	if(!compare_float(capacitance, 0.0f)){
+		sendPacket(CAPACITANCE_STATE, capacitance, 0, 0);
 	}
 	
 	timerDone = true;
@@ -97,6 +94,12 @@ void Timer_Init(){
 void measureCapacitance(){
 	numHighTicks = 0;
 	timerDone = false;
+	
+	//Set range depending on capacitanceRange variable
+	if(capacitanceRange == CAP_RANGE_0){ 
+		GPIOE->ODR &= ~(1 << 7);
+	} 
+	
 	capacitanceInit();
 	
 	GPIO_WriteBit(GPIOD, GPIO_Pin_13, Bit_SET); //Set pulse pin high

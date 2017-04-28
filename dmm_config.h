@@ -4,7 +4,7 @@
 /* --------------------------- Debug Settings ---------------------------- */
 #define DMM_DEBUG 							//Uncomment to debug main DMM menu logic
 #define DAC_DEBUG 							//Uncomment to debug DAC readings
-//#define SWITCH_DEBUG 						//Uncomment to external interrupts on switches 
+#define SWITCH_DEBUG 						//Uncomment to external interrupts on switches 
 //#define QUEUE_DEBUG 						//Uncomment to debug actions of serial queues
 //#define PACKET_DEBUG 						//Uncomment to debug packets being sent
 #define ADC_DEBUG 							//Uncomment to debug ADC value reads
@@ -18,6 +18,7 @@
 #define PROBE_RESISTANCE 3
 #define PROBE_CAPACITANCE 4
 #define PROBE_DIODE 5
+#define PROBE_CURRENT 6
 
 //Circuit select states
 #define CIRCUIT_GND			 0
@@ -102,10 +103,16 @@
 #define PACKET_SIZE 30											//Maximum size of output debug or bluetooth packet	
 
 /* ----------------------------- ADC Settings ---------------------------- */
-#define ADC_CALIBRATION_ENABLED 
+//#define ADC_CALIBRATION_ENABLED 
 #define SWITCHING_RANGE_TOLERANCE 2000
-#define NUM_AVG_SAMPLES 15
+#define NUM_AVG_SAMPLES 30
 #define NUM_CAL_SAMPLES 5
+
+#define MODE_SWITCHDOWN_LOWER 	1.4
+#define MODE_SWITCHDOWN_HIGHER 	1.6
+#define MODE_SWITCHUP_LOWER 		0.4
+#define MODE_SWITCHUP_HIGHER 		2.6
+
 
 /* ---- IRQ Priorities - Control which interrupt handlers have priority ---- */
 #define TIM2_IQ_PRIORITY 0 									//Capacitance timer Handlers
@@ -121,6 +128,6 @@
 #define SWITCH_IQ_SUBPRIORITY 0  
 
 /* ----------------------- Freq Response Settings ----------------------- */
-#define NUM_PK_PK_SAMPLES 200
+#define NUM_PK_PK_SAMPLES 25
 
 #endif /*_DMM_CONFIG_H_*/

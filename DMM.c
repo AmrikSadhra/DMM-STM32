@@ -12,7 +12,8 @@ void circuitSelect(uint8_t circuitType){
 	if( prevCircuitType == circuitType) return; //No need to alter mux if no change
 	
 	//Clear Circuit select pins
-	GPIOB->ODR &= (~(1<<7) | ~(3<<4));
+	GPIOB->ODR &= ~(1<<7);
+	GPIOB->ODR &= ~(3<<4);
 	
 	switch(circuitType){
 		case CIRCUIT_GND:
@@ -49,9 +50,15 @@ void probeSelect(uint8_t probeType){
 	if(prevProbeType == probeType) return; //No need to alter mux if no change
 	
 	//Clear Probe select pins
-	GPIOC->ODR &= (~(1<<13) | ~(3<<5));
+	GPIOC->ODR &= ~(1<<13);
+	GPIOC->ODR &= ~(3<<5);
 	
 	switch(probeType){
+		case PROBE_CURRENT:
+			GPIOC->ODR &= ~(1<<5);
+			GPIOC->ODR |= (3<<5);
+			break;
+		
 		case PROBE_VOLTAGE:
 			//Do nothing as already cleared
 			break;
@@ -133,6 +140,7 @@ void dmmModeSelect(uint8_t function){
 		case CURRENT_READ_STATE :
 			modeSelect(MODE_CURRENT);
 			circuitSelect(CIRCUIT_VOLTAGE);
+			probeSelect(PROBE_CURRENT);
 				break;		
 		
 		case RESISTANCE_READ_STATE:
@@ -160,7 +168,6 @@ void dmmModeSelect(uint8_t function){
 		case DIODE_STATE:
 			circuitSelect(CIRCUIT_DIODE);
 			probeSelect(PROBE_DIODE);
-		//TODO: Add in extra state required for diode
 				break; 
 		
 		case LIGHT_INTENSITY_STATE:
@@ -282,6 +289,9 @@ int main (void) {
 		static int prevLocalMenuPosition;
 		static int menuPosition = 1;
 		
+		//Capacitance variable
+		static double prevCapacitance = -1.0f;
+		
 		//Diode Test mode variable
 		static uint8_t blueButtonOldState;
 		static uint8_t diodeType; //Set using BTN
@@ -297,7 +307,6 @@ int main (void) {
 		uint32_t genFrequency = 0;
 		float genAmplitude = 0.0;
 		uint8_t sigGenType = 0;
-	
 	
 		//Query the Bluetooth Data to identify mode switches
 		if(strstr(bluetoothSwitchPacket,"<m:1>") != NULL) bluetoothMenuPosition = VOLTAGE_READ_STATE;
@@ -445,7 +454,6 @@ int main (void) {
 				
 				case CURRENT_READ_STATE://current
 				dmmModeSelect(CURRENT_READ_STATE);
-				//stageBeta(1);
 				ADC1_valueScaled	= read_ADC1(false);
 				current = ADC1_valueScaled/10;
 				switch(ADC1_currentRange){
@@ -507,7 +515,7 @@ int main (void) {
 			
 			case AC_VOLTAGE_READ_STATE: //Measure AC voltage and frequency
 				dmmModeSelect(AC_VOLTAGE_READ_STATE);
-				ADC1_valueScaled	= read_ADC1(false);
+				ADC1_valueScaled	= fabs(read_ADC1(false))/1.069;
 				switch(ADC1_currentRange){
 						case 0:
 							sprintf(lcd_line1,"AC Volt:0->10V");
@@ -534,9 +542,13 @@ int main (void) {
 			
 			case CAPACITANCE_STATE://Measure Capacitance
 				dmmModeSelect(CAPACITANCE_STATE);
-				//sprintf(lcd_line1,"Capacitance");
-				//sprintf(lcd_line2,"%dF", numHighTicks);
+				if(prevCapacitance != capacitance){
+					sendPacket(CAPACITANCE_STATE, capacitance, 0, 0);
+					prevCapacitance = capacitance;
+				}
 				if(timerDone) measureCapacitance();
+				sprintf(lcd_line1,"Capacitance");
+				sprintf(lcd_line2,"%.2fF", capacitance);
 				break;
 			
 			case DIODE_STATE:
@@ -544,8 +556,8 @@ int main (void) {
 				dmmModeSelect(DIODE_STATE);
 				double diodeResult = readDiode(diodeType); //Get Diode test result
 				switch(diodeType){
-					case ZDT_DIODE_TEST:
-						sprintf(lcd_line1,"Zener Test:");
+					case DTM_DIODE_TEST:
+						sprintf(lcd_line1,"DTM Test:");
 						switch((int) diodeResult){
 							case 1:
 								sprintf(lcd_line2,"Germ good!");
@@ -565,10 +577,11 @@ int main (void) {
 								break;
 						}
 						sendPacket(DIODE_STATE, -1, (int) diodeResult, 0); //Send Zener packet
+						Delay(150);
 						break;
 						
-					case DTM_DIODE_TEST:
-						sprintf(lcd_line1,"DTM Test:");
+					case ZDT_DIODE_TEST:
+						sprintf(lcd_line1,"Zener Test:");
 						sprintf(lcd_line2,"%.2f v", diodeResult); //Display mapped (0-12v) test result
 						sendPacket(DIODE_STATE, diodeResult, -1, 0); //Send Diode packet
 						break;
@@ -588,6 +601,7 @@ int main (void) {
 				dmmModeSelect(CONTINUITY_STATE);
 				sprintf(lcd_line1," Continuity ");
 				sprintf(lcd_line2,"    Mode    ");
+				Delay(150);
 				break;
 			
 			default:

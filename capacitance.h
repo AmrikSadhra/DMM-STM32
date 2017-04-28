@@ -2,9 +2,14 @@
 #include "dmm_config.h"
 #include "stdbool.h"
 #include "serial.h"
+#include "packet.h"
+
+//Capacitance Ranges
+#define CAP_RANGE_0 0 //910 Ohm divider
+#define CAP_RANGE_1 1 //910k Ohm Divider
 
 void measureCapacitance(void);
 
-extern double timeHigh;
 extern bool timerDone;
-extern uint32_t numHighTicks;
+extern double capacitance;
+
