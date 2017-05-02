@@ -49,7 +49,6 @@ double readDiode(uint8_t diodeTestMode) {
 
     prevDiodeTestMode = diodeTestMode; //Update previous test mode with current
 
-    //TODO: may need to apply bitmask
     switch (diodeTestMode) {
         case DTM_DIODE_TEST:
             //A3 High
