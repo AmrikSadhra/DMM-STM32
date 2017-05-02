@@ -13,8 +13,11 @@
 
 /* Serial Functions */
 void serial_init(uint32_t baudRate);
+
 void bluetooth_init(uint32_t baudRate);
+
 void bt_send_str(char *str);
+
 void printBus(uint32_t bus);
 
 /* Globally available Variables */

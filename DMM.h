@@ -9,7 +9,6 @@
 #include "STM32F4xx.h"
 #include "lcd_buffer.h"
 #include "lcd_driver.h"
-#include "LED.h"
 #include "misc.h"
 #include "math.h"
 #include "stdbool.h"

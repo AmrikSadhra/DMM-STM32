@@ -1,6 +1,7 @@
 #ifndef _DIODE_H_
 #define _DIODE_H_
-#include "STM32F4xx.h"
+
+#include "stm32f4xx.h"
 #include "stdbool.h"
 #include "dmm_config.h"
 #include "utils.h"

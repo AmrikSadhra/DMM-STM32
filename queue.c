@@ -16,13 +16,13 @@ QueueNode *NodeConstructor(QueueNode *prev, char *toStore) {
     return myNode;
 }
 
-Queue *QueueConstructor(int maxLength, char* name) {
-    #ifdef QUEUE_DEBUG
-			printf("[Queue Data Structure] Creating queue with name: %s and max length: %d\r\n", name, maxLength);
-		#endif
-		
-		Queue *myQueue;
-	
+Queue *QueueConstructor(int maxLength, char *name) {
+#ifdef QUEUE_DEBUG
+    printf("[Queue Data Structure] Creating queue with name: %s and max length: %d\r\n", name, maxLength);
+#endif
+
+    Queue *myQueue;
+
     myQueue = malloc(sizeof(Queue));
     myQueue->name = name;
     myQueue->length = 0;
@@ -52,9 +52,9 @@ void EnqueueString(Queue *targetQueue, char *toStore) {
     QueueNode *toQueue = NodeConstructor(NULL, toStore);
 
     if (targetQueue->length == targetQueue->maxLength) {
-		#ifdef QUEUE_DEBUG
+#ifdef QUEUE_DEBUG
         printf("[%s] Queue is full! Dequeuing tail. DROPPING: %s\r\n", targetQueue->name, DequeueString(targetQueue));
-		#endif
+#endif
     }
 
     Enqueue(targetQueue, toQueue);
@@ -90,19 +90,19 @@ char *DequeueString(Queue *targetQueue) {
     return buf;
 }
 
-void displayQueue(Queue *targetQueue){
+void displayQueue(Queue *targetQueue) {
     QueueNode *temp = targetQueue->head;
 
-    if(temp == NULL){
+    if (temp == NULL) {
         printf("%s Queue is empty!\r\n", targetQueue->name);
-			  return;
+        return;
     }
 
     printf("Displaying %s Queue:\r\n", targetQueue->name);
 
-    while(temp->next != NULL){
-        printf("%s\r\n",temp->strBuf);
+    while (temp->next != NULL) {
+        printf("%s\r\n", temp->strBuf);
         temp = temp->next;
     }
-    printf("%s\r\n",temp->strBuf); //Print tail
+    printf("%s\r\n", temp->strBuf); //Print tail
 }

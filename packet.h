@@ -6,8 +6,7 @@
 #include "dmm_config.h"
 
 
-	
 void sendPacket(int mode, float voltage, int range, int extra);
-	
+
 
 #endif /*_PACKET_H_*/

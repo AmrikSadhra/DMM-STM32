@@ -78,7 +78,9 @@ void lcd_write_string(char *string, int line, int offset);
 
 /* Internal functions you don't need to use */
 void lcd_setup_GPIO(void);
+
 void lcd_setup_timer(void);
+
 void lcd_write(int cmd, uint16_t byte, uint16_t time_delay);
 
 /*Create buffer*/

@@ -21,14 +21,18 @@ typedef struct Queue {
     int length;
     int maxLength;
     char *name;
-    struct QueueNode *head, * tail;
+    struct QueueNode *head, *tail;
 } Queue;
 
 /* -------- Function Prototypes -------- */
-Queue *QueueConstructor(int maxLength, char* name);
+Queue *QueueConstructor(int maxLength, char *name);
+
 QueueNode *NodeConstructor(QueueNode *prev, char *toStore);
+
 void EnqueueString(Queue *targetQueue, char *toStore);
+
 char *DequeueString(Queue *targetQueue);
+
 void displayQueue(Queue *targetQueue);
 
 #endif //QUEUEIMPLEMENTATION_BUFFER_H

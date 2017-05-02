@@ -1,12 +1,13 @@
 #ifndef __LCD_BUFFER_H__
 #define __LCD_BUFFER_H__
+
 #include <stdint.h>
 
 typedef struct {
-	uint32_t* buffer;
-	int size;
-	int in;
-	int out;
+    uint32_t *buffer;
+    int size;
+    int in;
+    int out;
 } BUFFER;
 
 /* Initialise a buffer structure by allocating the given number of bytes for its contents */
