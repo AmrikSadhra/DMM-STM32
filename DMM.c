@@ -947,8 +947,6 @@ void frequencyResponseMenu(bool bluetoothGen, uint32_t sweepStart, uint32_t swee
         if (entriesDone != -1) { //Start frequency response with Android sent data, If user not cancelled
             //We're done. Notify user of ongoing sweep
             frequencyResponse(sweepStart, sweepEnd, sweepResolution);
-            //TODO: Make the screen display a pretty frequency response
-            //TODO: Alter Frequency Response to return a double array of results if called from menu
         } else {
 #ifdef DMM_DEBUG
             printf("[Frequency Response] User cancelled frequency response\r\n");
