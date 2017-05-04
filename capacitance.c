@@ -33,9 +33,7 @@ void processResults() {
     TIM_Cmd(TIM2, DISABLE); //Stop Timer
 
     double timeHigh = (double) (numHighTicks * 2.4E-6);
-
     capacitance = (double) (timeHigh / (double) (1.1 * 910E3));
-
     capacitance *= 1E9;
 
     printf("Cap: %.16f nF\n", capacitance);
@@ -51,7 +49,7 @@ void processResults() {
 
 void TIM2_IRQHandler() {
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) {
-        //Total Ticks, ticks with pin high
+        //Ticks of counter with pin high
         //If Input pin high
         if ((GPIOD->IDR >> 12) & 1) {
             numHighTicks++;
